@@ -134,7 +134,5 @@ void Task_TransferData()
         }
         else
             nrf.Tran(NRF_TxBuff);
-        
-        
     }
 }
