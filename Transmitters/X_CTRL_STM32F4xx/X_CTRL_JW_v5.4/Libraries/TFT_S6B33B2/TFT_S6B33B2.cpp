@@ -37,29 +37,29 @@
 #define R_DATA_FORMAT_SELECT   0x60
 
 #if defined(__STM32__)
-#define	TFT_RST_SET  	GPIO_HIGH(rstport,rstpinmask)
-#define	TFT_CS_SET  	GPIO_HIGH(csport,cspinmask)
-#define	TFT_RS_SET  	GPIO_HIGH(rsport,rspinmask)
-#define	TFT_RW_SET  	GPIO_HIGH(rwport,rwpinmask)
-#define	TFT_RD_SET  	GPIO_HIGH(rdport,rdpinmask)
+#define TFT_RST_SET     GPIO_HIGH(rstport,rstpinmask)
+#define TFT_CS_SET      GPIO_HIGH(csport,cspinmask)
+#define TFT_RS_SET      GPIO_HIGH(rsport,rspinmask)
+#define TFT_RW_SET      GPIO_HIGH(rwport,rwpinmask)
+#define TFT_RD_SET      GPIO_HIGH(rdport,rdpinmask)
 
-#define	TFT_RST_CLR  	GPIO_LOW(rstport,rstpinmask)
-#define	TFT_CS_CLR  	GPIO_LOW(csport,cspinmask)
-#define	TFT_RS_CLR  	GPIO_LOW(rsport,rspinmask)
-#define	TFT_RW_CLR  	GPIO_LOW(rwport,rwpinmask)
-#define	TFT_RD_CLR  	GPIO_LOW(rdport,rdpinmask)
+#define TFT_RST_CLR     GPIO_LOW(rstport,rstpinmask)
+#define TFT_CS_CLR      GPIO_LOW(csport,cspinmask)
+#define TFT_RS_CLR      GPIO_LOW(rsport,rspinmask)
+#define TFT_RW_CLR      GPIO_LOW(rwport,rwpinmask)
+#define TFT_RD_CLR      GPIO_LOW(rdport,rdpinmask)
 #else
-#define	TFT_RST_SET  	digitalWrite(RST,HIGH)
-#define	TFT_CS_SET  	digitalWrite(CS,HIGH)
-#define	TFT_RS_SET  	digitalWrite(RS,HIGH)
-#define	TFT_RW_SET  	digitalWrite(RW,HIGH)
-#define	TFT_RD_SET  	digitalWrite(RD,HIGH)
+#define TFT_RST_SET     digitalWrite(RST,HIGH)
+#define TFT_CS_SET      digitalWrite(CS,HIGH)
+#define TFT_RS_SET      digitalWrite(RS,HIGH)
+#define TFT_RW_SET      digitalWrite(RW,HIGH)
+#define TFT_RD_SET      digitalWrite(RD,HIGH)
 
-#define	TFT_RST_CLR  	digitalWrite(RST,LOW)
-#define	TFT_CS_CLR  	digitalWrite(CS,LOW)
-#define	TFT_RS_CLR  	digitalWrite(RS,LOW)
-#define	TFT_RW_CLR  	digitalWrite(RW,LOW)
-#define	TFT_RD_CLR  	digitalWrite(RD,LOW)
+#define TFT_RST_CLR     digitalWrite(RST,LOW)
+#define TFT_CS_CLR      digitalWrite(CS,LOW)
+#define TFT_RS_CLR      digitalWrite(RS,LOW)
+#define TFT_RW_CLR      digitalWrite(RW,LOW)
+#define TFT_RD_CLR      digitalWrite(RD,LOW)
 #endif
 
 
@@ -73,7 +73,7 @@ TFT_S6B33B2::TFT_S6B33B2(uint8_t port_start, uint8_t rst, uint8_t cs, uint8_t rs
     RS = rs;
     RW = rw;
     RD = rd;
-        
+
 #if defined(__STM32__)
     rstport = digitalPinToPort(RST);
     rstpinmask = digitalPinToBitMask(RST);
@@ -101,9 +101,9 @@ void TFT_S6B33B2::begin()
     pinMode(RS, OUTPUT);
     pinMode(RW, OUTPUT);
     pinMode(RD, OUTPUT);
-    
+
     TFT_RD_SET;
-    
+
     TFT_RST_CLR;
     delay(250);
     TFT_RST_SET;
@@ -160,7 +160,7 @@ void TFT_S6B33B2::begin()
 
     /*------set sdir=0,duty=1/162 swap=0-----*/
     writeCommond(0x10);
-    writeCommond(34);	//34 or 39
+    writeCommond(34);   //34 or 39
 
     /*------set clock fpck=fose/32(Normal)/fpck=fose/16(partial1)-------*/
     writeCommond(0x24);
@@ -194,11 +194,11 @@ void TFT_S6B33B2::begin()
 
     /*------contrast1 set v1 to 3.757v  max=4v----0x2A,CTRL1*/
     writeCommond(0x2a);
-    writeCommond(0xCF);		/*partial display mode 0*/ //0xbb
+    writeCommond(0xCF);     /*partial display mode 0*/ //0xbb
 
     /*------contrast2 set v1 to 3.757v  max=4v--------*/
     writeCommond(0x2b);
-    writeCommond(0xC8);		/*partial display mode 1*/ //0x20
+    writeCommond(0xC8);     /*partial display mode 1*/ //0x20
     delay(10);
 
     /*------bias set to 1/5 --------*/
@@ -255,7 +255,8 @@ void TFT_S6B33B2::setOpacityX(uint8_t opacity)
 {
     SP_Brush_Opacity = opacity;
 }
-int TFT_S6B33B2::printfX(const char *fmt, ...) {
+int TFT_S6B33B2::printfX(const char *fmt, ...)
+{
     static char TEXT_BUFFER[128];
     va_list  va;
     va_start(va, fmt);
@@ -272,7 +273,8 @@ int TFT_S6B33B2::printfX(const char *fmt, ...) {
     return ret;
 }
 
-int TFT_S6B33B2::printfX(String str) {
+int TFT_S6B33B2::printfX(String str)
+{
     char buffer[128];
     str.toCharArray(buffer, str.length() + 1);
     return printfX(buffer);
@@ -326,7 +328,7 @@ void TFT_S6B33B2::drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color)
     if((y + h - 1) >= _height) h = _height - y;
     if(x < 0) x = 0;
     if(y < 0) y = 0;
-    
+
     setAddrWindow(x, y, x, y + h - 1);
 
     while (h--)
@@ -340,16 +342,17 @@ void TFT_S6B33B2::drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color)
     if((x + w - 1) >= _width)  w = _width - x;
     if(x < 0) x = 0;
     if(y < 0) y = 0;
-    
+
     setAddrWindow(x, y, x + w - 1, y);
 
     while (w--)
         writeData(color);
 }
 
-void TFT_S6B33B2::drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap, int16_t w, int16_t h) {
+void TFT_S6B33B2::drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap, int16_t w, int16_t h)
+{
     if((x >= _width) || (y >= _height)) return;
-    
+
     int16_t actual_cursor_x = x;
     int16_t actual_cursor_y = y;
     int16_t actual_cursor_x1 = x + w - 1;
@@ -357,54 +360,54 @@ void TFT_S6B33B2::drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap, int16_t 
 
     if(actual_cursor_x < 0)
     {
-    	actual_cursor_x = 0;
+        actual_cursor_x = 0;
     }
     else if(actual_cursor_x >= _width)
     {
-    	actual_cursor_x = _width - 1;
+        actual_cursor_x = _width - 1;
     }
 
     if(actual_cursor_y < 0)
     {
-    	actual_cursor_y = 0;
+        actual_cursor_y = 0;
     }
     else if(actual_cursor_y >= _height)
     {
-    	actual_cursor_y = _height - 1;
+        actual_cursor_y = _height - 1;
     }
 
     if(actual_cursor_x1 < 0)
     {
-    	actual_cursor_x1 = 0;
+        actual_cursor_x1 = 0;
     }
     else if(actual_cursor_x1 >= _width)
     {
-    	actual_cursor_x1 = _width - 1;
+        actual_cursor_x1 = _width - 1;
     }
 
     if(actual_cursor_y1 < 0)
     {
-    	actual_cursor_y1 = 0;
+        actual_cursor_y1 = 0;
     }
     else if(actual_cursor_y1 >= _height)
     {
-    	actual_cursor_y1 = _height - 1;
+        actual_cursor_y1 = _height - 1;
     }
 
     setAddrWindow(actual_cursor_x, actual_cursor_y, actual_cursor_x1, actual_cursor_y1);
 
     for(int16_t Y = 0; Y < h; Y++)
     {
-    	for(int16_t X = 0; X < w; X++)
-    	{
-    		int16_t index = X + Y * w;
-    		int16_t actualX = x + X;
-    		int16_t actualY = y + Y;
-    		if(actualX >=0 && actualX < _width && actualY >= 0 && actualY < _height)
-    		{
-    			writeData(bitmap[index]);
-    		}
-    	}
+        for(int16_t X = 0; X < w; X++)
+        {
+            int16_t index = X + Y * w;
+            int16_t actualX = x + X;
+            int16_t actualY = y + Y;
+            if(actualX >= 0 && actualX < _width && actualY >= 0 && actualY < _height)
+            {
+                writeData(bitmap[index]);
+            }
+        }
     }
 }
 
