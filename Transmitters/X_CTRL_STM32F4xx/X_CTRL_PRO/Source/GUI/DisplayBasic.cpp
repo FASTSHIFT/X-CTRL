@@ -1,8 +1,5 @@
 #include "FileGroup.h"
 #include "DisplayPrivate.h"
-
-#include "SdFat.h"
-
 #include "TasksManage.h"
 
 SCREEN_CLASS screen(
@@ -10,12 +7,9 @@ SCREEN_CLASS screen(
     TFT_RS_Pin, TFT_RW_Pin, TFT_RD_Pin
 );
 
+PageManager page(PAGE_MAX);
+
 #include "demo.h"
-
-char str[100];
-
-lv_fs_file_t f;
-SdFile userFile;
 
 void Task_Dispaly(void *pvParameters)
 {
@@ -28,31 +22,31 @@ void Task_Dispaly(void *pvParameters)
     pwmWrite(TFT_LED_Pin, 500);
     
     lv_user_init();
-    lv_user_fs_init();
+//  lv_user_fs_init();
     
-//    if(lv_fs_is_ready('S'))
-//    {
-//        if(lv_fs_open(&f, "S:datalog.txt", LV_FS_MODE_RD) == LV_FS_RES_OK)
-//        {
-//            lv_fs_read(&f,str,sizeof(str),NULL);
-//        }
-////        else
-////        {
-////            while(1);
-////        }
-//    }
+    //PageCreat_LuaScript();
+    //PageCreat_BattInfo();
     
-    PageCreat_LuaScript();
-    //demo_create();
+//    demo_create();
+    
+    Init_Bar();
+    
+    PageRegister_Home(PAGE_Home);
+    PageRegister_Settings(PAGE_Settings);
+    PageRegister_BattInfo(PAGE_BattInfo);
+    PageRegister_LuaScript(PAGE_LuaScript);
+    
+    page.PageChangeTo(PAGE_Home);
     
     for(;;)
     {
         lv_task_handler();
+        page.Running();
         vTaskDelay(10);
     }
 }
 
-
+/*************************À¶ÆÁ¾¯¸æ*************************/
 static void SoftDealy(uint32_t ms)
 {
     volatile uint32_t i = F_CPU / 1000 * ms / 5;
@@ -91,9 +85,8 @@ extern "C"
 {
     void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char *pcTaskName)
     {
-        //Serial.printf("Stack Overflow: %s\r\n", pcTaskName);
         char str[50];
-        sprintf(str, "stack overflow: %s", pcTaskName);
+        sprintf(str, "stack overflow\n: %s", pcTaskName);
         ShowCrashReports(str);
         SoftDealy(10000);
         NVIC_SystemReset();
@@ -101,7 +94,6 @@ extern "C"
     
     void vApplicationMallocFailedHook()
     {
-        //Serial.printf("malloc failed\r\n");
         ShowCrashReports("malloc failed");
         SoftDealy(10000);
         NVIC_SystemReset();
@@ -109,8 +101,7 @@ extern "C"
     
     void HardFault_Handler()
     {
-        //Serial.printf("Hardware Fault\r\n");
-        ShowCrashReports("hardware fault");
+        ShowCrashReports("fatal error");
         SoftDealy(10000);
         NVIC_SystemReset();
     }

@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,HSE_VALUE=8000000,ARDUINO=111,LV_CONF_INCLUDE_SIMPLE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\ArduinoAPI;..\Core;..\Libraries\Adafruit_GFX_Library;..\Libraries\TFT_ILI9488;..\Libraries\GT911;..\Libraries\StrPrinter;..\Libraries\lvgl;..\Libraries\lvgl\lv_examples;..\Libraries\FreeRTOS;..\Libraries\FreeRTOS\Source\include;..\Libraries\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\Source\Basic;..\Source\GUI;..\Source\LuaScript;..\Source\Module;..\Libraries\lua-5.3.2\src;..\Libraries\SdFat\src\FatLib;..\Libraries\SdFat\src\SdCard;..\Libraries\SdFat\src\SpiDriver;..\Libraries\SdFat\src;..\Libraries\NRF;..\Libraries\lvgl\lv_examples\lv_apps\demo</IncludePath>
+              <IncludePath>..\ArduinoAPI;..\Core;..\Libraries\Adafruit_GFX_Library;..\Libraries\TFT_ILI9488;..\Libraries\GT911;..\Libraries\StrPrinter;..\Libraries\lvgl;..\Libraries\lvgl\lv_examples;..\Libraries\FreeRTOS;..\Libraries\FreeRTOS\Source\include;..\Libraries\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\Source\Basic;..\Source\GUI;..\Source\LuaScript;..\Source\Module;..\Libraries\lua-5.3.2\src;..\Libraries\SdFat\src\FatLib;..\Libraries\SdFat\src\SdCard;..\Libraries\SdFat\src\SpiDriver;..\Libraries\SdFat\src;..\Libraries\NRF;..\Libraries\lvgl\lv_examples\lv_apps\demo;..\Libraries\IP5108;..\Libraries\LightGUI\PageManager</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -462,6 +462,11 @@
               <FilePath>..\Libraries\GT911\GTIIC.cpp</FilePath>
             </File>
             <File>
+              <FileName>IP5108.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Libraries\IP5108\IP5108.cpp</FilePath>
+            </File>
+            <File>
               <FileName>NRF.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Libraries\NRF\NRF.cpp</FilePath>
@@ -480,6 +485,11 @@
               <FileName>touch.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Libraries\GT911\touch.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>PageManager.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Libraries\LightGUI\PageManager\PageManager.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -1051,6 +1061,11 @@
               <FilePath>..\Source\GUI\DisplayBasic.cpp</FilePath>
             </File>
             <File>
+              <FileName>DisplayBar.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\GUI\DisplayBar.cpp</FilePath>
+            </File>
+            <File>
               <FileName>lv_conf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Source\GUI\lv_conf.h</FilePath>
@@ -1076,14 +1091,51 @@
               <FilePath>..\Libraries\lvgl\lv_examples\lv_apps\demo\img_bubble_pattern.c</FilePath>
             </File>
             <File>
+              <FileName>Page_EXAMPLE.cpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Source\GUI\Page_EXAMPLE.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_Home.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\GUI\Page_Home.cpp</FilePath>
+            </File>
+            <File>
               <FileName>Page_LuaScript.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Source\GUI\Page_LuaScript.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_BattInfo.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\GUI\Page_BattInfo.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_Settings.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\GUI\Page_Settings.cpp</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Module</GroupName>
+          <Files>
+            <File>
+              <FileName>Audio.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\Module\Audio.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Charger.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\Module\Charger.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Motor.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\Module\Motor.cpp</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>LuaScript</GroupName>
@@ -1107,6 +1159,11 @@
               <FileName>LuaGPIO.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Source\LuaScript\LuaGPIO.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>LuaModule.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\LuaScript\LuaModule.cpp</FilePath>
             </File>
           </Files>
         </Group>

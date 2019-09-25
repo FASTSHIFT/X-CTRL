@@ -1,7 +1,6 @@
 #ifndef __SYSCONFIG_H
 #define __SYSCONFIG_H
 
-
 #define Motor_Pin           PA0
 #define SD_ChipSelect_Pin   PA1
 #define Speaker_Pin         PA4

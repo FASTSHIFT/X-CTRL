@@ -1,6 +1,7 @@
 #ifndef __DISPLAYPRIVATE_H
 #define __DISPLAYPRIVATE_H
 
+/*Basic*/
 #include "TFT_ILI9488.h"
 #include "touch.h"
 
@@ -15,6 +16,7 @@ extern SCREEN_CLASS screen;
 #define ScreenMid_W (screen.width()/2)
 #define ScreenMid_H (screen.height()/2)
 
+/*LittleVGL*/
 #include "lvgl.h"
 #include "lv_conf.h"
 #include "lv_ex_conf.h"
@@ -22,6 +24,38 @@ extern SCREEN_CLASS screen;
 void lv_user_init();
 void lv_user_fs_init();
 
-void PageCreat_LuaScript();
+extern lv_obj_t *barStatus;
+extern lv_obj_t *barNavigation;
+
+/*Page*/
+#include "PageManager.h"
+
+typedef enum
+{
+    PAGE_None,
+    PAGE_Home,
+    PAGE_Settings,
+    PAGE_BattInfo,
+    PAGE_LuaScript,
+    PAGE_MAX
+} Page_Type;
+
+extern PageManager page;
+
+void PageRegister_Home(uint8_t pageID);
+void PageRegister_BattInfo(uint8_t pageID);
+void PageRegister_LuaScript(uint8_t pageID);
+void PageRegister_Settings(uint8_t pageID);
+
+/*Bar*/
+void Init_Bar();
+extern lv_obj_t *barStatus;
+extern lv_obj_t *barNavigation;
+extern lv_obj_t *btnMenu;
+extern lv_obj_t *btnHome;
+extern lv_obj_t *btnBack;
+
+#define page_height (lv_disp_get_ver_res(NULL) - lv_obj_get_height(barStatus) - lv_obj_get_height(barNavigation))
+
 
 #endif

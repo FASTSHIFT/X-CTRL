@@ -331,7 +331,7 @@ typedef void * lv_obj_user_data_t;
 #define LV_USE_BTN      1
 #if LV_USE_BTN != 0
 /*Enable button-state animations - draw a circle on click (dependencies: LV_USE_ANIMATION)*/
-#  define LV_BTN_INK_EFFECT   0
+#  define LV_BTN_INK_EFFECT   1
 #endif
 
 /*Button matrix (dependencies: -)*/

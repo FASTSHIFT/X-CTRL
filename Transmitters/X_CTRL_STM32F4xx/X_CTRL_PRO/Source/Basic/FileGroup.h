@@ -1,5 +1,5 @@
 #ifndef __FILEGROUP_H
-#define	__FILEGROUP_H
+#define __FILEGROUP_H
 
 /** 
   *@Illustrate: A Cross-platform migration Project | Arduino for STM32F4xx 
@@ -27,5 +27,9 @@
 
 #include "CommonMacro.h"
 #include "SysConfig.h"
+
+/*User APIs*/
+void MotorVibrate(float strength, uint32_t time);
+void PowerShutdown();
 
 #endif
