@@ -1,5 +1,7 @@
+#include "FileGroup.h"
 #include "DisplayPrivate.h"
 #include "LuaScript.h"
+#include "Module.h"
 
 static void write_create(lv_obj_t * parent);
 static void luaoutput_creat(lv_obj_t * parent);
@@ -18,12 +20,12 @@ static lv_style_t style_kb;
 static lv_style_t style_kb_rel;
 static lv_style_t style_kb_pr;
 
+static lv_obj_t * btn_clear;
+
 void PageCreat_LuaScript()
-{
-    //lv_theme_set_current(lv_theme_night_init(100, NULL));
-    
+{   
     lv_coord_t hres = lv_disp_get_hor_res(NULL);
-    lv_coord_t vres = lv_disp_get_ver_res(NULL);
+    lv_coord_t vres = page_height;
 
     static lv_style_t style_tv_btn_bg;
     lv_style_copy(&style_tv_btn_bg, &lv_style_plain);
@@ -47,6 +49,7 @@ void PageCreat_LuaScript()
     style_tv_btn_pr.text.color = LV_COLOR_GRAY;
 
     tv = lv_tabview_create(lv_disp_get_scr_act(NULL), NULL);
+    lv_obj_align(tv, barStatus, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
     lv_obj_set_size(tv, hres, vres);
 
     lv_obj_t * tab1 = lv_tabview_add_tab(tv, "Input");
@@ -73,26 +76,27 @@ void PageCreat_LuaScript()
  **********************/
 
 static const char luaCode[] =
-"i=0\n"
 "while 1 do\n"
-"  for i=0,1000,1 do \n" 
-"    analogWrite(2,9,i)\n"
-"    delay(2)\n"
-"  end\n"
-
-"  for i=1000,0,-1 do \n" 
-"    analogWrite(2,9,i)\n"
-"    delay(2)\n"
-"  end\n"
+"  motor(1,100)\n"
+"  print(millis())\n"
+"  delay(1000)\n"
 "end"
 ;
+
+static void btn_event_handler(lv_obj_t * obj, lv_event_t event)
+{
+    if(event == LV_EVENT_LONG_PRESSED)
+    {
+        lv_ta_set_text(ta_input, "");
+    }
+}
 
 static void write_create(lv_obj_t * parent)
 {
     lv_page_set_style(parent, LV_PAGE_STYLE_BG, &lv_style_transp_fit);
     lv_page_set_style(parent, LV_PAGE_STYLE_SCRL, &lv_style_transp_fit);
 
-    lv_page_set_sb_mode(parent, LV_SB_MODE_OFF);
+    lv_page_set_sb_mode(parent, LV_SB_MODE_DRAG);
 
     /*text area*/
     static lv_style_t style_ta;
@@ -108,6 +112,13 @@ static void write_create(lv_obj_t * parent)
     lv_obj_set_event_cb(ta_input, text_area_event_handler);
     lv_style_copy(&style_kb, &lv_style_plain);
     lv_ta_set_text_sel(ta_input, true);
+    
+    /*btn*/
+    btn_clear = lv_btn_create(ta_input, NULL);
+    lv_obj_set_event_cb(btn_clear, btn_event_handler);
+    lv_obj_align(btn_clear, ta_input, LV_ALIGN_IN_BOTTOM_RIGHT, -5, -5);
+    lv_obj_t * label = lv_label_create(btn_clear, NULL);
+    lv_label_set_text(label, "Clear");
 
     /*keyboard*/
     #define MainColor LV_COLOR_BLACK
@@ -145,7 +156,7 @@ static void luaoutput_creat(lv_obj_t * parent)
     lv_page_set_style(parent, LV_PAGE_STYLE_BG, &lv_style_transp_fit);
     lv_page_set_style(parent, LV_PAGE_STYLE_SCRL, &lv_style_transp_fit);
 
-    lv_page_set_sb_mode(parent, LV_SB_MODE_OFF);
+    lv_page_set_sb_mode(parent, LV_SB_MODE_DRAG);
 
     /*text area*/
     static lv_style_t style_ta;
@@ -155,8 +166,9 @@ static void luaoutput_creat(lv_obj_t * parent)
     style_ta.text.color = lv_color_hex3(0x222);
 
     ta_output = lv_ta_create(parent, NULL);
-    lv_obj_set_size(ta_output, lv_page_get_scrl_width(parent), lv_obj_get_height(parent));
+    lv_obj_set_size(ta_output, lv_page_get_scrl_width(parent), lv_obj_get_height(parent) * 0.8f);
     lv_ta_set_style(ta_output, LV_TA_STYLE_BG, &style_ta);
+    lv_ta_set_cursor_type(ta_output, LV_CURSOR_NONE);
     lv_ta_set_text(ta_output, "");
 }
 
@@ -196,13 +208,13 @@ static void text_area_event_handler(lv_obj_t * text_area, lv_event_t event)
 #endif
         }
     }
-
 }
 
-int n;
-
-void LuaPrintCallback(const char* s)
+static void LuaPrintCallback(const char* s)
 {
+    if(!ta_output)
+        return;
+    
     lv_ta_add_text(ta_output, s);
     
     if(lv_ta_get_cursor_pos(ta_output) > 200)
@@ -220,7 +232,12 @@ static void keyboard_event_cb(lv_obj_t * keyboard, lv_event_t event)
 {
     (void) keyboard;    /*Unused*/
 
-    lv_kb_def_event_cb(kb, event);
+    lv_kb_def_event_cb(keyboard, event);
+    
+    if(event == LV_EVENT_PRESSED)
+    {
+        Motor_Vibrate(1.0f, 20);
+    }
     
     if(event == LV_EVENT_APPLY)
     {
@@ -253,11 +270,6 @@ static void keyboard_event_cb(lv_obj_t * keyboard, lv_event_t event)
         kb = NULL;
 #endif
     }
-    
-    if(event == LV_EVENT_LONG_PRESSED)
-    {
-        lv_ta_set_text(ta_input, "");
-    }
 }
 
 #if LV_USE_ANIMATION
@@ -267,3 +279,71 @@ static void kb_hide_anim_end(lv_anim_t * a)
     kb = NULL;
 }
 #endif
+
+/**
+  * @brief  页面初始化事件
+  * @param  无
+  * @retval 无
+  */
+static void Setup()
+{
+    PageCreat_LuaScript();
+}
+
+/**
+  * @brief  页面循环事件
+  * @param  无
+  * @retval 无
+  */
+static void Loop()
+{
+}
+
+/**
+  * @brief  页面退出事件
+  * @param  无
+  * @retval 无
+  */
+static void Exit()
+{
+    luaScript.end();
+
+    lv_obj_del(tv);
+    ta_input = ta_output = tv = kb = NULL;
+}
+
+/**
+  * @brief  页面事件
+  * @param  event:事件编号
+  * @param  param:事件参数
+  * @retval 无
+  */
+static void Event(int event, void* param)
+{
+    lv_obj_t * btn = (lv_obj_t*)param;
+    if(event == LV_EVENT_CLICKED)
+    {
+        if(btn == btnBack)
+        {
+            if(kb)
+            {
+                lv_event_send(kb, LV_EVENT_CANCEL, NULL);
+            }
+            else
+            {
+                page.PageChangeTo(page.LastPage);
+            }
+        }
+    }
+}
+
+/**
+  * @brief  页面注册
+  * @param  pageID:为此页面分配的ID号
+  * @retval 无
+  */
+void PageRegister_LuaScript(uint8_t pageID)
+{
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
+}
+

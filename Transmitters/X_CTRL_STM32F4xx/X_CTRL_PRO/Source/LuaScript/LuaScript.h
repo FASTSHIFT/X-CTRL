@@ -30,8 +30,10 @@ private:
 /*Functions*/
 extern LuaScript luaScript;
 
+/*Reg*/
 void LuaReg_Time();
 void LuaReg_GPIO();
+void LuaReg_ModuleCtrl();
 
 void LuaScriptStart(const char *script);
 

@@ -18,6 +18,7 @@ void Task_LuaScript(void *pvParameters)
     luaScript.begin();
     LuaReg_Time();
     LuaReg_GPIO();
+    LuaReg_ModuleCtrl();
 
     //Sem_StartLuaScript = xSemaphoreCreateBinary();
 

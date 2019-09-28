@@ -1,5 +1,6 @@
-#include "Arduino.h"
+#include "delay.h"
 #include "LuaScript.h"
+#include "TasksManage.h"
 
 static int Lua_millis(lua_State *L)
 {
@@ -28,7 +29,7 @@ static int Lua_delay(lua_State *L)
         lua_error(L);
     }
     DelayTime = lua_tonumber(L, 1);
-    delay(DelayTime);
+    vTaskDelay(DelayTime);
     return 0;
 }
 

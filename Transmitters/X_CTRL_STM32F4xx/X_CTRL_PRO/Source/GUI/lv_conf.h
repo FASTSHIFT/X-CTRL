@@ -113,7 +113,7 @@ typedef int16_t lv_coord_t;
 
 /* Long press time in milliseconds.
  * Time to send `LV_EVENT_LONG_PRESSSED`) */
-#define LV_INDEV_DEF_LONG_PRESS_TIME      400
+#define LV_INDEV_DEF_LONG_PRESS_TIME      500
 
 /* Repeated trigger period in long press [ms]
  * Time between `LV_EVENT_LONG_PRESSED_REPEAT */
@@ -331,7 +331,7 @@ typedef void * lv_obj_user_data_t;
 #define LV_USE_BTN      1
 #if LV_USE_BTN != 0
 /*Enable button-state animations - draw a circle on click (dependencies: LV_USE_ANIMATION)*/
-#  define LV_BTN_INK_EFFECT   0
+#  define LV_BTN_INK_EFFECT   1
 #endif
 
 /*Button matrix (dependencies: -)*/

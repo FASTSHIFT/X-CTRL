@@ -509,4 +509,7 @@ class Sd2Card : public SdSpiCard {
  private:
   SdFatSpiDriver m_spi;
 };
+
+extern SdFat SD;
+
 #endif  // SdFat_h
