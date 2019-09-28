@@ -1,5 +1,6 @@
 #include "FileGroup.h"
 #include "DisplayPrivate.h"
+#include "Module.h"
 
 lv_obj_t * barStatus;
 lv_obj_t * barNavigation;
@@ -53,7 +54,7 @@ static void ButtonEvent_Handler(lv_obj_t * obj, lv_event_t event)
 {
     if(event == LV_EVENT_PRESSED)
     {
-        //MotorVibrate(1, 50);
+        Motor_Vibrate(1, 50);
     }
     if(event == LV_EVENT_CLICKED)
     {

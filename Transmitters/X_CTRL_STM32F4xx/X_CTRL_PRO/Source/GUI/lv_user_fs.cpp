@@ -4,7 +4,7 @@
 #if LV_USE_FILESYSTEM
 #include "SdFat.h"
 
-static SdFat sd;
+SdFat SD;
 
 /*********************
  *      DEFINES
@@ -106,9 +106,14 @@ bool fs_ready(lv_fs_drv_t * drv)
 /* Initialize your Storage device and File system. */
 static void fs_init(void)
 {
+    pinMode(SD_CD_Pin, INPUT_PULLUP);
+    
+    if(digitalRead(SD_CD_Pin))
+        return ;
+    
     /* Initialize the SD card and FatFS itself.
      * Better to do it in your code to keep this library utouched for easy updating*/
-    if (sd.begin(SD_ChipSelect_Pin, SD_SCK_MHZ(50))) 
+    if (SD.begin(SD_CS_Pin, SD_SCK_MHZ(50))) 
     {
         is_fs_ready = true;
     }
@@ -265,7 +270,7 @@ static lv_fs_res_t fs_remove (lv_fs_drv_t * drv, const char *path)
     lv_fs_res_t res = LV_FS_RES_NOT_IMP;
 
     /* Add your code here*/
-    if(sd.remove(path))
+    if(SD.remove(path))
         res = LV_FS_RES_OK;
 
     return res;
@@ -295,7 +300,7 @@ static lv_fs_res_t fs_trunc (lv_fs_drv_t * drv, void * file_p)
  */
 static lv_fs_res_t fs_rename (lv_fs_drv_t * drv, const char * oldname, const char * newname)
 {
-    bool res = sd.rename(oldname, newname);
+    bool res = SD.rename(oldname, newname);
     //FRESULT res = f_rename(oldname, newname);
 
     if(res) return LV_FS_RES_OK;

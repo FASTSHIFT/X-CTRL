@@ -1,6 +1,7 @@
 #include "FileGroup.h"
 #include "DisplayPrivate.h"
 #include "LuaScript.h"
+#include "Module.h"
 
 static void Task_BattUpdate(lv_task_t * task);
 static void Task_GaugeUpdate(lv_task_t * task);
@@ -11,72 +12,23 @@ static lv_chart_series_t * serVoltage;
 
 static lv_obj_t * gaugeCurrent;
 static lv_obj_t * gaugeVoltage;
-static lv_obj_t * slider;
-static lv_obj_t * taBattInfo;
+static lv_obj_t * labelCurrent;
+static lv_obj_t * labelVoltage;
+
+static lv_obj_t * labelStatus;
 
 static lv_task_t * task_1;
 static lv_task_t * task_2;
 
-static void taBattInfo_creat()
+static void Creat_Label(lv_obj_t * parent, lv_obj_t** label)
 {
-    taBattInfo = lv_ta_create(lv_scr_act(), NULL);
-    lv_obj_set_size(taBattInfo, 200, 50);
-    lv_obj_align(taBattInfo, barStatus, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
-    lv_ta_set_cursor_type(taBattInfo, LV_CURSOR_NONE);
-    lv_ta_set_text(taBattInfo, "");
+    *label = lv_label_create(parent, NULL);
+    lv_label_set_text(*label, "");
+    lv_obj_align(*label, parent, LV_ALIGN_IN_BOTTOM_MID, 0, -15);
+    lv_obj_set_auto_realign(*label, true);
 }
 
-static void event_handler(lv_obj_t * obj, lv_event_t event)
-{
-    if(event == LV_EVENT_VALUE_CHANGED)
-    {
-        analogWrite(TFT_LED_Pin, lv_slider_get_value(obj));
-    }
-}
-
-void lv_ex_slider_1(void)
-{
-    /*Create styles*/
-    static lv_style_t style_bg;
-    static lv_style_t style_indic;
-    static lv_style_t style_knob;
-    lv_style_copy(&style_bg, &lv_style_pretty);
-    style_bg.body.main_color =  LV_COLOR_BLACK;
-    style_bg.body.grad_color =  LV_COLOR_GRAY;
-    style_bg.body.radius = LV_RADIUS_CIRCLE;
-    style_bg.body.border.color = LV_COLOR_WHITE;
-
-    lv_style_copy(&style_indic, &lv_style_pretty_color);
-    style_indic.body.radius = LV_RADIUS_CIRCLE;
-    style_indic.body.shadow.width = 8;
-    style_indic.body.shadow.color = style_indic.body.main_color;
-    style_indic.body.padding.left = 3;
-    style_indic.body.padding.right = 3;
-    style_indic.body.padding.top = 3;
-    style_indic.body.padding.bottom = 3;
-
-    lv_style_copy(&style_knob, &lv_style_pretty);
-    style_knob.body.radius = LV_RADIUS_CIRCLE;
-    style_knob.body.opa = LV_OPA_70;
-    style_knob.body.padding.top = 10 ;
-    style_knob.body.padding.bottom = 10 ;
-
-    /*Create a slider*/
-    slider = lv_slider_create(lv_scr_act(), NULL);
-    int val = timer_get_compare(PIN_MAP[TFT_LED_Pin].TIMx, PIN_MAP[TFT_LED_Pin].TimerChannel);
-    
-    lv_slider_set_style(slider, LV_SLIDER_STYLE_BG, &style_bg);
-    lv_slider_set_style(slider, LV_SLIDER_STYLE_INDIC, &style_indic);
-    lv_slider_set_style(slider, LV_SLIDER_STYLE_KNOB, &style_knob);
-    lv_slider_set_range(slider, 10, 1000);
-    lv_slider_set_value(slider, val, LV_ANIM_ON);
-    
-    lv_obj_set_size(slider, 200, 20);
-    lv_obj_align(slider, taBattInfo, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
-    lv_obj_set_event_cb(slider, event_handler);
-}
-
-static void lv_ex_gauge_1()
+static void Creat_Gauge()
 {
     /*Create a style*/
     static lv_style_t styleGauge;
@@ -113,26 +65,26 @@ static void lv_ex_gauge_1()
     lv_obj_align(gaugeVoltage, barNavigation, LV_ALIGN_OUT_TOP_RIGHT, 0, 0);
 }
 
-void lv_ex_chart_creat()
+void Creat_Chart(lv_obj_t** chart)
 {
     /*Create a chart*/
-    chart = lv_chart_create(lv_scr_act(), NULL);
-    lv_obj_set_size(chart, 200, 150);
-    lv_obj_align(chart, slider, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
-    lv_chart_set_type(chart, LV_CHART_TYPE_POINT | LV_CHART_TYPE_LINE);   /*Show lines and points too*/
-    lv_chart_set_series_opa(chart, LV_OPA_70);                            /*Opacity of the data series*/
-    lv_chart_set_series_width(chart, 2);                                  /*Line width and point radious*/
+    *chart = lv_chart_create(lv_scr_act(), NULL);
+    lv_obj_set_size(*chart, 200, 150);
+    lv_obj_align(*chart, barStatus, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
+    lv_chart_set_type(*chart, LV_CHART_TYPE_POINT | LV_CHART_TYPE_LINE);   /*Show lines and points too*/
+    lv_chart_set_series_opa(*chart, LV_OPA_70);                            /*Opacity of the data series*/
+    lv_chart_set_series_width(*chart, 2);                                  /*Line width and point radious*/
 
-    lv_chart_set_range(chart, 0, 100);
-    lv_chart_set_point_count(chart, 20);
+    lv_chart_set_range(*chart, 0, 100);
+    lv_chart_set_point_count(*chart, 20);
 
     //lv_chart_set_margin(chart, 10);
     //lv_chart_set_x_tick_texts(chart, "TIME\n", 1, LV_CHART_AXIS_DRAW_LAST_TICK);
     //lv_chart_set_y_tick_texts(chart, "1\n2\n3", 3, LV_CHART_AXIS_DRAW_LAST_TICK);
 
     /*Add two data series*/
-    serCurrent = lv_chart_add_series(chart, LV_COLOR_RED);
-    serVoltage = lv_chart_add_series(chart, LV_COLOR_BLUE);
+    serCurrent = lv_chart_add_series(*chart, LV_COLOR_RED);
+    serVoltage = lv_chart_add_series(*chart, LV_COLOR_BLUE);
 }
 
 static int cur, vol;
@@ -149,23 +101,31 @@ static void Task_GaugeUpdate(lv_task_t * task)
 
 static void Task_BattUpdate(lv_task_t * task)
 {
-    extern float BattCurret, BattVoltage, BattVoltageOc;
     cur = __Map(ABS(BattCurret), 0, 3000, 0, 100);
     vol = __Map(BattVoltage, 2600, 4200, 0, 100);
-
-    char info[50];
-    sprintf(info, "Current:%0.2fmA\nVoltage:%0.2fmV ", BattCurret, BattVoltage);
-    lv_ta_set_text(taBattInfo, info);
-    /*
-    screen.setCursor(0, 30);
-    screen.setTextColor(screen.Black, screen.White);
-    screen.printf("Current:%0.2fmA Voltage:%0.2fmV ", BattCurret, BattVoltage);
-    */
-
+    
     lv_chart_set_next(chart, serCurrent, cur);
     lv_chart_set_next(chart, serVoltage, vol);
 
     lv_chart_refresh(chart); /*Required after direct set*/
+    
+    lv_label_set_text_format(labelCurrent, "%0.2fmA", BattCurret);
+//    lv_obj_align(labelCurrent, gaugeCurrent, LV_ALIGN_IN_BOTTOM_MID, 0, -15);
+    
+    lv_label_set_text_format(labelVoltage, "%0.2fmV", BattVoltage);
+//    lv_obj_align(labelVoltage, gaugeVoltage, LV_ALIGN_IN_BOTTOM_MID, 0, -15);
+    
+    float power = BattCurret * BattVoltage / 1000000.0f;
+    if(BattCurret < 0.0f)
+    {
+        lv_label_set_text_format(labelStatus, "Discharge: %0.2fW", power);
+    }
+    else
+    {
+        lv_label_set_text_format(labelStatus, "Charge: %0.2fW", power);
+    }
+    lv_obj_set_parent(labelStatus, lv_scr_act());
+//    lv_obj_align(labelStatus, chart, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
 }
 
 /**
@@ -175,10 +135,14 @@ static void Task_BattUpdate(lv_task_t * task)
   */
 static void Setup()
 {
-    taBattInfo_creat();
-    lv_ex_slider_1();
-    lv_ex_chart_creat();
-    lv_ex_gauge_1();
+    Creat_Chart(&chart);
+    Creat_Label(chart, &labelStatus);
+    lv_obj_set_parent(labelStatus, lv_scr_act());
+    lv_obj_align(labelStatus, chart, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    
+    Creat_Gauge();
+    Creat_Label(gaugeCurrent, &labelCurrent);
+    Creat_Label(gaugeVoltage, &labelVoltage);
 
     task_1 = lv_task_create(Task_BattUpdate, 500, LV_TASK_PRIO_MID, 0);
     task_2 = lv_task_create(Task_GaugeUpdate, 50, LV_TASK_PRIO_MID, 0);
@@ -191,11 +155,10 @@ static void Setup()
   */
 static void Exit()
 {
-    lv_obj_del(chart);
-    lv_obj_del(gaugeCurrent);
-    lv_obj_del(gaugeVoltage);
-    lv_obj_del(slider);
-    lv_obj_del(taBattInfo);
+    lv_obj_del_safe(&chart);
+    lv_obj_del_safe(&labelStatus);
+    lv_obj_del_safe(&gaugeCurrent);
+    lv_obj_del_safe(&gaugeVoltage);
     lv_task_del(task_1);
     lv_task_del(task_2);
 }

@@ -6,14 +6,12 @@
 template <class T> class FifoQueue {
 public:
     FifoQueue(uint32_t bufferSize);
-    FifoQueue(T* buffer, uint32_t bufferSize);
+    FifoQueue(uint32_t bufferSize, char* buffer);
     ~FifoQueue();
     uint32_t available();
     bool write(T data);
     T read();
     void flush();
-    bool isFull();
-    uint32_t size();
 private:
     T *Buffer;
     uint32_t Head;
@@ -21,16 +19,16 @@ private:
     uint32_t BufferSize;
 };
 
+template <class T> FifoQueue<T>::FifoQueue(uint32_t bufferSize, char* buffer)
+{
+    BufferSize = bufferSize;
+    Buffer = (T *)buffer;
+}
+
 template <class T> FifoQueue<T>::FifoQueue(uint32_t bufferSize)
 {
     BufferSize = bufferSize;
     Buffer = new T[BufferSize];
-}
-
-template <class T> FifoQueue<T>::FifoQueue(T* buffer, uint32_t bufferSize)
-{
-    BufferSize = bufferSize;
-    Buffer = buffer;
 }
 
 template <class T> FifoQueue<T>::~FifoQueue()
@@ -49,9 +47,9 @@ template <class T> T FifoQueue<T>::read()
         return T(0);
     else
     {
-        T data = Buffer[Tail];
+        T c = Buffer[Tail];
         Tail = (Tail + 1) % BufferSize;
-        return data;
+        return c;
     }
 }
 
@@ -71,16 +69,6 @@ template <class T> bool FifoQueue<T>::write(T data)
 template <class T> void FifoQueue<T>::flush()
 {
     Head = Tail;
-}
-
-template <class T> uint32_t FifoQueue<T>::size()
-{
-    return BufferSize;
-}
-
-template <class T> bool FifoQueue<T>::isFull()
-{
-    return ((uint32_t)(Head + 1) % BufferSize != Tail) ? true : false;
 }
 
 #endif

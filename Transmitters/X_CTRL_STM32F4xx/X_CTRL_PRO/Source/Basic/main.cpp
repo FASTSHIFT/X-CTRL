@@ -1,33 +1,26 @@
 #include "FileGroup.h"
 #include "TasksManage.h"
 
-static void Task_Debug(void *pvParameters)
-{
-    for(;;)
-    {
-        Serial.printf("%d\r\n", millis());
-        vTaskDelay(1000);
-    }
-}
-
 void setup()
 {
     Serial.begin(115200);
-//    xTaskCreate(Task_Debug, (const char*)"Task_Debug",
-//                 128, NULL, 1, NULL);
-
+    /*Task Create*/
     xTaskCreate(Task_Dispaly, (const char*)"Task_Dispaly",
-                4096, NULL, 2, NULL);
+                5000, NULL, 2, NULL);
+    
+//    xTaskCreate(Task_WavPlayer, (const char*)"TaskHandle_WavPlayer",
+//                 500, NULL, 0, &TaskHandle_WavPlayer);
 
     xTaskCreate(Task_LuaScript, (const char*)"Task_LuaScript",
-                10000, NULL, 0, &TaskHandle_LuaScript);
+                4 * 1024, NULL, 1, &TaskHandle_LuaScript);
 
+    /*Timer Create*/
     TimerHandle_Motor = xTimerCreate("Task_MotorRunning", 10,
                               pdTRUE, 0, Task_MotorRunning);
 
     if( TimerHandle_Motor != NULL )
     {
-        xTimerStart( TimerHandle_Motor, 0);
+        xTimerStart(TimerHandle_Motor, 0);
     }
     
     TimerHandle_Charger = xTimerCreate("Task_ReadBattInfo", 500,

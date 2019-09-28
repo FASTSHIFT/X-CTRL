@@ -1,6 +1,7 @@
 #include "FileGroup.h"
 #include "DisplayPrivate.h"
 #include "LuaScript.h"
+#include "Module.h"
 
 static void write_create(lv_obj_t * parent);
 static void luaoutput_creat(lv_obj_t * parent);
@@ -19,10 +20,10 @@ static lv_style_t style_kb;
 static lv_style_t style_kb_rel;
 static lv_style_t style_kb_pr;
 
+static lv_obj_t * btn_clear;
+
 void PageCreat_LuaScript()
-{
-    //lv_theme_set_current(lv_theme_night_init(100, NULL));
-    
+{   
     lv_coord_t hres = lv_disp_get_hor_res(NULL);
     lv_coord_t vres = page_height;
 
@@ -82,6 +83,14 @@ static const char luaCode[] =
 "end"
 ;
 
+static void btn_event_handler(lv_obj_t * obj, lv_event_t event)
+{
+    if(event == LV_EVENT_LONG_PRESSED)
+    {
+        lv_ta_set_text(ta_input, "");
+    }
+}
+
 static void write_create(lv_obj_t * parent)
 {
     lv_page_set_style(parent, LV_PAGE_STYLE_BG, &lv_style_transp_fit);
@@ -103,6 +112,13 @@ static void write_create(lv_obj_t * parent)
     lv_obj_set_event_cb(ta_input, text_area_event_handler);
     lv_style_copy(&style_kb, &lv_style_plain);
     lv_ta_set_text_sel(ta_input, true);
+    
+    /*btn*/
+    btn_clear = lv_btn_create(ta_input, NULL);
+    lv_obj_set_event_cb(btn_clear, btn_event_handler);
+    lv_obj_align(btn_clear, ta_input, LV_ALIGN_IN_BOTTOM_RIGHT, -5, -5);
+    lv_obj_t * label = lv_label_create(btn_clear, NULL);
+    lv_label_set_text(label, "Clear");
 
     /*keyboard*/
     #define MainColor LV_COLOR_BLACK
@@ -192,10 +208,9 @@ static void text_area_event_handler(lv_obj_t * text_area, lv_event_t event)
 #endif
         }
     }
-
 }
 
-void LuaPrintCallback(const char* s)
+static void LuaPrintCallback(const char* s)
 {
     if(!ta_output)
         return;
@@ -221,7 +236,7 @@ static void keyboard_event_cb(lv_obj_t * keyboard, lv_event_t event)
     
     if(event == LV_EVENT_PRESSED)
     {
-        MotorVibrate(1.0f, 20);
+        Motor_Vibrate(1.0f, 20);
     }
     
     if(event == LV_EVENT_APPLY)
@@ -254,11 +269,6 @@ static void keyboard_event_cb(lv_obj_t * keyboard, lv_event_t event)
         lv_obj_del(kb);
         kb = NULL;
 #endif
-    }
-    
-    if(event == LV_EVENT_LONG_PRESSED)
-    {
-        lv_ta_set_text(ta_input, "");
     }
 }
 

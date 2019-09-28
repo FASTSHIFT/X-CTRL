@@ -1,5 +1,6 @@
 #include "FileGroup.h"
 #include "TasksManage.h"
+#include "Module.h"
 
 TimerHandle_t TimerHandle_Motor;
 
@@ -10,20 +11,13 @@ static bool IsMotorRunning = false;
 static void Init_Motor()
 {
     pinMode(Speaker_Pin, OUTPUT);
-    //digitalWrite(Speaker_Pin, LOW);
-    
     PWM_Init(Motor_Pin, 1000, 1000);
     analogWrite(Motor_Pin, 0);
 }
 
 void Task_MotorRunning(TimerHandle_t xTimer)
 {
-    static bool isInit = false;
-    if(!isInit)
-    {
-        Init_Motor();
-        isInit = true;
-    }
+    __ExecuteOnce(Init_Motor());
     
     if(IsMotorRunning && millis()>= MotorStop_TimePoint)
     {
@@ -32,7 +26,7 @@ void Task_MotorRunning(TimerHandle_t xTimer)
     }
 }
 
-void MotorVibrate(float strength, uint32_t time)
+void Motor_Vibrate(float strength, uint32_t time)
 {
    if(!State_MotorVibrate)
        return;

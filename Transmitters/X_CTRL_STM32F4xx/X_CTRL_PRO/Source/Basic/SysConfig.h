@@ -2,9 +2,10 @@
 #define __SYSCONFIG_H
 
 #define Motor_Pin           PA0
-#define SD_ChipSelect_Pin   PA1
+#define SD_CS_Pin           PA1
+#define SD_CD_Pin           PB0
 #define Speaker_Pin         PA4
-#define CHG_IRQ_Pin         PB1
+#define AudioMute_Pin       PB1
 #define CHG_KEY_Pin         PB2
 #define Touch_SDA_Pin       PB3
 #define Touch_SCL_Pin       PD2

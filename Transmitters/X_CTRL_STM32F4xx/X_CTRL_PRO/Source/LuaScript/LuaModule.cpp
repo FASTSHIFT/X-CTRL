@@ -1,5 +1,6 @@
 #include "FileGroup.h"
 #include "LuaScript.h"
+#include "Module.h"
 
 static int Lua_MotorVibrate(lua_State *L)
 {
@@ -25,7 +26,7 @@ static int Lua_MotorVibrate(lua_State *L)
     }
     pwm = lua_tonumber(L, 1);
     ms  = lua_tonumber(L, 2);
-    MotorVibrate(pwm, ms);
+    Motor_Vibrate(pwm, ms);
     return 0;
 }
 

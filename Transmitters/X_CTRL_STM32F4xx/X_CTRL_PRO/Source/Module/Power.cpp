@@ -1,6 +1,7 @@
 #include "FileGroup.h"
 #include "TasksManage.h"
 #include "IP5108.h"
+#include "Module.h"
 
 TimerHandle_t TimerHandle_Charger;
 
@@ -10,12 +11,7 @@ float BattCurret, BattVoltage, BattVoltageOc;
 
 void Task_ReadBattInfo(TimerHandle_t xTimer)
 {
-    static bool isInit = false;
-    if(!isInit)
-    {
-        charger.begin();
-        isInit = true;
-    }
+    __ExecuteOnce(charger.begin());
     BattCurret = charger.getBattCurrent();
     BattVoltage = charger.getBattVoltage();
     BattVoltageOc = charger.getBattOcVoltage();
@@ -23,7 +19,7 @@ void Task_ReadBattInfo(TimerHandle_t xTimer)
     //Serial.printf("Oc U = %0.2fmV\r\n", charger.getBattOcVoltage());
 }
 
-void PowerShutdown()
+void Power_Shutdown()
 {
     pinMode(CHG_KEY_Pin, OUTPUT_OPEN_DRAIN);
     

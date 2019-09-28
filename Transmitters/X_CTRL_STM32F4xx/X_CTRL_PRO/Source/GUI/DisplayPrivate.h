@@ -23,9 +23,8 @@ extern SCREEN_CLASS screen;
 
 void lv_user_init();
 void lv_user_fs_init();
-
-extern lv_obj_t *barStatus;
-extern lv_obj_t *barNavigation;
+bool lv_obj_del_safe(lv_obj_t** obj);
+int lv_label_set_text_format(lv_obj_t * label, const char *__restrict __format, ...);
 
 /*Page*/
 #include "PageManager.h"
@@ -35,6 +34,7 @@ typedef enum
     PAGE_None,
     PAGE_Home,
     PAGE_Settings,
+    PAGE_SetDisplay,
     PAGE_BattInfo,
     PAGE_LuaScript,
     PAGE_MAX
@@ -46,6 +46,7 @@ void PageRegister_Home(uint8_t pageID);
 void PageRegister_BattInfo(uint8_t pageID);
 void PageRegister_LuaScript(uint8_t pageID);
 void PageRegister_Settings(uint8_t pageID);
+void PageRegister_SetDisplay(uint8_t pageID);
 
 /*Bar*/
 void Init_Bar();
@@ -56,6 +57,13 @@ extern lv_obj_t *btnHome;
 extern lv_obj_t *btnBack;
 
 #define page_height (lv_disp_get_ver_res(NULL) - lv_obj_get_height(barStatus) - lv_obj_get_height(barNavigation))
+#define page_width  (lv_disp_get_hor_res(NULL))
 
+/*Types*/
+typedef enum{
+    TYPE_None,
+    TYPE_PageJump,
+    TYPE_FuncCall,
+}Func_Type;
 
 #endif

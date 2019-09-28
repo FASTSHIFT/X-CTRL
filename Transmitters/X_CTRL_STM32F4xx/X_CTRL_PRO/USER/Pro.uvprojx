@@ -52,7 +52,7 @@
           <OutputName>Pro</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
-          <CreateHexFile>1</CreateHexFile>
+          <CreateHexFile>0</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
           <ListingPath>..\LIST\</ListingPath>
@@ -312,7 +312,7 @@
           <Cads>
             <interw>1</interw>
             <Optim>4</Optim>
-            <oTime>1</oTime>
+            <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
             <Strict>0</Strict>
@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,HSE_VALUE=8000000,ARDUINO=111,LV_CONF_INCLUDE_SIMPLE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\ArduinoAPI;..\Core;..\Libraries\Adafruit_GFX_Library;..\Libraries\TFT_ILI9488;..\Libraries\GT911;..\Libraries\StrPrinter;..\Libraries\lvgl;..\Libraries\lvgl\lv_examples;..\Libraries\FreeRTOS;..\Libraries\FreeRTOS\Source\include;..\Libraries\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\Source\Basic;..\Source\GUI;..\Source\LuaScript;..\Source\Module;..\Libraries\lua-5.3.2\src;..\Libraries\SdFat\src\FatLib;..\Libraries\SdFat\src\SdCard;..\Libraries\SdFat\src\SpiDriver;..\Libraries\SdFat\src;..\Libraries\NRF;..\Libraries\lvgl\lv_examples\lv_apps\demo;..\Libraries\IP5108;..\Libraries\LightGUI\PageManager</IncludePath>
+              <IncludePath>..\ArduinoAPI;..\Core;..\Libraries\Adafruit_GFX_Library;..\Libraries\TFT_ILI9488;..\Libraries\GT911;..\Libraries\StrPrinter;..\Libraries\lvgl;..\Libraries\lvgl\lv_examples;..\Libraries\FreeRTOS;..\Libraries\FreeRTOS\Source\include;..\Libraries\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\Source\Basic;..\Source\GUI;..\Source\LuaScript;..\Source\Module;..\Libraries\lua-5.3.2\src;..\Libraries\SdFat\src\FatLib;..\Libraries\SdFat\src\SdCard;..\Libraries\SdFat\src\SpiDriver;..\Libraries\SdFat\src;..\Libraries\NRF;..\Libraries\lvgl\lv_examples\lv_apps\demo;..\Libraries\IP5108;..\Libraries\LightGUI\PageManager;..\Libraries\FifoQueue;..\Libraries\WavDecoder</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -432,11 +432,6 @@
               <FilePath>..\ArduinoAPI\Wire.cpp</FilePath>
             </File>
             <File>
-              <FileName>SPI.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\ArduinoAPI\SPI.cpp</FilePath>
-            </File>
-            <File>
               <FileName>Tone.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\ArduinoAPI\Tone.cpp</FilePath>
@@ -446,6 +441,11 @@
         <Group>
           <GroupName>Libraries</GroupName>
           <Files>
+            <File>
+              <FileName>SPI.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\ArduinoAPI\SPI.cpp</FilePath>
+            </File>
             <File>
               <FileName>Adafruit_GFX.cpp</FileName>
               <FileType>8</FileType>
@@ -490,6 +490,11 @@
               <FileName>PageManager.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Libraries\LightGUI\PageManager\PageManager.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>wav_decoder.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Libraries\WavDecoder\wav_decoder.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -1066,6 +1071,11 @@
               <FilePath>..\Source\GUI\DisplayBar.cpp</FilePath>
             </File>
             <File>
+              <FileName>DisplayError.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\GUI\DisplayError.cpp</FilePath>
+            </File>
+            <File>
               <FileName>lv_conf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Source\GUI\lv_conf.h</FilePath>
@@ -1081,14 +1091,9 @@
               <FilePath>..\Source\GUI\lv_user_fs.cpp</FilePath>
             </File>
             <File>
-              <FileName>demo.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\lvgl\lv_examples\lv_apps\demo\demo.c</FilePath>
-            </File>
-            <File>
-              <FileName>img_bubble_pattern.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\lvgl\lv_examples\lv_apps\demo\img_bubble_pattern.c</FilePath>
+              <FileName>lv_ext_func.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\GUI\lv_ext_func.cpp</FilePath>
             </File>
             <File>
               <FileName>Page_EXAMPLE.cpp</FileName>
@@ -1115,6 +1120,11 @@
               <FileType>8</FileType>
               <FilePath>..\Source\GUI\Page_Settings.cpp</FilePath>
             </File>
+            <File>
+              <FileName>Page_SetDisplay.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\GUI\Page_SetDisplay.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1126,14 +1136,14 @@
               <FilePath>..\Source\Module\Audio.cpp</FilePath>
             </File>
             <File>
-              <FileName>Charger.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\Source\Module\Charger.cpp</FilePath>
-            </File>
-            <File>
               <FileName>Motor.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Source\Module\Motor.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Power.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\Module\Power.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -1209,6 +1219,11 @@
               <FileName>timers.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\FreeRTOS\Source\timers.c</FilePath>
+            </File>
+            <File>
+              <FileName>event_groups.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\FreeRTOS\Source\event_groups.c</FilePath>
             </File>
           </Files>
         </Group>

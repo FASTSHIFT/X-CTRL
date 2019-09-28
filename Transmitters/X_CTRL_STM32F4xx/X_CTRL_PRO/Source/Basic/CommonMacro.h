@@ -11,6 +11,7 @@
 //Upgrade 2019.3.21 v1.1 添加__ValueCloseTo
 //Upgrade 2019.5.16 v1.2 添加__ExecuteFuncWithTimeout
 //Upgrade 2019.5.16 v1.3 添加__ValueStep
+//Upgrade 2019.9.25 v1.4 添加__ExecuteOnce
 
 /**
   * @brief  变量监视器，当变量改变时触发一个事件
@@ -118,6 +119,17 @@ do{\
     while(millis()-start<timeout){\
         if(func==n){flag=true;break;}\
     }\
+}while(0)
+
+/**
+  * @brief  函数只执行一次，常用于初始化
+  * @param  func:被调用函数(也可以是赋值等其他语句)
+  * @retval 无
+  */
+#define __ExecuteOnce(func)\
+do{\
+    static bool isInit = false;\
+    if(!isInit){func,isInit=true;}\
 }while(0)
 
 #endif
