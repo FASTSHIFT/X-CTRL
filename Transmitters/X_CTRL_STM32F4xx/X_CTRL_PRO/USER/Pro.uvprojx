@@ -1220,11 +1220,6 @@
               <FileType>1</FileType>
               <FilePath>..\Libraries\FreeRTOS\Source\timers.c</FilePath>
             </File>
-            <File>
-              <FileName>event_groups.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\FreeRTOS\Source\event_groups.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>

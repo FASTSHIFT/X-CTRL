@@ -6,7 +6,6 @@
 #include "timers.h"
 #include "semphr.h"
 #include "queue.h"
-#include "event_groups.h"
 
 /*Task Functions*/
 void Task_Dispaly(void *pvParameters);

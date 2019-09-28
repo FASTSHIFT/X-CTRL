@@ -52,28 +52,21 @@ WAV_TypeDef wav;
 int WavAvailable;
 
 TaskHandle_t TaskHandle_WavPlayer;
-EventGroupHandle_t CreatedEventGroup = NULL;
 bool Reqed = false;
-
-
-#define BIT_0 (1 << 0)
-#define BIT_1 (1 << 1)
 
 static void SendDataToDAC()
 {
     WavAvailable = WaveBuffer.available();
-    if(WavAvailable < 16)
+    if(WavAvailable < FIFO_Size / 2)
     {
-//        if(!Reqed)
-//        {
-//            BaseType_t xResult;
-//            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-//            /* 向任务 vTaskMsgPro 发送事件标志 */
-//            xResult = xEventGroupSetBitsFromISR(CreatedEventGroup, /* 事件标志组句柄 */
-//                                                BIT_0 , /* 设置 bit0 */
-//                                                &xHigherPriorityTaskWoken);
-//            Reqed = true;
-//        }
+        if(!Reqed)
+        {
+            BaseType_t xHigherPriorityTaskWoken; 	
+            xHigherPriorityTaskWoken = pdFALSE;
+            vTaskNotifyGiveFromISR(TaskHandle_WavPlayer, &xHigherPriorityTaskWoken ); 	
+            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+            Reqed = true;
+        }
         return;
     }
     else
@@ -139,25 +132,13 @@ void Task_WavPlayer(void *pvParameters)
     Audio_SetEnable(true);
     Init_WaveTest();
     
-    CreatedEventGroup = xEventGroupCreate();
-    if(!CreatedEventGroup)
-    {
-        while(1);
-    }
-    
-    EventBits_t uxBits;
     for(;;)
     {
-//        uxBits = xEventGroupWaitBits(CreatedEventGroup, /* 事件标志组句柄 */
-//                                     BIT_0 | BIT_1, /* 等待 bit0 和 bit1 被设置 */
-//                                     pdTRUE, /* 退出前 bit0 和 bit1 被清除，这里是 bit0 和 bit1都被设置才表示“退出”*/
-//                                     pdFALSE, /* 设置为 pdTRUE表示等待 bit1和 bit0 都被设置*/
-//                                     1000); /* 等待延迟时间 */
-//        if(uxBits == BIT_0)
-//        {
-//            Wav_BufferUpdate();
-//            Reqed = true;
-//        }
-        Wav_BufferUpdate();
+        uint32_t ulEventsToProcess = ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+        if(ulEventsToProcess)
+        {
+            Wav_BufferUpdate();
+            Reqed = false;
+        }
     }
 }
