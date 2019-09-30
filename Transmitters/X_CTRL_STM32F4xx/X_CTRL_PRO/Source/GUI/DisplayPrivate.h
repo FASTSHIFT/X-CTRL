@@ -19,7 +19,6 @@ extern SCREEN_CLASS screen;
 /*LittleVGL*/
 #include "lvgl.h"
 #include "lv_conf.h"
-#include "lv_ex_conf.h"
 
 void lv_user_init();
 void lv_user_fs_init();
@@ -37,6 +36,7 @@ typedef enum
     PAGE_SetDisplay,
     PAGE_BattInfo,
     PAGE_LuaScript,
+    PAGE_FileExplorer,
     PAGE_MAX
 } Page_Type;
 
@@ -47,6 +47,7 @@ void PageRegister_BattInfo(uint8_t pageID);
 void PageRegister_LuaScript(uint8_t pageID);
 void PageRegister_Settings(uint8_t pageID);
 void PageRegister_SetDisplay(uint8_t pageID);
+void PageRegister_FileExplorer(uint8_t pageID);
 
 /*Bar*/
 void Init_Bar();

@@ -20,6 +20,9 @@ void Task_Dispaly(void *pvParameters)
     pwmWrite(TFT_LED_Pin, 500);
     
     lv_user_init();
+    
+    lv_theme_set_current(lv_theme_material_init(200, &lv_font_roboto_16));
+    //lv_theme_set_current(lv_theme_night_init(200, &lv_font_roboto_16));
 //    lv_user_fs_init();
     
     //PageCreat_LuaScript();

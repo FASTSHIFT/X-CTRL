@@ -16,9 +16,9 @@ static lv_obj_t * ta_output;
 static lv_obj_t * kb;
 static lv_obj_t * tv;
 
-static lv_style_t style_kb;
-static lv_style_t style_kb_rel;
-static lv_style_t style_kb_pr;
+//static lv_style_t style_kb;
+//static lv_style_t style_kb_rel;
+//static lv_style_t style_kb_pr;
 
 static lv_obj_t * btn_clear;
 
@@ -27,26 +27,26 @@ void PageCreat_LuaScript()
     lv_coord_t hres = lv_disp_get_hor_res(NULL);
     lv_coord_t vres = page_height;
 
-    static lv_style_t style_tv_btn_bg;
-    lv_style_copy(&style_tv_btn_bg, &lv_style_plain);
-    style_tv_btn_bg.body.main_color = lv_color_hex(0x487fb7);
-    style_tv_btn_bg.body.grad_color = lv_color_hex(0x487fb7);
-    style_tv_btn_bg.body.padding.top = 0;
-    style_tv_btn_bg.body.padding.bottom = 0;
+//    static lv_style_t style_tv_btn_bg;
+//    lv_style_copy(&style_tv_btn_bg, &lv_style_plain);
+//    style_tv_btn_bg.body.main_color = lv_color_hex(0x487fb7);
+//    style_tv_btn_bg.body.grad_color = lv_color_hex(0x487fb7);
+//    style_tv_btn_bg.body.padding.top = 0;
+//    style_tv_btn_bg.body.padding.bottom = 0;
 
-    static lv_style_t style_tv_btn_rel;
-    lv_style_copy(&style_tv_btn_rel, &lv_style_btn_rel);
-    style_tv_btn_rel.body.opa = LV_OPA_TRANSP;
-    style_tv_btn_rel.body.border.width = 0;
+//    static lv_style_t style_tv_btn_rel;
+//    lv_style_copy(&style_tv_btn_rel, &lv_style_btn_rel);
+//    style_tv_btn_rel.body.opa = LV_OPA_TRANSP;
+//    style_tv_btn_rel.body.border.width = 0;
 
-    static lv_style_t style_tv_btn_pr;
-    lv_style_copy(&style_tv_btn_pr, &lv_style_btn_pr);
-    style_tv_btn_pr.body.radius = 0;
-    style_tv_btn_pr.body.opa = LV_OPA_50;
-    style_tv_btn_pr.body.main_color = LV_COLOR_WHITE;
-    style_tv_btn_pr.body.grad_color = LV_COLOR_WHITE;
-    style_tv_btn_pr.body.border.width = 0;
-    style_tv_btn_pr.text.color = LV_COLOR_GRAY;
+//    static lv_style_t style_tv_btn_pr;
+//    lv_style_copy(&style_tv_btn_pr, &lv_style_btn_pr);
+//    style_tv_btn_pr.body.radius = 0;
+//    style_tv_btn_pr.body.opa = LV_OPA_50;
+//    style_tv_btn_pr.body.main_color = LV_COLOR_WHITE;
+//    style_tv_btn_pr.body.grad_color = LV_COLOR_WHITE;
+//    style_tv_btn_pr.body.border.width = 0;
+//    style_tv_btn_pr.text.color = LV_COLOR_GRAY;
 
     tv = lv_tabview_create(lv_disp_get_scr_act(NULL), NULL);
     lv_obj_align(tv, barStatus, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
@@ -57,14 +57,14 @@ void PageCreat_LuaScript()
 
 #if LV_DEMO_WALLPAPER == 0
     /*Blue bg instead of wallpaper*/
-    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BG, &style_tv_btn_bg);
+//    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BG, &style_tv_btn_bg);
 #endif
-    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BTN_BG, &style_tv_btn_bg);
-    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_INDIC, &lv_style_plain);
-    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BTN_REL, &style_tv_btn_rel);
-    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BTN_PR, &style_tv_btn_pr);
-    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BTN_TGL_REL, &style_tv_btn_rel);
-    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BTN_TGL_PR, &style_tv_btn_pr);
+//    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BTN_BG, &style_tv_btn_bg);
+//    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_INDIC, &lv_style_plain);
+//    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BTN_REL, &style_tv_btn_rel);
+//    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BTN_PR, &style_tv_btn_pr);
+//    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BTN_TGL_REL, &style_tv_btn_rel);
+//    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BTN_TGL_PR, &style_tv_btn_pr);
 
     write_create(tab1);
     luaoutput_creat(tab2);
@@ -98,19 +98,19 @@ static void write_create(lv_obj_t * parent)
 
     lv_page_set_sb_mode(parent, LV_SB_MODE_DRAG);
 
-    /*text area*/
-    static lv_style_t style_ta;
-    lv_style_copy(&style_ta, &lv_style_pretty);
-    style_ta.body.opa = LV_OPA_30;
-    style_ta.body.radius = 0;
-    style_ta.text.color = lv_color_hex3(0x222);
+//    /*text area*/
+//    static lv_style_t style_ta;
+//    lv_style_copy(&style_ta, &lv_style_pretty);
+//    style_ta.body.opa = LV_OPA_30;
+//    style_ta.body.radius = 0;
+//    style_ta.text.color = lv_color_hex3(0x222);
 
     ta_input = lv_ta_create(parent, NULL);
     lv_obj_set_size(ta_input, lv_page_get_scrl_width(parent), lv_obj_get_height(parent) / 2);
-    lv_ta_set_style(ta_input, LV_TA_STYLE_BG, &style_ta);
+//    lv_ta_set_style(ta_input, LV_TA_STYLE_BG, &style_ta);
     lv_ta_set_text(ta_input, luaCode);
     lv_obj_set_event_cb(ta_input, text_area_event_handler);
-    lv_style_copy(&style_kb, &lv_style_plain);
+//    lv_style_copy(&style_kb, &lv_style_plain);
     lv_ta_set_text_sel(ta_input, true);
     
     /*btn*/
@@ -120,35 +120,35 @@ static void write_create(lv_obj_t * parent)
     lv_obj_t * label = lv_label_create(btn_clear, NULL);
     lv_label_set_text(label, "Clear");
 
-    /*keyboard*/
-    #define MainColor LV_COLOR_BLACK
-    #define GradColor LV_COLOR_BLACK
-    style_kb.body.opa = LV_OPA_COVER;
-    style_kb.body.main_color = MainColor;//lv_color_hex3(0x333);
-    style_kb.body.grad_color = GradColor;//lv_color_hex3(0x333);
-    style_kb.body.padding.left = 0;
-    style_kb.body.padding.right = 0;
-    style_kb.body.padding.top = 0;
-    style_kb.body.padding.bottom = 0;
-    style_kb.body.padding.inner = 0;
+//    /*keyboard*/
+//    #define MainColor LV_COLOR_BLACK
+//    #define GradColor LV_COLOR_BLACK
+//    style_kb.body.opa = LV_OPA_COVER;
+//    style_kb.body.main_color = MainColor;//lv_color_hex3(0x333);
+//    style_kb.body.grad_color = GradColor;//lv_color_hex3(0x333);
+//    style_kb.body.padding.left = 0;
+//    style_kb.body.padding.right = 0;
+//    style_kb.body.padding.top = 0;
+//    style_kb.body.padding.bottom = 0;
+//    style_kb.body.padding.inner = 0;
 
-    lv_style_copy(&style_kb_rel, &lv_style_plain);
-    style_kb_rel.body.opa = LV_OPA_TRANSP;
-    style_kb_rel.body.radius = 0;
-    style_kb_rel.body.border.width = 1;
-    style_kb_rel.body.border.color = LV_COLOR_SILVER;
-    style_kb_rel.body.border.opa = LV_OPA_50;
-    style_kb_rel.body.main_color = MainColor;//lv_color_hex3(0x333);    /*Recommended if LV_VDB_SIZE == 0 and bpp > 1 fonts are used*/
-    style_kb_rel.body.grad_color = GradColor;//lv_color_hex3(0x333);
-    style_kb_rel.text.color = LV_COLOR_WHITE;
+//    lv_style_copy(&style_kb_rel, &lv_style_plain);
+//    style_kb_rel.body.opa = LV_OPA_TRANSP;
+//    style_kb_rel.body.radius = 0;
+//    style_kb_rel.body.border.width = 1;
+//    style_kb_rel.body.border.color = LV_COLOR_SILVER;
+//    style_kb_rel.body.border.opa = LV_OPA_50;
+//    style_kb_rel.body.main_color = MainColor;//lv_color_hex3(0x333);    /*Recommended if LV_VDB_SIZE == 0 and bpp > 1 fonts are used*/
+//    style_kb_rel.body.grad_color = GradColor;//lv_color_hex3(0x333);
+//    style_kb_rel.text.color = LV_COLOR_WHITE;
 
-    lv_style_copy(&style_kb_pr, &lv_style_btn_pr);
-    style_kb_pr.body.radius = 0;
-    style_kb_pr.body.opa = LV_OPA_50;
-    style_kb_pr.body.main_color = LV_COLOR_WHITE;
-    style_kb_pr.body.grad_color = LV_COLOR_WHITE;
-    style_kb_pr.body.border.width = 1;
-    style_kb_pr.body.border.color = LV_COLOR_SILVER;
+//    lv_style_copy(&style_kb_pr, &lv_style_btn_pr);
+//    style_kb_pr.body.radius = 0;
+//    style_kb_pr.body.opa = LV_OPA_50;
+//    style_kb_pr.body.main_color = LV_COLOR_WHITE;
+//    style_kb_pr.body.grad_color = LV_COLOR_WHITE;
+//    style_kb_pr.body.border.width = 1;
+//    style_kb_pr.body.border.color = LV_COLOR_SILVER;
 }
 
 static void luaoutput_creat(lv_obj_t * parent)
@@ -158,16 +158,16 @@ static void luaoutput_creat(lv_obj_t * parent)
 
     lv_page_set_sb_mode(parent, LV_SB_MODE_DRAG);
 
-    /*text area*/
-    static lv_style_t style_ta;
-    lv_style_copy(&style_ta, &lv_style_pretty);
-    style_ta.body.opa = LV_OPA_30;
-    style_ta.body.radius = 0;
-    style_ta.text.color = lv_color_hex3(0x222);
+//    /*text area*/
+//    static lv_style_t style_ta;
+//    lv_style_copy(&style_ta, &lv_style_pretty);
+//    style_ta.body.opa = LV_OPA_30;
+//    style_ta.body.radius = 0;
+//    style_ta.text.color = lv_color_hex3(0x222);
 
     ta_output = lv_ta_create(parent, NULL);
     lv_obj_set_size(ta_output, lv_page_get_scrl_width(parent), lv_obj_get_height(parent) * 0.8f);
-    lv_ta_set_style(ta_output, LV_TA_STYLE_BG, &style_ta);
+//    lv_ta_set_style(ta_output, LV_TA_STYLE_BG, &style_ta);
     lv_ta_set_cursor_type(ta_output, LV_CURSOR_NONE);
     lv_ta_set_text(ta_output, "");
 }
@@ -185,9 +185,9 @@ static void text_area_event_handler(lv_obj_t * text_area, lv_event_t event)
             lv_obj_set_size(kb, lv_obj_get_width_fit(parent), lv_obj_get_height_fit(parent) / 2);
             lv_obj_align(kb, ta_input, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
             lv_kb_set_ta(kb, ta_input);
-            lv_kb_set_style(kb, LV_KB_STYLE_BG, &style_kb);
-            lv_kb_set_style(kb, LV_KB_STYLE_BTN_REL, &style_kb_rel);
-            lv_kb_set_style(kb, LV_KB_STYLE_BTN_PR, &style_kb_pr);
+//            lv_kb_set_style(kb, LV_KB_STYLE_BG, &style_kb);
+//            lv_kb_set_style(kb, LV_KB_STYLE_BTN_REL, &style_kb_rel);
+//            lv_kb_set_style(kb, LV_KB_STYLE_BTN_PR, &style_kb_pr);
             lv_obj_set_event_cb(kb, keyboard_event_cb);
 
 #if LV_USE_ANIMATION
