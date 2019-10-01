@@ -106,7 +106,7 @@ typedef int16_t lv_coord_t;
 #define LV_INDEV_DEF_READ_PERIOD          20
 
 /* Drag threshold in pixels */
-#define LV_INDEV_DEF_DRAG_LIMIT           10
+#define LV_INDEV_DEF_DRAG_LIMIT           5
 
 /* Drag throw slow-down in [%]. Greater value -> faster slow-down */
 #define LV_INDEV_DEF_DRAG_THROW           20

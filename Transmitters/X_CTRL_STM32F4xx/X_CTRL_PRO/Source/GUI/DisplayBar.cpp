@@ -12,6 +12,8 @@ lv_obj_t * btnBack;
 
 static lv_obj_t * symBatt;
 static lv_obj_t * contDropDown;
+#define IS_DropDownShow (lv_obj_get_y(contDropDown)+lv_obj_get_height(contDropDown)>= 0)
+static void DropDownList_AnimDown(bool down);
 
 static void Task_UpdateStatusBar(lv_task_t * task)
 {
@@ -31,9 +33,10 @@ static void Task_UpdateStatusBar(lv_task_t * task)
 
 static void StatusBarEvent_Handler(lv_obj_t * obj, lv_event_t event)
 {
-    if(event == LV_EVENT_DRAG_THROW_BEGIN)
+    if(event == LV_EVENT_PRESSED)
     {
-        
+        lv_obj_set_y(contDropDown, -lv_obj_get_height(contDropDown) + lv_obj_get_height(obj) * 3);
+        lv_obj_set_top(contDropDown, true);
     }
 }
 
@@ -72,6 +75,11 @@ static void NaviButtonEvent_Handler(lv_obj_t * obj, lv_event_t event)
         if(obj == btnHome)
         {
             page.PageChangeTo(PAGE_Home);
+        }
+        if(IS_DropDownShow)
+        {
+            DropDownList_AnimDown(false);
+            return;
         }
     }
     page.PageEventTransmit(event, obj);
@@ -134,18 +142,70 @@ static void Creat_AppWindow()
     lv_cont_set_style(appWindow, LV_CONT_STYLE_MAIN, &lv_style_transp);
 }
 
+static void DropDownList_AnimDown(bool down)
+{
+    static lv_anim_t a;
+    a.var = contDropDown;
+    a.start = lv_obj_get_y(contDropDown);
+    
+    a.exec_cb = (lv_anim_exec_xcb_t)lv_obj_set_y;
+    a.path_cb = lv_anim_path_linear;
+//    a.ready_cb = DropDownList_AnimEnd;
+    a.time = 300;
+    if(down)
+    {
+        a.end = 0;
+    }
+    else
+    {
+        a.end = -lv_obj_get_height(contDropDown) - 5;
+    }
+    
+    lv_anim_create(&a);
+}
+
+static void DropDownListEvent_Handler(lv_obj_t * obj, lv_event_t event)
+{
+    if(event == LV_EVENT_RELEASED || event == LV_EVENT_DRAG_END)
+    {
+        lv_coord_t ver = lv_disp_get_ver_res(NULL);
+        lv_coord_t y = lv_obj_get_y(contDropDown) + lv_obj_get_height(contDropDown);
+        if(y > ver / 2)
+        {
+            DropDownList_AnimDown(true);
+        }
+        else
+        {
+            DropDownList_AnimDown(false);
+        }
+    }
+}
+
 static void Creat_DropDownList()
 {
     contDropDown = lv_cont_create(lv_scr_act(), NULL);
-    lv_obj_set_size(contDropDown, lv_disp_get_hor_res(NULL), lv_disp_get_ver_res(NULL) / 2);
+    
+    static lv_style_t style = *lv_obj_get_style(contDropDown);
+    style.body.main_color = LV_COLOR_BLACK;
+    style.body.grad_color = LV_COLOR_BLACK;
+    style.body.opa = LV_OPA_70;
+    lv_cont_set_style(contDropDown, LV_CONT_STYLE_MAIN, &style);
+    
+    lv_obj_set_size(contDropDown, lv_disp_get_hor_res(NULL), lv_disp_get_ver_res(NULL) - lv_obj_get_height(barNavigation));
     lv_obj_set_drag_dir(contDropDown, LV_DRAG_DIR_VER);
     lv_obj_set_drag(contDropDown, true);
-    lv_obj_set_drag_throw(contDropDown, true);
-    lv_obj_align(contDropDown, barStatus, LV_ALIGN_OUT_TOP_MID, 0, 40);
+//    lv_obj_set_drag_throw(contDropDown, true);
+    lv_obj_set_event_cb(contDropDown, DropDownListEvent_Handler);
+    lv_obj_align(contDropDown, barStatus, LV_ALIGN_OUT_TOP_MID, 0, -5);
     
+    /*label*/
     lv_obj_t * label = lv_label_create(contDropDown, NULL);
-    lv_label_set_text(label, "Drop down list");
-    lv_obj_align(label, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_label_set_text(label, LV_SYMBOL_DOWN);
+    lv_obj_align(label, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
+    
+//    lv_obj_t * label2 = lv_label_create(contDropDown, NULL);
+//    lv_label_set_text(label2, "X-CTRL PRO");
+//    lv_obj_align(label2, label, LV_ALIGN_OUT_TOP_MID, 0, 0);
 }
 
 void Init_Bar()
