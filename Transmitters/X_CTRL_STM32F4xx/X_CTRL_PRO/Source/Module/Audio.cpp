@@ -51,28 +51,31 @@ File wavFile;
 WAV_TypeDef wav;
 int WavAvailable;
 
-TaskHandle_t TaskHandle_WavPlayer;
-bool Reqed = false;
+TaskHandle_t TaskHandle_WavPlayer = NULL;
+
+volatile uint32_t t1;
 
 static void SendDataToDAC()
 {
     WavAvailable = WaveBuffer.available();
     if(WavAvailable < FIFO_Size / 2)
     {
-        if(!Reqed)
+        uint32_t time0 = micros();
+        BaseType_t xHigherPriorityTaskWoken;
+        xHigherPriorityTaskWoken = pdFALSE;
+        if(TaskHandle_WavPlayer)
         {
-            BaseType_t xHigherPriorityTaskWoken; 	
-            xHigherPriorityTaskWoken = pdFALSE;
-            vTaskNotifyGiveFromISR(TaskHandle_WavPlayer, &xHigherPriorityTaskWoken ); 	
-            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-            Reqed = true;
+            vTaskNotifyGiveFromISR(TaskHandle_WavPlayer, &xHigherPriorityTaskWoken);
         }
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+        t1 = micros() - time0;
+
         return;
     }
     else
     {
         Wav_Next_16Bit2Channel(&wav);
-        DAC_SetChannel1Data(DAC_Align_12b_R, ((wav.CurrentData.LeftVal + 32768) >> 6) * 0.7f);
+        DAC_SetChannel1Data(DAC_Align_12b_R, ((wav.CurrentData.LeftVal + 32768) >> 6) * 0.2f);
     }
 }
 
@@ -138,7 +141,6 @@ void Task_WavPlayer(void *pvParameters)
         if(ulEventsToProcess)
         {
             Wav_BufferUpdate();
-            Reqed = false;
         }
     }
 }

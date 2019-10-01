@@ -159,7 +159,7 @@
           <Type>0</Type>
           <LineNumber>244</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134230332</Address>
+          <Address>134227780</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -169,6 +169,22 @@
           <Filename>..\ArduinoAPI\HardwareSerial.cpp</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\Pro\../ArduinoAPI/HardwareSerial.cpp\244</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>68</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134228398</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\Source\Module\Audio.cpp</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\Pro\../Source/Module/Audio.cpp\68</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -191,6 +207,16 @@
           <count>3</count>
           <WinNumber>1</WinNumber>
           <ItemText>WavAvailable,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>t1,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>TaskHandle_WavPlayer</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
