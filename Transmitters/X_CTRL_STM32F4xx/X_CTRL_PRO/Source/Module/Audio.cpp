@@ -58,8 +58,9 @@ volatile uint32_t t1;
 static void SendDataToDAC()
 {
     WavAvailable = WaveBuffer.available();
-    if(WavAvailable < FIFO_Size / 2)
+    if(WavAvailable < 16)
     {
+<<<<<<< HEAD
         uint32_t time0 = micros();
         BaseType_t xHigherPriorityTaskWoken;
         xHigherPriorityTaskWoken = pdFALSE;
@@ -70,6 +71,16 @@ static void SendDataToDAC()
         portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
         t1 = micros() - time0;
 
+=======
+//        if(!Reqed)
+//        {
+//            BaseType_t xHigherPriorityTaskWoken; 	
+//            xHigherPriorityTaskWoken = pdFALSE;
+//            vTaskNotifyGiveFromISR(TaskHandle_WavPlayer, &xHigherPriorityTaskWoken ); 	
+//            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+//            Reqed = true;
+//        }
+>>>>>>> a1afe99cc7a2849921cdcfc0c97e720fbf363646
         return;
     }
     else
@@ -137,10 +148,20 @@ void Task_WavPlayer(void *pvParameters)
     
     for(;;)
     {
+<<<<<<< HEAD
         uint32_t ulEventsToProcess = ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         if(ulEventsToProcess)
         {
             Wav_BufferUpdate();
         }
+=======
+//        uint32_t ulEventsToProcess = ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+//        if(ulEventsToProcess)
+//        {
+//            Wav_BufferUpdate();
+//            Reqed = false;
+//        }
+        Wav_BufferUpdate();
+>>>>>>> a1afe99cc7a2849921cdcfc0c97e720fbf363646
     }
 }

@@ -33,10 +33,10 @@ static void Creat_ShutdownMessageBox(void)
     lv_obj_set_event_cb(mbox1, mbox_event_handler);
     lv_obj_align(mbox1, NULL, LV_ALIGN_CENTER, 0, 0); /*Align to the corner*/
     
-    lv_mbox_set_style(mbox1, LV_MBOX_STYLE_BG, &lv_style_pretty);
-    //lv_mbox_set_style(mbox1, LV_MBOX_STYLE_BTN_BG, &lv_style_pretty_color);
-    lv_mbox_set_style(mbox1, LV_MBOX_STYLE_BTN_REL, &lv_style_pretty_color);
-    lv_mbox_set_style(mbox1, LV_MBOX_STYLE_BTN_PR, &lv_style_pretty);
+//    lv_mbox_set_style(mbox1, LV_MBOX_STYLE_BG, &lv_style_pretty);
+//    //lv_mbox_set_style(mbox1, LV_MBOX_STYLE_BTN_BG, &lv_style_pretty_color);
+//    lv_mbox_set_style(mbox1, LV_MBOX_STYLE_BTN_REL, &lv_style_pretty_color);
+//    lv_mbox_set_style(mbox1, LV_MBOX_STYLE_BTN_PR, &lv_style_pretty);
 }
 
 typedef struct{
@@ -87,25 +87,25 @@ static void Creat_ListBtn(lv_obj_t* parent,lv_obj_t** list_btn)
 
 static void Creat_List(lv_obj_t** list)
 {
-    static lv_style_t style_btn_pr;
-    static lv_style_t style_btn_rel;
-    lv_style_copy(&style_btn_pr, &lv_style_plain);
-    style_btn_pr.body.main_color = LV_COLOR_GRAY;
-    style_btn_pr.body.grad_color = LV_COLOR_GRAY;
-    style_btn_pr.body.padding.top = 30;
-    style_btn_pr.body.padding.bottom = 30;
-    
-    lv_style_copy(&style_btn_rel, &style_btn_pr);
-    style_btn_pr.body.main_color = lv_color_hex(0x487fb7);
-    style_btn_pr.body.grad_color = lv_color_hex(0x487fb7);
+//    static lv_style_t style_btn_pr;
+//    static lv_style_t style_btn_rel;
+//    lv_style_copy(&style_btn_pr, &lv_style_plain);
+//    style_btn_pr.body.main_color = LV_COLOR_GRAY;
+//    style_btn_pr.body.grad_color = LV_COLOR_GRAY;
+//    style_btn_pr.body.padding.top = 30;
+//    style_btn_pr.body.padding.bottom = 30;
+//    
+//    lv_style_copy(&style_btn_rel, &style_btn_pr);
+//    style_btn_pr.body.main_color = lv_color_hex(0x487fb7);
+//    style_btn_pr.body.grad_color = lv_color_hex(0x487fb7);
     
     /*Create a list*/
     *list = lv_list_create(lv_scr_act(), NULL);
     lv_obj_set_size(*list, lv_obj_get_width(barStatus), page_height);
     lv_obj_align(*list, barStatus, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
     lv_list_set_edge_flash(*list, true);
-    lv_list_set_style(*list, LV_LIST_STYLE_BTN_PR, &style_btn_pr);
-    lv_list_set_style(*list, LV_LIST_STYLE_BTN_REL, &style_btn_rel);
+//    lv_list_set_style(*list, LV_LIST_STYLE_BTN_PR, &style_btn_pr);
+//    lv_list_set_style(*list, LV_LIST_STYLE_BTN_REL, &style_btn_rel);
 }
 
 /**

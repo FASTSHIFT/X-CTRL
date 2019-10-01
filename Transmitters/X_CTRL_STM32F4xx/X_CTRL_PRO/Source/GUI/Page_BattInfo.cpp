@@ -31,24 +31,24 @@ static void Creat_Label(lv_obj_t * parent, lv_obj_t** label)
 static void Creat_Gauge()
 {
     /*Create a style*/
-    static lv_style_t styleGauge;
-    lv_style_copy(&styleGauge, &lv_style_pretty_color);
-    styleGauge.body.main_color = lv_color_hex3(0x666);     /*Line color at the beginning*/
-    styleGauge.body.grad_color =  lv_color_hex3(0x666);    /*Line color at the end*/
-    styleGauge.body.padding.left = 10;                      /*Scale line length*/
-    styleGauge.body.padding.inner = 2;                    /*Scale label padding*/
-    styleGauge.body.border.color = lv_color_hex3(0x333);   /*Needle middle circle color*/
-    //style.body.radius = 2;
-    styleGauge.line.width = 3;
-    styleGauge.text.color = lv_color_hex3(0x333);
-    styleGauge.line.color = LV_COLOR_RED;                  /*Line color after the critical value*/
+//    static lv_style_t styleGauge;
+//    lv_style_copy(&styleGauge, &lv_style_pretty_color);
+//    styleGauge.body.main_color = lv_color_hex3(0x666);     /*Line color at the beginning*/
+//    styleGauge.body.grad_color =  lv_color_hex3(0x666);    /*Line color at the end*/
+//    styleGauge.body.padding.left = 10;                      /*Scale line length*/
+//    styleGauge.body.padding.inner = 2;                    /*Scale label padding*/
+//    styleGauge.body.border.color = lv_color_hex3(0x333);   /*Needle middle circle color*/
+//    //style.body.radius = 2;
+//    styleGauge.line.width = 3;
+//    styleGauge.text.color = lv_color_hex3(0x333);
+//    styleGauge.line.color = LV_COLOR_RED;                  /*Line color after the critical value*/
 
     /*Describe the color for the needles*/
     static lv_color_t needle_colors[] = {LV_COLOR_BLUE};
 
     /*Create a gauge*/
     gaugeCurrent = lv_gauge_create(lv_scr_act(), NULL);
-    lv_gauge_set_style(gaugeCurrent, LV_GAUGE_STYLE_MAIN, &styleGauge);
+   // lv_gauge_set_style(gaugeCurrent, LV_GAUGE_STYLE_MAIN, &styleGauge);
     lv_gauge_set_needle_count(gaugeCurrent, __Sizeof(needle_colors), needle_colors);
     lv_gauge_set_range(gaugeCurrent, 0, 30);
     lv_gauge_set_critical_value(gaugeCurrent, 24);
@@ -57,7 +57,7 @@ static void Creat_Gauge()
 
     /*Create a gauge*/
     gaugeVoltage = lv_gauge_create(lv_scr_act(), NULL);
-    lv_gauge_set_style(gaugeVoltage, LV_GAUGE_STYLE_MAIN, &styleGauge);
+    //lv_gauge_set_style(gaugeVoltage, LV_GAUGE_STYLE_MAIN, &styleGauge);
     lv_gauge_set_needle_count(gaugeVoltage, __Sizeof(needle_colors), needle_colors);
     lv_gauge_set_critical_value(gaugeVoltage, 39);
     lv_gauge_set_range(gaugeVoltage, 26, 42);
