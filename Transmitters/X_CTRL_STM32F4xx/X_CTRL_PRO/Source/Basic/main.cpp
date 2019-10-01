@@ -4,15 +4,19 @@
 void setup()
 {
     Serial.begin(115200);
-//    /*Task Create*/
-//    xTaskCreate(Task_Dispaly, (const char*)"Task_Dispaly",
-//                5000, NULL, 2, NULL);
+    /*Task Create*/
+    xTaskCreate(Task_Dispaly, (const char*)"Task_Dispaly",
+                5 * 1024, NULL, 2, NULL);
     
-    xTaskCreate(Task_WavPlayer, (const char*)"TaskHandle_WavPlayer",
-                 1000, NULL, 1, &TaskHandle_WavPlayer);
+//    xTaskCreate(Task_WavPlayer, (const char*)"TaskHandle_WavPlayer",
+//                 500, NULL, 0, &TaskHandle_WavPlayer);
+    
+     xTaskCreate(Task_PageRun, (const char*)"Task_PageRun",
+                  1 * 1024, NULL, 1, NULL);
+    
 
-//    xTaskCreate(Task_LuaScript, (const char*)"Task_LuaScript",
-//                4 * 1024, NULL, 1, &TaskHandle_LuaScript);
+    xTaskCreate(Task_LuaScript, (const char*)"Task_LuaScript",
+                4 * 1024, NULL, 0, &TaskHandle_LuaScript);
 
     /*Timer Create*/
     TimerHandle_Motor = xTimerCreate("Task_MotorRunning", 10,

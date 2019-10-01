@@ -20,7 +20,7 @@ typedef struct
 } AppCont_TypeDef;
 
 static uint8_t tabHomeIndex = 1;
-static AppCont_TypeDef AppTab_Grp[] =
+static AppCont_TypeDef AppCont_Grp[] =
 {
     {""},
     {""},
@@ -72,37 +72,19 @@ static void Creat_APP(APP_TypeDef &app, lv_obj_t * parent, uint8_t index)
     
     /*creat cont*/
     app.cont = lv_cont_create(parent, NULL);
-    static lv_style_t style_cont = *lv_obj_get_style(app.cont);
-    style_cont.body.opa = LV_OPA_TRANSP;
-    lv_cont_set_style(app.cont, LV_CONT_STYLE_MAIN, &style_cont);
-
-    /*imgbtn style*/
-    //static lv_style_t style_pr;
-//    lv_style_copy(&style_pr, &lv_style_plain_color);
-//    style_pr.body.main_color = LV_COLOR_WHITE;
-//    style_pr.body.grad_color = LV_COLOR_WHITE;
-//    style_pr.image.color = LV_COLOR_WHITE;
-//    style_pr.image.intense = LV_OPA_50;
-//    style_pr.text.color = LV_COLOR_BLACK;
+    lv_cont_set_style(app.cont, LV_CONT_STYLE_MAIN, &lv_style_transp);
 
     /*Create an Image button*/
     app.imgbtn = lv_imgbtn_create(app.cont, NULL);
     lv_imgbtn_set_src(app.imgbtn, LV_BTN_STATE_REL, app.img_dsc);
     lv_imgbtn_set_src(app.imgbtn, LV_BTN_STATE_PR, app.img_dsc);
-//    lv_imgbtn_set_style(app.imgbtn, LV_BTN_STATE_PR, &style_pr);
-//    lv_imgbtn_set_style(app.imgbtn, LV_BTN_STATE_TGL_PR, &style_pr);
     lv_imgbtn_set_toggle(app.imgbtn, false);
-
     lv_obj_set_event_cb(app.imgbtn, imgbtn1_event);
 
     /*Create a label on the Image button*/
-    static lv_style_t style_label;
-    lv_style_copy(&style_label, &lv_style_plain);
-    style_label.text.color = LV_COLOR_BLACK;
 
     app.label = lv_label_create(app.cont, NULL);
     lv_label_set_text(app.label, app.lable_text);
-    //lv_label_set_style(app.label, LV_LABEL_STYLE_MAIN, &style_label);
     lv_obj_align(app.label, app.imgbtn, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
 
     //lv_obj_set_auto_realign(app.cont, true);
@@ -132,22 +114,10 @@ static void Creat_Tab(lv_obj_t* tabview, AppCont_TypeDef &appcont)
 
 static void Creat_Page(lv_obj_t** tabview)
 {
-    static lv_style_t style_tv_bg;
-    lv_style_copy(&style_tv_bg, &lv_style_plain);
-    style_tv_bg.body.main_color = LV_COLOR_WHITE;
-    style_tv_bg.body.grad_color = LV_COLOR_GRAY;
-    
-    static lv_style_t style_tv_indic;
-    lv_style_copy(&style_tv_indic, &lv_style_pretty);
-    style_tv_indic.body.padding.inner = 5;
-
     /*Create a Tab view object*/
-    *tabview = lv_tabview_create(lv_scr_act(), NULL);
-    lv_obj_set_size(*tabview, page_width, page_height);
+    *tabview = lv_tabview_create(appWindow, NULL);
+    lv_obj_set_size(*tabview, APP_WIN_WIDTH, APP_WIN_HEIGHT);
     lv_obj_align(*tabview, barStatus, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
-    
-//    lv_tabview_set_style(*tabview, LV_TABVIEW_STYLE_BG, &style_tv_bg);
-//    lv_tabview_set_style(*tabview, LV_TABVIEW_STYLE_INDIC, &style_tv_indic);
     
     lv_tabview_set_btns_pos(*tabview, LV_TABVIEW_BTNS_POS_BOTTOM);
     //lv_tabview_set_btns_hidden(*tabview, true);
@@ -166,13 +136,13 @@ static void Setup()
     lv_tabview_set_sliding(tabviewHome, true);
 
     /*creat tab and appcont*/
-    __ExecuteOnce(__LoopExecute(Creat_Tab(tabviewHome, AppTab_Grp[i]), __Sizeof(AppTab_Grp)));
+    __ExecuteOnce(__LoopExecute(Creat_Tab(tabviewHome, AppCont_Grp[i]), __Sizeof(AppCont_Grp)));
     
     /*set tab to home*/
     __ExecuteOnce(lv_tabview_set_tab_act(tabviewHome, tabHomeIndex, LV_ANIM_ON));
     
     /*put apps to appcont0*/
-    __LoopExecute(Creat_APP(APP_Grp[i], AppTab_Grp[1].tab, i), __Sizeof(APP_Grp));
+    __LoopExecute(Creat_APP(APP_Grp[i], AppCont_Grp[1].tab, i), __Sizeof(APP_Grp));
 }
 
 /**

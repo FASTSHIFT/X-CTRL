@@ -115,6 +115,7 @@ static void fs_init(void)
      * Better to do it in your code to keep this library utouched for easy updating*/
     if (SD.begin(SD_CS_Pin, SD_SCK_MHZ(50))) 
     {
+        //SD.errorHalt();
         is_fs_ready = true;
     }
 }

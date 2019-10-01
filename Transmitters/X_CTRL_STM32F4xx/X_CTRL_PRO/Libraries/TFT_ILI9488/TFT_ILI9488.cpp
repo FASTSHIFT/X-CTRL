@@ -375,7 +375,7 @@ void TFT_ILI9488::drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap, int16_t 
     }
 }
 
-void TFT_ILI9488::fastDrawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap, int16_t w, int16_t h)
+void TFT_ILI9488::drawFastRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap, int16_t w, int16_t h)
 {
     setAddrWindow(x, y, x + w - 1, y + h - 1);
     uint32_t size = w * h;

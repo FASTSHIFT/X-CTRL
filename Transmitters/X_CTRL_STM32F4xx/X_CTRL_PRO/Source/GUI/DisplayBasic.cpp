@@ -9,6 +9,27 @@ SCREEN_CLASS screen(
 
 PageManager page(PAGE_MAX);
 
+static void Init_Pages()
+{
+    PageRegister_Home(PAGE_Home);
+    PageRegister_Settings(PAGE_Settings);
+    PageRegister_BattInfo(PAGE_BattInfo);
+    PageRegister_LuaScript(PAGE_LuaScript);
+    PageRegister_SetDisplay(PAGE_SetDisplay);
+    PageRegister_FileExplorer(PAGE_FileExplorer);
+    
+    page.PageChangeTo(PAGE_Home);
+}
+
+void Task_PageRun(void *pvParameters)
+{
+    for(;;)
+    {
+        page.Running();
+        vTaskDelay(20);
+    }
+}
+
 void Task_Dispaly(void *pvParameters)
 {
     screen.begin();
@@ -20,30 +41,15 @@ void Task_Dispaly(void *pvParameters)
     pwmWrite(TFT_LED_Pin, 500);
     
     lv_user_init();
-    
-    lv_theme_set_current(lv_theme_material_init(200, &lv_font_roboto_16));
-    //lv_theme_set_current(lv_theme_night_init(200, &lv_font_roboto_16));
-//    lv_user_fs_init();
-    
-    //PageCreat_LuaScript();
-    //PageCreat_BattInfo();
-    
-//    demo_create();
+    lv_user_fs_init();
+    lv_theme_set_current(lv_theme_material_init(200, LV_FONT_DEFAULT));
     
     Init_Bar();
-    
-    PageRegister_Home(PAGE_Home);
-    PageRegister_Settings(PAGE_Settings);
-    PageRegister_BattInfo(PAGE_BattInfo);
-    PageRegister_LuaScript(PAGE_LuaScript);
-    PageRegister_SetDisplay(PAGE_SetDisplay);
-    
-    page.PageChangeTo(PAGE_Home);
+    Init_Pages();
     
     for(;;)
     {
         lv_task_handler();
-        page.Running();
         vTaskDelay(10);
     }
 }

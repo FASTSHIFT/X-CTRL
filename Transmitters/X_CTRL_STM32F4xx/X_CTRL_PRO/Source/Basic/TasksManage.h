@@ -6,12 +6,14 @@
 #include "timers.h"
 #include "semphr.h"
 #include "queue.h"
+#include "event_groups.h"
 
 /*Task Functions*/
 void Task_Dispaly(void *pvParameters);
 void Task_TransferData(void *pvParameters);
 void Task_LuaScript(void *pvParameters);
 void Task_WavPlayer(void *pvParameters);
+void Task_PageRun(void *pvParameters);
 
 /*Timer Functions*/
 void Task_MotorRunning(TimerHandle_t xTimer);

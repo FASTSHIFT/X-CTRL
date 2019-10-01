@@ -13,6 +13,8 @@ static void Init_Motor()
     pinMode(Speaker_Pin, OUTPUT);
     PWM_Init(Motor_Pin, 1000, 1000);
     analogWrite(Motor_Pin, 0);
+    
+    Audio_SetEnable(false);
 }
 
 void Task_MotorRunning(TimerHandle_t xTimer)

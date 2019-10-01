@@ -19,6 +19,7 @@ extern SCREEN_CLASS screen;
 /*LittleVGL*/
 #include "lvgl.h"
 #include "lv_conf.h"
+#include "lv_ex_conf.h"
 
 void lv_user_init();
 void lv_user_fs_init();
@@ -51,14 +52,15 @@ void PageRegister_FileExplorer(uint8_t pageID);
 
 /*Bar*/
 void Init_Bar();
-extern lv_obj_t *barStatus;
-extern lv_obj_t *barNavigation;
-extern lv_obj_t *btnMenu;
-extern lv_obj_t *btnHome;
-extern lv_obj_t *btnBack;
+extern lv_obj_t * barStatus;
+extern lv_obj_t * barNavigation;
+extern lv_obj_t * appWindow;
+extern lv_obj_t * btnMenu;
+extern lv_obj_t * btnHome;
+extern lv_obj_t * btnBack;
 
-#define page_height (lv_disp_get_ver_res(NULL) - lv_obj_get_height(barStatus) - lv_obj_get_height(barNavigation))
-#define page_width  (lv_disp_get_hor_res(NULL))
+#define APP_WIN_HEIGHT (lv_obj_get_height(appWindow))
+#define APP_WIN_WIDTH  (lv_obj_get_width(appWindow))
 
 /*Types*/
 typedef enum{

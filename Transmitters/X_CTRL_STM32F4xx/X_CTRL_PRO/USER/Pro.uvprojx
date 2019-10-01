@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,HSE_VALUE=8000000,ARDUINO=111,LV_CONF_INCLUDE_SIMPLE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\ArduinoAPI;..\Core;..\Libraries\Adafruit_GFX_Library;..\Libraries\TFT_ILI9488;..\Libraries\GT911;..\Libraries\StrPrinter;..\Libraries\lvgl;..\Libraries\FreeRTOS;..\Libraries\FreeRTOS\Source\include;..\Libraries\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\Source\Basic;..\Source\GUI;..\Source\LuaScript;..\Source\Module;..\Libraries\lua-5.3.2\src;..\Libraries\SdFat\src\FatLib;..\Libraries\SdFat\src\SdCard;..\Libraries\SdFat\src\SpiDriver;..\Libraries\SdFat\src;..\Libraries\NRF;..\Libraries\IP5108;..\Libraries\LightGUI\PageManager;..\Libraries\FifoQueue;..\Libraries\WavDecoder</IncludePath>
+              <IncludePath>..\ArduinoAPI;..\Core;..\Libraries\Adafruit_GFX_Library;..\Libraries\TFT_ILI9488;..\Libraries\GT911;..\Libraries\StrPrinter;..\Libraries\lvgl;..\Libraries\lvgl\lv_examples;..\Libraries\FreeRTOS;..\Libraries\FreeRTOS\Source\include;..\Libraries\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\Source\Basic;..\Source\GUI;..\Source\LuaScript;..\Source\Module;..\Libraries\lua-5.3.2\src;..\Libraries\SdFat\src\FatLib;..\Libraries\SdFat\src\SdCard;..\Libraries\SdFat\src\SpiDriver;..\Libraries\SdFat\src;..\Libraries\NRF;..\Libraries\lvgl\lv_examples\lv_apps\demo;..\Libraries\IP5108;..\Libraries\LightGUI\PageManager;..\Libraries\FifoQueue;..\Libraries\WavDecoder</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1224,6 +1224,11 @@
               <FileName>timers.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\FreeRTOS\Source\timers.c</FilePath>
+            </File>
+            <File>
+              <FileName>event_groups.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\FreeRTOS\Source\event_groups.c</FilePath>
             </File>
           </Files>
         </Group>

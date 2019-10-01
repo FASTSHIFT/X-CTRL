@@ -16,8 +16,9 @@ void my_print(lv_log_level_t level, const char * file, uint32_t line, const char
 /* Display flushing */
 static void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p)
 {
-    screen.fastDrawRGBBitmap(area->x1, area->y1, (uint16_t*)color_p, (area->x2 - area->x1 + 1), (area->y2 - area->y1 + 1));
+    screen.drawFastRGBBitmap(area->x1, area->y1, (uint16_t*)color_p, (area->x2 - area->x1 + 1), (area->y2 - area->y1 + 1));
     lv_disp_flush_ready(disp); /* tell lvgl that flushing is done */
+    //screen.drawRect(area->x1, area->y1, (area->x2 - area->x1 + 1), (area->y2 - area->y1 + 1), screen.Red);
 }
 
 bool my_touchpad_read(lv_indev_drv_t * indev, lv_indev_data_t * data)
