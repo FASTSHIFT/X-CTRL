@@ -1,8 +1,0 @@
--c --cpu Cortex-M3 -g -O3 -Otime --apcs=interwork --split_sections -I .\RTE -I .\RTE\Device\STM32F103C8 -I ..\USER -I ..\Drivers\utility -I ..\ArduinoAPI -I ..\Core -I ..\Libraries -I ..\Libraries\I2Cdev -I ..\Libraries\MPU6050 -I ..\Libraries\EEPROM_SaveFloat -I ..\Libraries\extEEPROM -I ..\Libraries\NRF -I ..\Libraries\SSD1306_I2C -I ..\Libraries\Adafruit_GFX_Library -I ..\Libraries\Adafruit_ST7735_Library -I ..\Libraries\MillisTaskManager -I ..\Libraries\Bezier -I ..\Libraries\DigitalFilter -I ..\Libraries\EncoderEvent -I .\GUI -I .\GUI\Bitmap -I ..\Libraries\Bluetooth_HC05 -I ..\Libraries\ButtonEvent
--I.\RTE\Device\STM32F103TB
--I.\RTE\_X_CTRL
--ID:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include
--ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include
--ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\StdPeriph_Driver\inc
--D__UVISION_VERSION="525" -D_RTE_ -DSTM32F10X_MD -DUSE_STDPERIPH_DERIVER
--o ..\obj\stm32f10x_tim.o --omf_browse ..\obj\stm32f10x_tim.crf --depend ..\obj\stm32f10x_tim.d --feedback "..\OBJ\Pro.fed" "D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\StdPeriph_Driver\src\stm32f10x_tim.c"
