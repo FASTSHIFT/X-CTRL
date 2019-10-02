@@ -15,11 +15,15 @@ static lv_obj_t * contDropDown;
 #define IS_DropDownShow (lv_obj_get_y(contDropDown)+lv_obj_get_height(contDropDown)>= 0)
 static void DropDownList_AnimDown(bool down);
 
+bool Is_BattCharging = false;
+
 static void Task_UpdateStatusBar(lv_task_t * task)
 {
-    extern float BattVoltageOc;
+    extern float BattVoltageOc, BattCurret;
+    
+    Is_BattCharging = BattCurret > 0 ? true : false;
 
-    const char * batt[] =
+    const char * battSymbol[] =
     {
         LV_SYMBOL_BATTERY_EMPTY,
         LV_SYMBOL_BATTERY_1,
@@ -27,8 +31,20 @@ static void Task_UpdateStatusBar(lv_task_t * task)
         LV_SYMBOL_BATTERY_3,
         LV_SYMBOL_BATTERY_FULL
     };
-    int battUsage = map(BattVoltageOc, 2600, 4200, 0, __Sizeof(batt));
-    lv_label_set_text(symBatt, batt[battUsage]);
+    int battUsage;
+    if(Is_BattCharging)
+    {
+        static uint8_t usage = 0;
+        usage++;
+        usage %= map(BattVoltageOc, 2600, 4200, 0, __Sizeof(battSymbol)) + 1;
+        battUsage = usage;
+    }
+    else
+    {
+        battUsage = map(BattVoltageOc, 2600, 4200, 0, __Sizeof(battSymbol));
+    }
+    __LimitValue(battUsage, 0, __Sizeof(battSymbol));
+    lv_label_set_text(symBatt, battSymbol[battUsage]);
 }
 
 static void StatusBarEvent_Handler(lv_obj_t * obj, lv_event_t event)
@@ -42,15 +58,15 @@ static void StatusBarEvent_Handler(lv_obj_t * obj, lv_event_t event)
 
 static void Creat_StatusBar()
 {
+    barStatus = lv_cont_create(lv_disp_get_scr_act(NULL), NULL);
+    lv_obj_set_width(barStatus, lv_disp_get_hor_res(NULL));
+    lv_obj_align(barStatus, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
+    
     static lv_style_t styleStatusBar;
     lv_style_copy(&styleStatusBar, &lv_style_plain_color);
     styleStatusBar.body.main_color = LV_COLOR_BLACK;
     styleStatusBar.body.grad_color = LV_COLOR_BLACK;
     styleStatusBar.body.opa = LV_OPA_COVER;
-
-    barStatus = lv_cont_create(lv_disp_get_scr_act(NULL), NULL);
-    lv_obj_set_width(barStatus, lv_disp_get_hor_res(NULL));
-    lv_obj_align(barStatus, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
     lv_obj_set_style(barStatus, &styleStatusBar);
 
     symBatt = lv_label_create(barStatus, NULL);

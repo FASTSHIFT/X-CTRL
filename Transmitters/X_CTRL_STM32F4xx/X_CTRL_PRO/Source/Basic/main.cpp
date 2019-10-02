@@ -6,7 +6,7 @@ void setup()
     Serial.begin(115200);
     /*Task Create*/
     xTaskCreate(Task_Dispaly, (const char*)"Task_Dispaly",
-                5 * 1024, NULL, 2, NULL);
+                6 * 1024, NULL, 2, NULL);
     
 //    xTaskCreate(Task_WavPlayer, (const char*)"TaskHandle_WavPlayer",
 //                 500, NULL, 0, &TaskHandle_WavPlayer);

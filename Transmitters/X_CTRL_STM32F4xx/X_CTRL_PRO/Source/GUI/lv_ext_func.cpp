@@ -30,3 +30,13 @@ int lv_label_set_text_format(lv_obj_t * label, const char *__restrict __format, 
 
     return ret_status;
 }
+
+lv_coord_t lv_obj_get_x_center(lv_obj_t * obj)
+{
+    return (lv_obj_get_x(obj) + lv_obj_get_width(obj) / 2);
+}
+
+lv_coord_t lv_obj_get_y_center(lv_obj_t * obj)
+{
+    return (lv_obj_get_y(obj) + lv_obj_get_height(obj) / 2);
+}

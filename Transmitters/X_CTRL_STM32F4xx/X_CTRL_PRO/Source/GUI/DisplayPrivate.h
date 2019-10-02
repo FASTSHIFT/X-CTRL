@@ -25,6 +25,8 @@ void lv_user_init();
 void lv_user_fs_init();
 bool lv_obj_del_safe(lv_obj_t** obj);
 int lv_label_set_text_format(lv_obj_t * label, const char *__restrict __format, ...);
+lv_coord_t lv_obj_get_x_center(lv_obj_t * obj);
+lv_coord_t lv_obj_get_y_center(lv_obj_t * obj);
 
 /*Page*/
 #include "PageManager.h"

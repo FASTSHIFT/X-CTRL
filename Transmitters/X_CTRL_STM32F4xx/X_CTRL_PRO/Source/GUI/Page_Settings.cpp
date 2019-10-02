@@ -83,6 +83,10 @@ static void Creat_ListBtn(lv_obj_t* parent,lv_obj_t** list_btn)
     for(int i = 0; i < __Sizeof(ListBtn_Grp); i++)
     {
         *list_btn = lv_list_add_btn(parent, ListBtn_Grp[i].symbol, ListBtn_Grp[i].text);
+//        static lv_style_t style = *lv_obj_get_style(*list_btn);
+//        style.text.font = &lv_font_roboto_28;
+//        lv_obj_set_style(*list_btn, &style);
+        
         lv_btn_set_ink_in_time(*list_btn, 200);
         lv_btn_set_ink_out_time(*list_btn, 200);
         lv_obj_set_event_cb(*list_btn, event_handler);
@@ -107,15 +111,6 @@ static void Setup()
 {
     Creat_List(&listItems);
     Creat_ListBtn(listItems, &listItems_btn);
-}
-
-/**
-  * @brief  页面循环事件
-  * @param  无
-  * @retval 无
-  */
-static void Loop()
-{
 }
 
 /**
@@ -161,5 +156,5 @@ static void Event(int event, void* param)
   */
 void PageRegister_Settings(uint8_t pageID)
 {
-    page.PageRegister(pageID, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, NULL, Exit, Event);
 }

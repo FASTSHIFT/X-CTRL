@@ -27,8 +27,10 @@ private:
     StrOutput_Callback_t stringPrint;
 };
 
-/*Functions*/
 extern LuaScript luaScript;
+
+/*Functions*/
+void LuaCodeSet(const char* code);
 
 /*Reg*/
 void LuaReg_Time();

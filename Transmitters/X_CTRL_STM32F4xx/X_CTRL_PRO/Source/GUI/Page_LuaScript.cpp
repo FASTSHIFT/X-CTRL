@@ -41,13 +41,18 @@ void PageCreat_LuaScript()
  *   STATIC FUNCTIONS
  **********************/
 
-static const char luaCode[] =
-"while 1 do\n"
-"  motor(1,100)\n"
-"  print(millis())\n"
-"  delay(1000)\n"
-"end"
-;
+static const char *luaCode = "";
+//"while 1 do\n"
+//"  motor(1,100)\n"
+//"  print(millis())\n"
+//"  delay(1000)\n"
+//"end"
+//;
+
+void LuaCodeSet(const char* code)
+{
+    luaCode = code;
+}
 
 static void btn_event_handler(lv_obj_t * obj, lv_event_t event)
 {
@@ -217,8 +222,7 @@ static void Exit()
 {
     luaScript.end();
 
-    lv_obj_del(tv);
-    ta_input = ta_output = tv = kb = NULL;
+    lv_obj_del_safe(&tv);
 }
 
 /**
