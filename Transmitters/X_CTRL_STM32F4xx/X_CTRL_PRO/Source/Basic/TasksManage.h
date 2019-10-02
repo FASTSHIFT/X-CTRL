@@ -8,6 +8,14 @@
 #include "queue.h"
 #include "event_groups.h"
 
+#include "Source/cpu_utils.h"
+
+/*Ext Function*/
+#define xTaskReg(func,stack,priority,handle) xTaskCreate(func,#func,stack,NULL,priority,handle)
+
+#define xTimerReg(func,time) xTimerCreate(#func,time,pdTRUE,0,func)
+#define xTimerStartSafe(xTimer) if(xTimer)xTimerStart(xTimer,0)
+
 /*Task Functions*/
 void Task_Dispaly(void *pvParameters);
 void Task_TransferData(void *pvParameters);

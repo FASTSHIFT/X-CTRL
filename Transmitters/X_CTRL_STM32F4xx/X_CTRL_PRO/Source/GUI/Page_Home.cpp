@@ -294,7 +294,7 @@ static void Setup()
     /*Tab滑动至主页面*/
     __ExecuteOnce(lv_tabview_set_tab_act(tabviewHome, tabHomeIndex, LV_ANIM_ON));
     
-    /*为APP退出播放动画*/
+    /*为上一个APP退出播放动画*/
     static bool first = true;
     if(!first)
     {
@@ -314,6 +314,9 @@ static void Exit()
 {
     /*为APP开启动画延时*/
     vTaskDelay(AnimCloseTime_Default);
+    
+    /*置于顶层关闭*/
+    lv_obj_set_top(contAppSw, false);
     
     /*隐藏按钮*/
     lv_tabview_set_btns_hidden(tabviewHome, true);

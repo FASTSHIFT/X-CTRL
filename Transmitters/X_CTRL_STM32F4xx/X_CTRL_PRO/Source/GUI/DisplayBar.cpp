@@ -1,6 +1,7 @@
 #include "FileGroup.h"
 #include "DisplayPrivate.h"
 #include "Module.h"
+#include "TasksManage.h"
 
 lv_obj_t * barStatus;
 lv_obj_t * barNavigation;
@@ -11,6 +12,8 @@ lv_obj_t * btnHome;
 lv_obj_t * btnBack;
 
 static lv_obj_t * symBatt;
+static lv_obj_t * labelBattUsage;
+static lv_obj_t * labelCPUusage;
 static lv_obj_t * contDropDown;
 #define IS_DropDownShow (lv_obj_get_y(contDropDown)+lv_obj_get_height(contDropDown)>= 0)
 static void DropDownList_AnimDown(bool down);
@@ -19,8 +22,8 @@ bool Is_BattCharging = false;
 
 static void Task_UpdateStatusBar(lv_task_t * task)
 {
-    extern float BattVoltageOc, BattCurret;
-    
+    /*电池电量显示*/
+    extern float BattVoltageOc, BattCurret; 
     Is_BattCharging = BattCurret > 0 ? true : false;
 
     const char * battSymbol[] =
@@ -31,20 +34,24 @@ static void Task_UpdateStatusBar(lv_task_t * task)
         LV_SYMBOL_BATTERY_3,
         LV_SYMBOL_BATTERY_FULL
     };
-    int battUsage;
+    int symIndex;
     if(Is_BattCharging)
     {
         static uint8_t usage = 0;
         usage++;
         usage %= map(BattVoltageOc, 2600, 4200, 0, __Sizeof(battSymbol)) + 1;
-        battUsage = usage;
+        symIndex = usage;
     }
     else
     {
-        battUsage = map(BattVoltageOc, 2600, 4200, 0, __Sizeof(battSymbol));
+        symIndex = map(BattVoltageOc, 2600, 4200, 0, __Sizeof(battSymbol));
     }
-    __LimitValue(battUsage, 0, __Sizeof(battSymbol));
-    lv_label_set_text(symBatt, battSymbol[battUsage]);
+    __LimitValue(symIndex, 0, __Sizeof(battSymbol));
+    lv_label_set_text(symBatt, battSymbol[symIndex]);
+    lv_label_set_text_format(labelBattUsage, "%d%", map(BattVoltageOc, 2600, 4200, 0, 100));
+    
+    /*CPU占用显示*/
+    lv_label_set_text_format(labelCPUusage, "%d%%", FreeRTOS_GetCPUUsage());
 }
 
 static void StatusBarEvent_Handler(lv_obj_t * obj, lv_event_t event)
@@ -72,7 +79,20 @@ static void Creat_StatusBar()
     symBatt = lv_label_create(barStatus, NULL);
     lv_label_set_text(symBatt, LV_SYMBOL_BATTERY_EMPTY);
     lv_obj_align(symBatt, NULL, LV_ALIGN_IN_RIGHT_MID, -LV_DPI / 10, 0);
-
+    
+    labelBattUsage = lv_label_create(barStatus, NULL);
+    lv_label_set_text(labelBattUsage,"--");
+    lv_obj_align(labelBattUsage, symBatt, LV_ALIGN_OUT_LEFT_MID, -2, 0);
+    lv_obj_set_auto_realign(labelBattUsage, true);
+    
+    lv_obj_t * symLoop = lv_label_create(barStatus, NULL);
+    lv_label_set_text(symLoop, LV_SYMBOL_LOOP);
+    lv_obj_align(symLoop, symBatt, LV_ALIGN_OUT_LEFT_MID, -65, 0);
+    
+    labelCPUusage = lv_label_create(barStatus, NULL);
+    lv_label_set_text(labelCPUusage,"--%");
+    lv_obj_align(labelCPUusage, symLoop, LV_ALIGN_OUT_RIGHT_MID, 2, 0);
+    
     lv_cont_set_fit2(barStatus, LV_FIT_NONE, LV_FIT_TIGHT);   /*Let the height set automatically*/
     lv_obj_set_pos(barStatus, 0, 0);
     lv_obj_set_event_cb(barStatus, StatusBarEvent_Handler);

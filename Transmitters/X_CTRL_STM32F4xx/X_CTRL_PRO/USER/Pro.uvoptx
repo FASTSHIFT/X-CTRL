@@ -130,7 +130,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>(105=-1,-1,-1,-1,0)</Name>
+          <Name>(105=200,229,1102,668,0)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -153,54 +153,14 @@
           <Name>-T0</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>244</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134229548</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\ArduinoAPI\HardwareSerial.cpp</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\Pro\../ArduinoAPI/HardwareSerial.cpp\244</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>108</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134238354</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\Source\GUI\Page_FileExplorer.cpp</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\Pro\../Source/GUI/Page_FileExplorer.cpp\108</Expression>
-        </Bp>
-      </Breakpoint>
-      <WatchWindow1>
-        <Ww>
-          <count>0</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>rootFileCount,0x0A</ItemText>
-        </Ww>
-      </WatchWindow1>
+      <Breakpoint/>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>
       <DebugFlag>
         <trace>0</trace>
         <periodic>1</periodic>
-        <aLwin>1</aLwin>
+        <aLwin>0</aLwin>
         <aCover>0</aCover>
         <aSer1>0</aSer1>
         <aSer2>0</aSer2>
@@ -381,7 +341,7 @@
 
   <Group>
     <GroupName>Libraries</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2080,8 +2040,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Libraries\FreeRTOS\Source\event_groups.c</PathWithFileName>
-      <FilenameWithoutPath>event_groups.c</FilenameWithoutPath>
+      <PathWithFileName>..\Libraries\FreeRTOS\Source\cpu_utils.c</PathWithFileName>
+      <FilenameWithoutPath>cpu_utils.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

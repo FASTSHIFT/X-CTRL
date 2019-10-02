@@ -22,7 +22,7 @@ void Delay_Init(void)
   * @param  无
   * @retval 无
   */
-void vApplicationTickHook(void)
+void SystemMsInc(void)
 {
     System_ms++;
 }

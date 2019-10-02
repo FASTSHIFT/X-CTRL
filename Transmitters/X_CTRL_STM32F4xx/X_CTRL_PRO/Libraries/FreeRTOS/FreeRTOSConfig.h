@@ -46,7 +46,7 @@
 extern uint32_t SystemCoreClock;
 
 #define configUSE_PREEMPTION            1
-#define configUSE_IDLE_HOOK             0
+#define configUSE_IDLE_HOOK             1
 #define configUSE_TICK_HOOK             1
 #define configCPU_CLOCK_HZ              ( SystemCoreClock )
 #define configTICK_RATE_HZ              ( ( TickType_t ) 1000 )
@@ -121,5 +121,10 @@ standard names. */
 #define xPortPendSVHandler PendSV_Handler
 #define xPortSysTickHandler SysTick_Handler
 
-#endif /* FREERTOS_CONFIG_H */
+extern void StartIdleMonitor(void);
+extern void EndIdleMonitor(void);
 
+#define traceTASK_SWITCHED_IN()  StartIdleMonitor()
+#define traceTASK_SWITCHED_OUT() EndIdleMonitor()
+
+#endif /* FREERTOS_CONFIG_H */

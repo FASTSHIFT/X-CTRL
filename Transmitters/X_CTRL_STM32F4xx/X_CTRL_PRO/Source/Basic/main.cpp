@@ -5,41 +5,24 @@ void setup()
 {
     Serial.begin(115200);
     /*Task Create*/
-    xTaskCreate(Task_Dispaly, (const char*)"Task_Dispaly",
-                6 * 1024, NULL, 2, NULL);
-    
-//    xTaskCreate(Task_WavPlayer, (const char*)"TaskHandle_WavPlayer",
-//                 500, NULL, 0, &TaskHandle_WavPlayer);
-    
-     xTaskCreate(Task_PageRun, (const char*)"Task_PageRun",
-                  1 * 1024, NULL, 1, NULL);
-    
 
-    xTaskCreate(Task_LuaScript, (const char*)"Task_LuaScript",
-                4 * 1024, NULL, 0, &TaskHandle_LuaScript);
+    xTaskReg(Task_Dispaly,   6 * 1024, 2, NULL);
+    //xTaskReg(Task_WavPlayer, 512,      0, &TaskHandle_WavPlayer);
+    xTaskReg(Task_PageRun,   1 * 1024, 1, NULL);
+    xTaskReg(Task_LuaScript, 4 * 1024, 0, &TaskHandle_LuaScript);
 
     /*Timer Create*/
-    TimerHandle_Motor = xTimerCreate("Task_MotorRunning", 10,
-                              pdTRUE, 0, Task_MotorRunning);
+    TimerHandle_Motor = xTimerReg(Task_MotorRunning, 10);
+    xTimerStartSafe(TimerHandle_Motor);
 
-    if( TimerHandle_Motor != NULL )
-    {
-        xTimerStart(TimerHandle_Motor, 0);
-    }
-    
-    TimerHandle_Charger = xTimerCreate("Task_ReadBattInfo", 500,
-                              pdTRUE, 0, Task_ReadBattInfo);
-
-    if( TimerHandle_Charger != NULL )
-    {
-        xTimerStart( TimerHandle_Charger, 0);
-    }
+    TimerHandle_Charger = xTimerReg(Task_ReadBattInfo, 500);
+    xTimerStartSafe(TimerHandle_Charger);
 
     vTaskStartScheduler();
 }
 
 void loop()
-{
+{  
 }
 
 /**

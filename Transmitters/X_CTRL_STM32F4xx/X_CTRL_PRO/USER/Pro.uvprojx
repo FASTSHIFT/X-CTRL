@@ -1226,9 +1226,9 @@
               <FilePath>..\Libraries\FreeRTOS\Source\timers.c</FilePath>
             </File>
             <File>
-              <FileName>event_groups.c</FileName>
+              <FileName>cpu_utils.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Libraries\FreeRTOS\Source\event_groups.c</FilePath>
+              <FilePath>..\Libraries\FreeRTOS\Source\cpu_utils.c</FilePath>
             </File>
           </Files>
         </Group>

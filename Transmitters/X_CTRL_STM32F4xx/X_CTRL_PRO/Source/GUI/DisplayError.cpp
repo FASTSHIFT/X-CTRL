@@ -1,6 +1,8 @@
 #include "DisplayPrivate.h"
 #include "TasksManage.h"
 
+#define BlueScreeDelayTime 10000
+
 static void SoftDealy(uint32_t ms)
 {
     volatile uint32_t i = F_CPU / 1000 * ms / 5;
@@ -31,6 +33,9 @@ static void ShowCrashReports(const char* report)
     screen.printf("CFSR=0x%x\r\n", SCB->CFSR);
     screen.printf("HFSR=0x%x\r\n", SCB->HFSR);
     screen.printf("DFSR=0x%x\r\n", SCB->DFSR);
+    
+    SoftDealy(BlueScreeDelayTime);
+    NVIC_SystemReset();
 }
 
 
@@ -39,24 +44,33 @@ extern "C"
 {
     void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char *pcTaskName)
     {
-        char str[50];
-        sprintf(str, "stack overflow\n: %s", pcTaskName);
+        char str[configMAX_TASK_NAME_LEN + 1];
+        sprintf(str, "stack overflow\n < %s >", pcTaskName);
         ShowCrashReports(str);
-        SoftDealy(10000);
-        NVIC_SystemReset();
     }
     
     void vApplicationMallocFailedHook()
     {
         ShowCrashReports("malloc failed");
-        SoftDealy(10000);
-        NVIC_SystemReset();
+    }
+    
+    void UsageFault_Handler()
+    {
+        ShowCrashReports("usage fault");
+    }
+    
+    void BusFault_Handler()
+    {
+        ShowCrashReports("bus fault");
+    }
+    
+    void MemManage_Handler()
+    {
+        ShowCrashReports("memory manage fault");
     }
     
     void HardFault_Handler()
     {
-        ShowCrashReports("fatal error");
-        SoftDealy(10000);
-        NVIC_SystemReset();
+        ShowCrashReports("hard fault");
     }
 }
