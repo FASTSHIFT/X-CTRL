@@ -79,17 +79,20 @@ static const char* GetFileSym(const char* filename)
     return sym;
 }
 
-char LuaBuff[1000];
+static char LuaBuff[5000];
 
 static void OpenLuaFile(const char * filename)
 {
     SdFile file;
     if(file.open(filename, O_RDONLY))
     {
-        memset(LuaBuff, 0, sizeof(LuaBuff));
-        file.read(LuaBuff, sizeof(LuaBuff));
-        LuaCodeSet(LuaBuff);
-        page.PageChangeTo(PAGE_LuaScript);
+        if(file.available() < sizeof(LuaBuff))
+        {
+            memset(LuaBuff, 0, sizeof(LuaBuff));
+            file.read(LuaBuff, sizeof(LuaBuff));
+            LuaCodeSet(LuaBuff);
+            page.PageChangeTo(PAGE_LuaScript);
+        }
         file.close();
     }
 }
