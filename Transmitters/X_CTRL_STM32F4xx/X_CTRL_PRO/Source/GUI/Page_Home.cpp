@@ -42,7 +42,7 @@ static AppTab_TypeDef AppTab_Grp[] =
 /*存放APP图标和标签的容器*/
 typedef struct
 {
-    const lv_img_dsc_t* img_dsc;//图片
+    const void* img_dsc;//图片
     const char *lable_text;     //标签文本
     Func_Type type;             //跳转类型
     int param;                  //附带参数

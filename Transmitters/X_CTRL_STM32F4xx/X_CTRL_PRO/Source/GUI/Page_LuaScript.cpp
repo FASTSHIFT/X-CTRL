@@ -61,7 +61,7 @@ static void write_create(lv_obj_t * parent)
 
     /*text area*/
     ta_input = lv_ta_create(parent, NULL);
-    lv_obj_set_size(ta_input, lv_page_get_scrl_width(parent), lv_obj_get_height(parent) / 2);
+    lv_obj_set_size(ta_input, lv_page_get_scrl_width(parent), lv_obj_get_height(parent));
     lv_ta_set_text(ta_input, luaCode);
     lv_obj_set_event_cb(ta_input, text_area_event_handler);
     lv_ta_set_text_sel(ta_input, true);
@@ -83,7 +83,7 @@ static void luaoutput_creat(lv_obj_t * parent)
 
     /*text area*/
     ta_output = lv_ta_create(parent, NULL);
-    lv_obj_set_size(ta_output, lv_page_get_scrl_width(parent), lv_obj_get_height(parent) * 0.8f);
+    lv_obj_set_size(ta_output, lv_page_get_scrl_width(parent), lv_obj_get_height(parent));
     lv_ta_set_cursor_type(ta_output, LV_CURSOR_NONE);
     lv_ta_set_text(ta_output, "");
 }

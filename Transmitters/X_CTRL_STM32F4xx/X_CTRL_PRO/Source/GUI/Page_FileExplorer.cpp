@@ -8,6 +8,7 @@ static SdFile root;
 static lv_obj_t * tabviewFm;
 static lv_obj_t * tabDrive;
 static lv_obj_t * tabFileList;
+static lv_obj_t * listFiles;
 
 static void Creat_Tabview(lv_obj_t** tabview)
 {
@@ -53,34 +54,8 @@ static void Creat_TabDrive(lv_obj_t * tab)
     lv_obj_align(labelSD, lmeter, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
 }
 
-static const char* GetFileSym(const char* filename)
-{
-    String Name = String(filename);
-    Name.toLowerCase();
-
-    const char *sym;
-    
-    if(Name.endsWith(".bv"))
-    {
-        sym = LV_SYMBOL_VIDEO;
-    }
-    else if(Name.endsWith(".wav"))
-    {
-        sym = LV_SYMBOL_AUDIO;
-    }
-    else if(Name.endsWith(".lua"))
-    {
-        sym = LV_SYMBOL_EDIT;
-    }
-    else
-    {
-        sym = LV_SYMBOL_FILE;
-    }
-    return sym;
-}
-
+/*File open way*/
 static char LuaBuff[5000];
-
 static void OpenLuaFile(const char * filename)
 {
     SdFile file;
@@ -97,19 +72,98 @@ static void OpenLuaFile(const char * filename)
     }
 }
 
+/************************File Analyzer*************************/
+typedef enum{
+    FT_UNKONWN,
+    FT_VIDEO,
+    FT_AUDIO,
+    FT_TEXT,
+    FT_DIR
+}File_Type;
+
+typedef struct{
+    File_Type type;
+    const char* sym;
+    String name;
+}FileInfo_TypeDef;
+FileInfo_TypeDef FileInfo_Grp[50];
+
+/*Extname to sym*/
+typedef struct{
+    String extName;
+    const char* sym;
+    File_Type type;
+}FileExtSym_TypeDef;
+FileExtSym_TypeDef ExtSym_Grp[] = {
+    {"",     LV_SYMBOL_FILE,  FT_UNKONWN},
+    {".bv",  LV_SYMBOL_VIDEO, FT_VIDEO},
+    {".wav", LV_SYMBOL_AUDIO, FT_AUDIO},
+    {".lua", LV_SYMBOL_EDIT,  FT_TEXT},
+    {".txt", LV_SYMBOL_EDIT,  FT_TEXT}
+};
+
+String NowFilePath = "";
+static void ChangePath(lv_obj_t * tab, lv_obj_t** list, const char *newPath);
+
+static int GetFileInfoIndex(const char* filename)
+{
+    String Name = String(filename);
+    Name.toLowerCase();
+    
+    for(uint8_t i = 1; i < __Sizeof(ExtSym_Grp); i++)
+    {
+        if(Name.endsWith(ExtSym_Grp[i].extName))
+        {
+            return i;
+        }
+    }
+    return 0;
+}
+
+static bool LoadNextFileInfo(SdFile &file, int index)
+{
+    if(index >= __Sizeof(FileInfo_Grp))
+        return false;
+    
+    char fileName[50];
+    file.getName(fileName, sizeof(fileName));
+    FileInfo_Grp[index].name = String(fileName);
+    
+    if(file.isDir())
+    {
+        FileInfo_Grp[index].type = FT_DIR;
+        FileInfo_Grp[index].sym = LV_SYMBOL_DIRECTORY;
+    }
+    else
+    {
+        int i = GetFileInfoIndex(fileName);
+        FileInfo_Grp[index].type = ExtSym_Grp[i].type;
+        FileInfo_Grp[index].sym = ExtSym_Grp[i].sym;
+    }
+    
+    return true;
+}
+
 static void FileEvent_Handler(lv_obj_t * obj, lv_event_t event)
 {
     if(event == LV_EVENT_CLICKED)
     {
-        const char *filename = lv_list_get_btn_text(obj);
-        if(String(filename).endsWith(".lua"))
+        int index = lv_list_get_btn_index(listFiles, obj);
+        
+        if(FileInfo_Grp[index].type == FT_TEXT)
         {
-            OpenLuaFile(filename);
+            String path = NowFilePath + "/" + FileInfo_Grp[index].name;
+            OpenLuaFile(path.c_str());
+        }
+        else if(FileInfo_Grp[index].type == FT_DIR)
+        {
+            NowFilePath = NowFilePath + "/" + FileInfo_Grp[index].name;
+            ChangePath(tabFileList, &listFiles, NowFilePath.c_str());
         }
     }
 }
 
-static void Creat_TabFileList(lv_obj_t * tab, const char *path)
+static void Creat_TabFileList(lv_obj_t * tab, lv_obj_t** list, const char *path)
 {
     if (!root.open(path))
     {
@@ -117,32 +171,30 @@ static void Creat_TabFileList(lv_obj_t * tab, const char *path)
     }
     
     /*Create a list*/
-    lv_obj_t * list = lv_list_create(tab, NULL);
-    lv_obj_set_size(list, lv_obj_get_width_fit(tab) - 10, lv_obj_get_height_fit(tab) - 10);
-    lv_obj_align(list, NULL, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_auto_realign(list, true);
-    lv_list_set_edge_flash(list, true);
+    *list = lv_list_create(tab, NULL);
+    lv_obj_set_size(*list, lv_obj_get_width_fit(tab) - 10, lv_obj_get_height_fit(tab) - 10);
+    lv_obj_align(*list, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_auto_realign(*list, true);
+    lv_list_set_edge_flash(*list, true);
     
     /*Loading files*/
     SdFile file;
+    int index = 0;
     while (file.openNext(&root, O_RDONLY))
     {
         if (!file.isHidden())
         {
-            char fileName[50];
-            file.getName(fileName, sizeof(fileName));
-            const char *sym;
-            
-            if(file.isDir())
+            if(!LoadNextFileInfo(file, index))
             {
-                sym = LV_SYMBOL_DIRECTORY;
-            }
-            else
-            {
-                sym = GetFileSym(fileName);
+                return;
             }
 
-            lv_obj_t * list_btn = lv_list_add_btn(list, sym, fileName);
+            lv_obj_t * list_btn = lv_list_add_btn(
+                *list, 
+                FileInfo_Grp[index].sym, 
+                FileInfo_Grp[index].name.c_str()
+            );
+            index++;
         
             lv_btn_set_ink_in_time(list_btn, 200);
             lv_btn_set_ink_out_time(list_btn, 200);
@@ -150,6 +202,14 @@ static void Creat_TabFileList(lv_obj_t * tab, const char *path)
         }
         file.close();
     }
+}
+
+static void ChangePath(lv_obj_t * tab, lv_obj_t** list, const char *newPath)
+{
+    memset(FileInfo_Grp, 0, sizeof(FileInfo_Grp));
+    lv_obj_del_safe(&listFiles);
+    root.close();
+    Creat_TabFileList(tab, &(*list), newPath);
 }
 
 /**
@@ -167,7 +227,7 @@ static void Setup()
     }
 
     Preloader_Activate(true, tabDrive);
-    Creat_TabFileList(tabFileList, "/");
+    ChangePath(tabFileList, &listFiles, "/");
     Creat_TabDrive(tabDrive);
     Preloader_Activate(false, NULL);
 }
@@ -181,6 +241,8 @@ static void Exit()
 {
     lv_obj_del_safe(&tabviewFm);
     root.close();
+    NowFilePath = "/";
+    listFiles = NULL;
 }
 
 /**
@@ -194,9 +256,17 @@ static void Event(int event, void* param)
     lv_obj_t * btn = (lv_obj_t*)param;
     if(event == LV_EVENT_CLICKED)
     {
+        
         if(btn == btnBack)
         {
-            page.PageChangeTo(PAGE_Home);
+            if(root.isOpen())
+            {
+                
+            }
+            else
+            {
+                page.PageChangeTo(PAGE_Home);
+            }
         }
     }
 }

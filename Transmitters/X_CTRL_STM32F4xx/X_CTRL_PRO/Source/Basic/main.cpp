@@ -4,9 +4,9 @@
 void setup()
 {
     Serial.begin(115200);
+    
     /*Task Create*/
-
-    xTaskReg(Task_Dispaly,   6 * 1024, 2, NULL);
+    xTaskReg(Task_Dispaly,   7 * 1024, 2, NULL);
     //xTaskReg(Task_WavPlayer, 512,      0, &TaskHandle_WavPlayer);
     xTaskReg(Task_PageRun,   1 * 1024, 1, NULL);
     xTaskReg(Task_LuaScript, 4 * 1024, 0, &TaskHandle_LuaScript);

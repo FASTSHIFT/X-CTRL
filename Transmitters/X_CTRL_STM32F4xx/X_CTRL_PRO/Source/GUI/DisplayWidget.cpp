@@ -35,10 +35,10 @@ static void Creat_Keyboard(lv_obj_t * parent, lv_obj_t * ta, lv_event_cb_t keybo
 {
     keyboard = lv_kb_create(parent, NULL);
     lv_obj_set_size(keyboard, lv_obj_get_width_fit(parent), lv_obj_get_height_fit(parent) / 2);
+    lv_obj_align(keyboard, barNavigation, LV_ALIGN_OUT_TOP_MID, 0, 0);
     
     if(ta)
     {
-        lv_obj_align(keyboard, ta, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
         lv_kb_set_ta(keyboard, ta);
     }
     
