@@ -1071,6 +1071,11 @@
               <FilePath>..\Source\GUI\DisplayBar.cpp</FilePath>
             </File>
             <File>
+              <FileName>DisplayWidget.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\GUI\DisplayWidget.cpp</FilePath>
+            </File>
+            <File>
               <FileName>DisplayError.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Source\GUI\DisplayError.cpp</FilePath>

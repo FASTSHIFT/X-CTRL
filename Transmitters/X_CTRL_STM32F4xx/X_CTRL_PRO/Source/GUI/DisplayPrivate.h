@@ -71,4 +71,9 @@ typedef enum{
     TYPE_FuncCall,
 }Func_Type;
 
+/*Widget*/
+void Preloader_Activate(bool isact, lv_obj_t * parent);
+void Keyboard_Activate(bool isact, lv_obj_t * parent, lv_obj_t * ta, lv_event_cb_t keyboard_event_cb);
+lv_obj_t * Keyboard_GetObj();
+
 #endif

@@ -3,18 +3,11 @@
 #include "SdFat.h"
 #include "LuaScript.h"
 
+static SdFile root;
+
 static lv_obj_t * tabviewFm;
 static lv_obj_t * tabDrive;
 static lv_obj_t * tabFileList;
-
-static void Creat_PreloadLoading(lv_obj_t * parent, lv_obj_t** preload)
-{
-    /*Create a Preloader object*/
-    *preload = lv_preload_create(parent, NULL);
-    lv_obj_set_size(*preload, 50, 50);
-    lv_obj_align(*preload, NULL, LV_ALIGN_CENTER, 0, 0);
-    lv_preload_set_type(*preload, LV_PRELOAD_TYPE_FILLSPIN_ARC);
-}
 
 static void Creat_Tabview(lv_obj_t** tabview)
 {
@@ -113,9 +106,6 @@ static void FileEvent_Handler(lv_obj_t * obj, lv_event_t event)
     }
 }
 
-int rootFileCount;
-SdFile root;
-
 static void Creat_TabFileList(lv_obj_t * tab, const char *path)
 {
     if (!root.open(path))
@@ -154,8 +144,6 @@ static void Creat_TabFileList(lv_obj_t * tab, const char *path)
             lv_btn_set_ink_in_time(list_btn, 200);
             lv_btn_set_ink_out_time(list_btn, 200);
             lv_obj_set_event_cb(list_btn, FileEvent_Handler);
-            
-            rootFileCount++;
         }
         file.close();
     }
@@ -169,20 +157,16 @@ static void Creat_TabFileList(lv_obj_t * tab, const char *path)
 static void Setup()
 {
     Creat_Tabview(&tabviewFm);
-
-    lv_obj_t * preLoading;
-    Creat_PreloadLoading(tabviewFm, &preLoading);
-
-    Creat_TabDrive(tabDrive);
-
-    Creat_TabFileList(tabFileList, "/");
-
-    lv_obj_del_safe(&preLoading);
     
     if(page.LastPage != PAGE_Home)
     {
         lv_tabview_set_tab_act(tabviewFm, 1, LV_ANIM_OFF);
     }
+
+    Preloader_Activate(true, tabDrive);
+    Creat_TabFileList(tabFileList, "/");
+    Creat_TabDrive(tabDrive);
+    Preloader_Activate(false, NULL);
 }
 
 /**

@@ -7,15 +7,10 @@ static void write_create(lv_obj_t * parent);
 static void luaoutput_creat(lv_obj_t * parent);
 static void text_area_event_handler(lv_obj_t * text_area, lv_event_t event);
 static void keyboard_event_cb(lv_obj_t * keyboard, lv_event_t event);
-#if LV_USE_ANIMATION
-static void kb_hide_anim_end(lv_anim_t * a);
-#endif
 
 static lv_obj_t * ta_input;
 static lv_obj_t * ta_output;
-static lv_obj_t * kb;
 static lv_obj_t * tv;
-
 static lv_obj_t * btn_clear;
 
 void PageCreat_LuaScript()
@@ -24,13 +19,8 @@ void PageCreat_LuaScript()
     lv_obj_align(tv, barStatus, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
     lv_obj_set_size(tv, APP_WIN_WIDTH, APP_WIN_HEIGHT);
 
-    lv_obj_t * tab1 = lv_tabview_add_tab(tv, "Input");
-    lv_obj_t * tab2 = lv_tabview_add_tab(tv, "Output");
-
-#if LV_DEMO_WALLPAPER == 0
-    /*Blue bg instead of wallpaper*/
-    lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BG, &style_tv_btn_bg);
-#endif
+    lv_obj_t * tab1 = lv_tabview_add_tab(tv, LV_SYMBOL_EDIT);
+    lv_obj_t * tab2 = lv_tabview_add_tab(tv, LV_SYMBOL_UPLOAD);
 
     write_create(tab1);
     luaoutput_creat(tab2);
@@ -100,36 +90,12 @@ static void luaoutput_creat(lv_obj_t * parent)
 
 static void text_area_event_handler(lv_obj_t * text_area, lv_event_t event)
 {
-    (void) text_area;    /*Unused*/
-
     /*Text area is on the scrollable part of the page but we need the page itself*/
     lv_obj_t * parent = lv_obj_get_parent(lv_obj_get_parent(ta_input));
 
-    if(event == LV_EVENT_CLICKED) {
-        if(kb == NULL) {
-            kb = lv_kb_create(parent, NULL);
-            lv_obj_set_size(kb, lv_obj_get_width_fit(parent), lv_obj_get_height_fit(parent) / 2);
-            lv_obj_align(kb, ta_input, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
-            lv_kb_set_ta(kb, ta_input);
-            lv_obj_set_event_cb(kb, keyboard_event_cb);
-
-#if LV_USE_ANIMATION
-            lv_anim_t a;
-            a.var = kb;
-            a.start = LV_VER_RES;
-            a.end = lv_obj_get_y(kb);
-            a.exec_cb = (lv_anim_exec_xcb_t)lv_obj_set_y;
-            a.path_cb = lv_anim_path_linear;
-            a.ready_cb = NULL;
-            a.act_time = 0;
-            a.time = 300;
-            a.playback = 0;
-            a.playback_pause = 0;
-            a.repeat = 0;
-            a.repeat_pause = 0;
-            lv_anim_create(&a);
-#endif
-        }
+    if(event == LV_EVENT_CLICKED)
+    {
+        Keyboard_Activate(true, parent, ta_input, keyboard_event_cb);
     }
 }
 
@@ -153,8 +119,6 @@ static void LuaPrintCallback(const char* s)
  */
 static void keyboard_event_cb(lv_obj_t * keyboard, lv_event_t event)
 {
-    (void) keyboard;    /*Unused*/
-
     lv_kb_def_event_cb(keyboard, event);
     
     if(event == LV_EVENT_PRESSED)
@@ -173,35 +137,9 @@ static void keyboard_event_cb(lv_obj_t * keyboard, lv_event_t event)
     if(event == LV_EVENT_CANCEL)
     {
         luaScript.end();
-#if LV_USE_ANIMATION
-        lv_anim_t a;
-        a.var = kb;
-        a.start = lv_obj_get_y(kb);
-        a.end = LV_VER_RES;
-        a.exec_cb = (lv_anim_exec_xcb_t)lv_obj_set_y;
-        a.path_cb = lv_anim_path_linear;
-        a.ready_cb = kb_hide_anim_end;
-        a.act_time = 0;
-        a.time = 300;
-        a.playback = 0;
-        a.playback_pause = 0;
-        a.repeat = 0;
-        a.repeat_pause = 0;
-        lv_anim_create(&a);
-#else
-        lv_obj_del(kb);
-        kb = NULL;
-#endif
+        Keyboard_Activate(false, NULL, NULL, NULL);
     }
 }
-
-#if LV_USE_ANIMATION
-static void kb_hide_anim_end(lv_anim_t * a)
-{
-    lv_obj_del((lv_obj_t*)a->var);
-    kb = NULL;
-}
-#endif
 
 /**
   * @brief  页面初始化事件
@@ -238,9 +176,9 @@ static void Event(int event, void* param)
     {
         if(btn == btnBack)
         {
-            if(kb)
+            if(Keyboard_GetObj())
             {
-                lv_event_send(kb, LV_EVENT_CANCEL, NULL);
+                lv_event_send(Keyboard_GetObj(), LV_EVENT_CANCEL, NULL);
             }
             else
             {
