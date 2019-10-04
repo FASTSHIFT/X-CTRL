@@ -32,7 +32,7 @@ void loop()
   */
 int main(void)
 {
-    NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4);
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     Delay_Init();
     ADCx_Init(ADC1);
     setup();

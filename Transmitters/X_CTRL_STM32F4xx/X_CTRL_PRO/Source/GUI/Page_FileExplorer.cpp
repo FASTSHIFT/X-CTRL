@@ -54,19 +54,61 @@ static void Creat_TabDrive(lv_obj_t * tab)
     lv_obj_align(labelSD, lmeter, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
 }
 
+static lv_obj_t * mboxError;
+#define mboxErrorAutoClose() 
+static void mbox_event_handler(lv_obj_t * obj, lv_event_t event)
+{
+    if(event == LV_EVENT_CLICKED)
+    {
+        lv_mbox_start_auto_close(obj, 20);
+    }
+    if(event == LV_EVENT_CANCEL)
+    {
+        lv_mbox_start_auto_close(obj, 20);
+    }
+    if(event == LV_EVENT_DELETE)
+    {
+        mboxError = NULL;
+    }
+}
+
+static bool MboxThorw(const char *text)
+{
+    if(mboxError)
+        return false;
+    
+    MessageBox_Activate(
+        true,
+        tabFileList,
+        &mboxError,
+        200, 200,
+        text,
+        NULL,
+        mbox_event_handler
+    );
+    
+    return true;
+}
+
 /*File open way*/
-static char LuaBuff[5000];
-static void OpenLuaFile(const char * filename)
+static char TextBuff[5 * 1024];
+static void OpenTextFile(const char * filename)
 {
     SdFile file;
     if(file.open(filename, O_RDONLY))
     {
-        if(file.available() < sizeof(LuaBuff))
+        if(file.available() < sizeof(TextBuff))
         {
-            memset(LuaBuff, 0, sizeof(LuaBuff));
-            file.read(LuaBuff, sizeof(LuaBuff));
-            LuaCodeSet(LuaBuff);
+            memset(TextBuff, 0, sizeof(TextBuff));
+            file.read(TextBuff, sizeof(TextBuff));
+            LuaCodeSet(TextBuff);
             page.PageChangeTo(PAGE_LuaScript);
+        }
+        else
+        {
+            char str[50];
+            sprintf(str, "file size too large!\n(%0.2fKB > buffer size(%0.2fKB))", (float)file.available() / 1024.0f, sizeof(TextBuff) / 1024.0f);
+            MboxThorw(str);
         }
         file.close();
     }
@@ -75,6 +117,7 @@ static void OpenLuaFile(const char * filename)
 /************************File Analyzer*************************/
 typedef enum{
     FT_UNKONWN,
+    FT_IMG,
     FT_VIDEO,
     FT_AUDIO,
     FT_TEXT,
@@ -95,15 +138,38 @@ typedef struct{
     File_Type type;
 }FileExtSym_TypeDef;
 FileExtSym_TypeDef ExtSym_Grp[] = {
-    {"",     LV_SYMBOL_FILE,  FT_UNKONWN},
-    {".bv",  LV_SYMBOL_VIDEO, FT_VIDEO},
-    {".wav", LV_SYMBOL_AUDIO, FT_AUDIO},
-    {".lua", LV_SYMBOL_EDIT,  FT_TEXT},
-    {".txt", LV_SYMBOL_EDIT,  FT_TEXT}
+    {"",     LV_SYMBOL_FILE,   FT_UNKONWN},
+    {".bv",  LV_SYMBOL_VIDEO,  FT_VIDEO},
+    {".wav", LV_SYMBOL_AUDIO,  FT_AUDIO},
+    {".lua", LV_SYMBOL_EDIT,   FT_TEXT},
+    {".txt", LV_SYMBOL_EDIT,   FT_TEXT},
+    {".html",LV_SYMBOL_EDIT,   FT_TEXT},
+    {".log", LV_SYMBOL_EDIT,   FT_TEXT},
+    {".png", LV_SYMBOL_IMAGE,  FT_IMG},
+    {".jpg", LV_SYMBOL_IMAGE,  FT_IMG},
+    {".gif", LV_SYMBOL_IMAGE,  FT_IMG},
 };
 
-String NowFilePath = "";
 static void ChangePath(lv_obj_t * tab, lv_obj_t** list, const char *newPath);
+String NowFilePath = "/";
+static int AccessFolder(bool enter = false, String *folder = NULL)
+{
+    int index;
+    if(enter)
+    {
+        NowFilePath = NowFilePath + "/" + *folder;
+    }
+    else
+    {
+        index = NowFilePath.lastIndexOf('/');
+        if(index > 0)
+        {
+            NowFilePath = NowFilePath.substring(0, index);
+        }
+    }
+    ChangePath(tabFileList, &listFiles, NowFilePath.c_str());
+    return index;
+}
 
 static int GetFileInfoIndex(const char* filename)
 {
@@ -148,17 +214,22 @@ static void FileEvent_Handler(lv_obj_t * obj, lv_event_t event)
 {
     if(event == LV_EVENT_CLICKED)
     {
+        if(mboxError)
+        {
+            lv_event_send(mboxError, LV_EVENT_CANCEL, 0);
+            return;
+        }
+        
         int index = lv_list_get_btn_index(listFiles, obj);
         
         if(FileInfo_Grp[index].type == FT_TEXT)
         {
             String path = NowFilePath + "/" + FileInfo_Grp[index].name;
-            OpenLuaFile(path.c_str());
+            OpenTextFile(path.c_str());
         }
         else if(FileInfo_Grp[index].type == FT_DIR)
         {
-            NowFilePath = NowFilePath + "/" + FileInfo_Grp[index].name;
-            ChangePath(tabFileList, &listFiles, NowFilePath.c_str());
+            AccessFolder(true, &FileInfo_Grp[index].name);
         }
     }
 }
@@ -219,17 +290,16 @@ static void ChangePath(lv_obj_t * tab, lv_obj_t** list, const char *newPath)
   */
 static void Setup()
 {
-    Creat_Tabview(&tabviewFm);
+    __ExecuteOnce(Creat_Tabview(&tabviewFm));
     
-    if(page.LastPage != PAGE_Home)
-    {
-        lv_tabview_set_tab_act(tabviewFm, 1, LV_ANIM_OFF);
-    }
-
-    Preloader_Activate(true, tabDrive);
-    ChangePath(tabFileList, &listFiles, "/");
-    Creat_TabDrive(tabDrive);
-    Preloader_Activate(false, NULL);
+    lv_obj_set_hidden(tabviewFm, false);
+    ChangePath(tabFileList, &listFiles, NowFilePath.c_str()); 
+    
+    __ExecuteOnce((
+        Preloader_Activate(true, tabDrive),
+        Creat_TabDrive(tabDrive),
+        Preloader_Activate(false, NULL)
+    ));
 }
 
 /**
@@ -239,10 +309,9 @@ static void Setup()
   */
 static void Exit()
 {
-    lv_obj_del_safe(&tabviewFm);
-    root.close();
-    NowFilePath = "/";
-    listFiles = NULL;
+    //lv_obj_del_safe(&tabviewFm);  
+    lv_obj_del_safe(&listFiles);
+    lv_obj_set_hidden(tabviewFm, true);
 }
 
 /**
@@ -256,17 +325,30 @@ static void Event(int event, void* param)
     lv_obj_t * btn = (lv_obj_t*)param;
     if(event == LV_EVENT_CLICKED)
     {
-        
         if(btn == btnBack)
         {
+            if(mboxError)
+            {
+                lv_event_send(mboxError, LV_EVENT_CANCEL, 0);
+                return ;
+            }
+
             if(root.isOpen())
             {
-                
+                AccessFolder();
             }
             else
             {
                 page.PageChangeTo(PAGE_Home);
             }
+
+        }
+    }
+    else if(event == LV_EVENT_LONG_PRESSED_REPEAT)
+    {
+        if(btn == btnBack)
+        {
+            page.PageChangeTo(PAGE_Home);
         }
     }
 }

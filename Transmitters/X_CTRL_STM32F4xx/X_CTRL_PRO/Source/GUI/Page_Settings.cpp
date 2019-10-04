@@ -17,29 +17,46 @@ static void mbox_event_handler(lv_obj_t * obj, lv_event_t event)
         {
             NVIC_SystemReset();
         }
+        else if(index == 2)
+        {
+            lv_mbox_start_auto_close(obj, 20);
+        }
+    }
+    if(event == LV_EVENT_CANCEL)
+    {
         lv_mbox_start_auto_close(obj, 20);
-        lv_obj_del_async(obj);
-        mboxPower = NULL;
     }
     if(event == LV_EVENT_DELETE)
     {
-        
+        mboxPower = NULL;
     }
 }
 
-static void Creat_ShutdownMessageBox(void * param)
+static void Creat_ShutdownMessageBox()
 {
-    lv_obj_t **mbox = (lv_obj_t**)param;
+    if(mboxPower)
+        return;
+//    lv_obj_t **mbox = (lv_obj_t**)param;
     static const char * btns[] ={"Shutdown", "Reboot", "Cancel",""};
-
-    *mbox = lv_mbox_create(appWindow, NULL);
     
-    lv_mbox_set_text(*mbox, "Shutdown / Reboot?");
-    lv_mbox_add_btns(*mbox, btns);
-    //lv_obj_set_drag(*mbox, true);
-    lv_obj_set_size(*mbox, 250, 200);
-    lv_obj_set_event_cb(*mbox, mbox_event_handler);
-    lv_obj_align(*mbox, NULL, LV_ALIGN_CENTER, 0, 0); /*Align to the corner*/
+    MessageBox_Activate(
+        true,
+        appWindow,
+        &mboxPower,
+        250, 200,
+        "Shutdown / Reboot?",
+        btns,
+        mbox_event_handler
+    );
+
+//    *mbox = lv_mbox_create(appWindow, NULL);
+//    
+//    lv_mbox_set_text(*mbox, "Shutdown / Reboot?");
+//    lv_mbox_add_btns(*mbox, btns);
+//    //lv_obj_set_drag(*mbox, true);
+//    lv_obj_set_size(*mbox, 250, 200);
+//    lv_obj_set_event_cb(*mbox, mbox_event_handler);
+//    lv_obj_align(*mbox, NULL, LV_ALIGN_CENTER, 0, 0); /*Align to the corner*/
 }
 
 typedef struct{
@@ -71,8 +88,8 @@ static void event_handler(lv_obj_t * obj, lv_event_t event)
         }
         else if(ListBtn_Grp[index].type == TYPE_FuncCall)
         {
-            typedef void(*void_func_t)(void*);
-            ((void_func_t)ListBtn_Grp[index].param)(&mboxPower);
+            typedef void(*void_func_t)();
+            ((void_func_t)ListBtn_Grp[index].param)();
         }
     }
 }
@@ -139,7 +156,7 @@ static void Event(int event, void* param)
         {
             if(mboxPower)
             {
-                lv_event_send(mboxPower, LV_EVENT_CLICKED, 0);
+                lv_event_send(mboxPower, LV_EVENT_CANCEL, 0);
             }
             else
             {

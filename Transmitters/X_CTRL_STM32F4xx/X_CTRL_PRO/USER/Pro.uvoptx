@@ -157,34 +157,18 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>98</LineNumber>
+          <LineNumber>128</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134241538</Address>
+          <Address>134240890</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\Source\GUI\Page_LuaScript.cpp</Filename>
+          <Filename>..\Source\GUI\DisplayWidget.cpp</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Pro\../Source/GUI/Page_LuaScript.cpp\98</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>94</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134241518</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\Source\GUI\Page_LuaScript.cpp</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\Pro\../Source/GUI/Page_LuaScript.cpp\94</Expression>
+          <Expression>\\Pro\../Source/GUI/DisplayWidget.cpp\128</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -192,6 +176,11 @@
           <count>0</count>
           <WinNumber>1</WinNumber>
           <ItemText>FileInfo_Grp</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>NowFilePath</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

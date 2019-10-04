@@ -94,3 +94,44 @@ lv_obj_t * Keyboard_GetObj()
 {
     return keyboard;
 }
+
+/***************************MessageBox****************************/
+
+void MessageBox_Activate(
+    bool isact, 
+    lv_obj_t * parent, 
+    lv_obj_t** mbox,
+    lv_coord_t w, lv_coord_t h,
+    const char *text,
+    const char** btns,
+    lv_event_cb_t mbox_event_handler
+)
+{
+    if(isact)
+    {
+        *mbox = lv_mbox_create(parent ? parent : lv_scr_act(), NULL);
+        if(text)
+        {
+            lv_mbox_set_text(*mbox, text);
+        }
+        if(btns)
+        {
+            lv_mbox_add_btns(*mbox, btns);
+        }
+        
+        if(mbox_event_handler)
+        {
+            lv_obj_set_event_cb(*mbox, mbox_event_handler);
+        }
+        
+        lv_obj_set_drag(*mbox, true);
+        lv_obj_set_size(*mbox, w, h);
+        
+        lv_obj_align(*mbox, NULL, LV_ALIGN_CENTER, 0, 0);
+        lv_obj_set_auto_realign(*mbox, true);
+    }
+    else
+    {
+        lv_obj_del_safe(&(*mbox));
+    }
+}

@@ -75,5 +75,14 @@ typedef enum{
 void Preloader_Activate(bool isact, lv_obj_t * parent);
 void Keyboard_Activate(bool isact, lv_obj_t * parent, lv_obj_t * ta, lv_event_cb_t keyboard_event_cb);
 lv_obj_t * Keyboard_GetObj();
+void MessageBox_Activate(
+    bool isact, 
+    lv_obj_t * parent, 
+    lv_obj_t** mbox,
+    lv_coord_t w, lv_coord_t h,
+    const char *text,
+    const char** btns,
+    lv_event_cb_t mbox_event_handler
+);
 
 #endif
