@@ -1,12 +1,13 @@
 #include "FileGroup.h"
 #include "DisplayPrivate.h"
 #include "TasksManage.h"
+#include "APP_Type.h"
 
 /*图片文件*/
 #include "IMG/ImgSettings.c"
 #include "IMG/ImgCode.c"
 #include "IMG/ImgGame.c"
-#include "IMG/ImgExplorer.c"
+#include "IMG/ImgSubApps.c"
 #include "IMG/ImgFiles.c"
 #include "IMG/ImgInternet.c"
 #include "IMG/ImgMessage.c"
@@ -39,24 +40,12 @@ static AppTab_TypeDef AppTab_Grp[] =
     {""}
 };
 
-/*存放APP图标和标签的容器*/
-typedef struct
-{
-    const void* img_dsc;//图片
-    const char *lable_text;     //标签文本
-    Func_Type type;             //跳转类型
-    int param;                  //附带参数
-    lv_obj_t* cont;             //标签容器
-    lv_obj_t* imgbtn;           //图标按钮控件
-    lv_obj_t* label;            //标签控件
-} APP_TypeDef;
-
 static APP_TypeDef APP_Grp[] =
 {
     {&ImgSettings, "Settings", TYPE_PageJump, PAGE_Settings},
     {&ImgCode,     "Editor",   TYPE_PageJump, PAGE_LuaScript},
     {&ImgGame,     "Game"},
-    {&ImgExplorer, "Explorer"},
+    {&ImgSubApps,  "APPs",     TYPE_PageJump, PAGE_SubAPPs},
     {&ImgFiles,    "Files",    TYPE_PageJump, PAGE_FileExplorer},
     {&ImgInternet, "Internet"},
     {&ImgMessage,  "Message"},
@@ -101,7 +90,7 @@ static void ImgbtnEvent_Handler(lv_obj_t * obj, lv_event_t event)
   * @param  index:索引0~9
   * @retval None
   */
-static void Creat_APP(APP_TypeDef &app, lv_obj_t * parent, uint8_t index)
+void Creat_APP(APP_TypeDef &app, lv_obj_t * parent, uint8_t index, lv_event_cb_t imgbtn_event_handler)
 {
     /*防止数组越界*/
     if(index > 8)
@@ -117,13 +106,13 @@ static void Creat_APP(APP_TypeDef &app, lv_obj_t * parent, uint8_t index)
     lv_imgbtn_set_src(app.imgbtn, LV_BTN_STATE_REL, app.img_dsc);
     lv_imgbtn_set_src(app.imgbtn, LV_BTN_STATE_PR, app.img_dsc);
     lv_imgbtn_set_toggle(app.imgbtn, false);
-//    static lv_style_t style_pr = *lv_imgbtn_get_style(app.imgbtn, LV_IMGBTN_STYLE_PR);
-//    style_pr.body.main_color = LV_COLOR_GRAY;
-//    style_pr.body.grad_color = LV_COLOR_BLUE;
-//    style_pr.body.opa = LV_OPA_20;
-//    lv_imgbtn_set_style(app.imgbtn, LV_IMGBTN_STYLE_REL, &style_pr);
+    /*图片被按下样式*/
+    static lv_style_t style_pr = *lv_imgbtn_get_style(app.imgbtn, LV_IMGBTN_STYLE_PR);
+    style_pr.image.color = LV_COLOR_GRAY;
+    style_pr.image.intense = LV_OPA_70;
+    lv_imgbtn_set_style(app.imgbtn, LV_IMGBTN_STYLE_PR, &style_pr);
     /*关联事件*/
-    lv_obj_set_event_cb(app.imgbtn, ImgbtnEvent_Handler);
+    lv_obj_set_event_cb(app.imgbtn, imgbtn_event_handler);
 
     /*在图标下创建标签*/
     app.label = lv_label_create(app.cont, NULL);
@@ -289,7 +278,7 @@ static void Setup()
     __ExecuteOnce(__LoopExecute(Creat_Tab(tabviewHome, AppTab_Grp[i]), __Sizeof(AppTab_Grp)));
     
     /*在主Tab创建APP组*/
-    __LoopExecute(Creat_APP(APP_Grp[i], AppTab_Grp[tabHomeIndex].tab, i), __Sizeof(APP_Grp));
+    __LoopExecute(Creat_APP(APP_Grp[i], AppTab_Grp[tabHomeIndex].tab, i, ImgbtnEvent_Handler), __Sizeof(APP_Grp));
     
     /*Tab滑动至主页面*/
     __ExecuteOnce(lv_tabview_set_tab_act(tabviewHome, tabHomeIndex, LV_ANIM_ON));
@@ -313,7 +302,7 @@ static void Setup()
 static void Exit()
 {
     /*为APP开启动画延时*/
-    vTaskDelay(AnimCloseTime_Default);
+    vTaskDelay(AnimCloseTime_Default + 100);
     
     /*置于顶层关闭*/
     lv_obj_set_top(contAppSw, false);

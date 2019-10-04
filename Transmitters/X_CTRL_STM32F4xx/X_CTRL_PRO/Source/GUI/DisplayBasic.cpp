@@ -17,6 +17,7 @@ static void Init_Pages()
     PageRegister_LuaScript(PAGE_LuaScript);
     PageRegister_SetDisplay(PAGE_SetDisplay);
     PageRegister_FileExplorer(PAGE_FileExplorer);
+    PageRegister_SubAPPs(PAGE_SubAPPs);
     
     page.PageChangeTo(PAGE_Home);
 }

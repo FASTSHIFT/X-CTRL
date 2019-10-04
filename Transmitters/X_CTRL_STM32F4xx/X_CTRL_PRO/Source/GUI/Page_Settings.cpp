@@ -1,6 +1,7 @@
 #include "FileGroup.h"
 #include "DisplayPrivate.h"
 #include "Module.h"
+#include "APP_Type.h"
 
 static lv_obj_t * mboxPower;
 

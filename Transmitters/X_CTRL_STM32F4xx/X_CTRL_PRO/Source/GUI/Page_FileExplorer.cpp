@@ -2,6 +2,7 @@
 #include "DisplayPrivate.h"
 #include "SdFat.h"
 #include "LuaScript.h"
+#include "Module.h"
 
 static SdFile root;
 
@@ -91,23 +92,22 @@ static bool MboxThorw(const char *text)
 }
 
 /*File open way*/
-static char TextBuff[5 * 1024];
 static void OpenTextFile(const char * filename)
 {
     SdFile file;
     if(file.open(filename, O_RDONLY))
     {
-        if(file.available() < sizeof(TextBuff))
+        if(file.available() < TextGetSize())
         {
-            memset(TextBuff, 0, sizeof(TextBuff));
-            file.read(TextBuff, sizeof(TextBuff));
-            LuaCodeSet(TextBuff);
+            TextClear();
+            file.read(TextGetBuff(), TextGetSize());
+            LuaCodeSet(TextGetBuff());
             page.PageChangeTo(PAGE_LuaScript);
         }
         else
         {
             char str[50];
-            sprintf(str, "file size too large!\n(%0.2fKB > buffer size(%0.2fKB))", (float)file.available() / 1024.0f, sizeof(TextBuff) / 1024.0f);
+            sprintf(str, "file size too large!\n(%0.2fKB > buffer size(%0.2fKB))", (float)file.available() / 1024.0f, TextGetSize() / 1024.0f);
             MboxThorw(str);
         }
         file.close();
@@ -341,7 +341,6 @@ static void Event(int event, void* param)
             {
                 page.PageChangeTo(PAGE_Home);
             }
-
         }
     }
     else if(event == LV_EVENT_LONG_PRESSED_REPEAT)

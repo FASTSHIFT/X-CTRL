@@ -19,7 +19,6 @@ extern SCREEN_CLASS screen;
 /*LittleVGL*/
 #include "lvgl.h"
 #include "lv_conf.h"
-#include "lv_ex_conf.h"
 
 void lv_user_init();
 void lv_user_fs_init();
@@ -40,6 +39,7 @@ typedef enum
     PAGE_BattInfo,
     PAGE_LuaScript,
     PAGE_FileExplorer,
+    PAGE_SubAPPs,
     PAGE_MAX
 } Page_Type;
 
@@ -51,6 +51,7 @@ void PageRegister_LuaScript(uint8_t pageID);
 void PageRegister_Settings(uint8_t pageID);
 void PageRegister_SetDisplay(uint8_t pageID);
 void PageRegister_FileExplorer(uint8_t pageID);
+void PageRegister_SubAPPs(uint8_t pageID);
 
 /*Bar*/
 void Init_Bar();
@@ -63,13 +64,6 @@ extern lv_obj_t * btnBack;
 
 #define APP_WIN_HEIGHT (lv_obj_get_height(appWindow))
 #define APP_WIN_WIDTH  (lv_obj_get_width(appWindow))
-
-/*Types*/
-typedef enum{
-    TYPE_None,
-    TYPE_PageJump,
-    TYPE_FuncCall,
-}Func_Type;
 
 /*Widget*/
 void Preloader_Activate(bool isact, lv_obj_t * parent);

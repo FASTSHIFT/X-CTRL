@@ -120,6 +120,8 @@ static void fs_init(void)
     }
 }
 
+#define SD_FILE(file_p) (*(file_t*)file_p)
+
 /**
  * Open a file
  * @param drv pointer to a driver where this function belongs
@@ -136,11 +138,13 @@ static lv_fs_res_t fs_open (lv_fs_drv_t * drv, void * file_p, const char * path,
     else if(mode == LV_FS_MODE_RD) flags = O_RDONLY;
     else if(mode == (LV_FS_MODE_WR | LV_FS_MODE_RD)) flags = O_ACCMODE;
     
-    SdFile file;
+    /*必须构造文件对象*/
+    file_t file;
     if(file.open(path, flags))
     {
         file.seekSet(0);
-        (*(file_t*)file_p) = file;
+        /*拷贝数据到lv申请的内存区域*/
+        SD_FILE(file_p) = file;
         return LV_FS_RES_OK;
     }
     else
@@ -159,8 +163,7 @@ static lv_fs_res_t fs_open (lv_fs_drv_t * drv, void * file_p, const char * path,
  */
 static lv_fs_res_t fs_close (lv_fs_drv_t * drv, void * file_p)
 {
-    SdFile file = *(file_t*)file_p;
-    file.close();
+    SD_FILE(file_p).close();
     return LV_FS_RES_OK;
 }
 
@@ -174,21 +177,12 @@ static lv_fs_res_t fs_close (lv_fs_drv_t * drv, void * file_p)
  * @return LV_FS_RES_OK: no error, the file is read
  *         any error from lv_fs_res_t enum
  */
+
 static lv_fs_res_t fs_read (lv_fs_drv_t * drv, void * file_p, void * buf, uint32_t btr, uint32_t * br)
 {
-    SdFile file = *(file_t*)file_p;
-    if(file.available())
-    {
-        file.read(buf, btr);
-        return LV_FS_RES_OK;
-    }
-    else
-    {
-        return LV_FS_RES_UNKNOWN;
-    }
-//    FRESULT res = f_read(file_p, buf, btr, (UINT*)br);
-//    if(res == FR_OK) return LV_FS_RES_OK;
-//    else return LV_FS_RES_UNKNOWN;
+    int res;
+    *br = res = SD_FILE(file_p).read(buf, btr);
+    return (res == -1) ? LV_FS_RES_UNKNOWN : LV_FS_RES_OK;
 }
 
 /**
@@ -202,15 +196,9 @@ static lv_fs_res_t fs_read (lv_fs_drv_t * drv, void * file_p, void * buf, uint32
  */
 static lv_fs_res_t fs_write(lv_fs_drv_t * drv, void * file_p, const void * buf, uint32_t btw, uint32_t * bw)
 {
-    SdFile file = *(file_t*)file_p;
-    int res = file.write(buf, btw);
-    if(res != -1)
-        return LV_FS_RES_OK;
-    else
-        return LV_FS_RES_UNKNOWN;
-//    FRESULT res = f_write(file_p, buf, btw, (UINT*)bw);
-//    if(res == FR_OK) return LV_FS_RES_OK;
-//    else return LV_FS_RES_UNKNOWN;
+    int res;
+    *bw = res = SD_FILE(file_p).write(buf, btw);
+    return (res == -1) ? LV_FS_RES_UNKNOWN : LV_FS_RES_OK;
 }
 
 /**
@@ -223,9 +211,7 @@ static lv_fs_res_t fs_write(lv_fs_drv_t * drv, void * file_p, const void * buf, 
  */
 static lv_fs_res_t fs_seek (lv_fs_drv_t * drv, void * file_p, uint32_t pos)
 {
-    SdFile file = *(file_t*)file_p;
-    file.seekSet(pos);
-    //f_lseek(file_p, pos);
+    SD_FILE(file_p).seekSet(pos);
     return LV_FS_RES_OK;
 }
 
@@ -238,9 +224,7 @@ static lv_fs_res_t fs_seek (lv_fs_drv_t * drv, void * file_p, uint32_t pos)
  */
 static lv_fs_res_t fs_size (lv_fs_drv_t * drv, void * file_p, uint32_t * size_p)
 {
-    SdFile file = *(file_t*)file_p;
-    (*size_p) = file.fileSize();
-    //(*size_p) = f_size(((file_t *)file_p));
+    (*size_p) = SD_FILE(file_p).fileSize();
     return LV_FS_RES_OK;
 }
 
@@ -254,8 +238,7 @@ static lv_fs_res_t fs_size (lv_fs_drv_t * drv, void * file_p, uint32_t * size_p)
  */
 static lv_fs_res_t fs_tell (lv_fs_drv_t * drv, void * file_p, uint32_t * pos_p)
 {
-    SdFile file = *(file_t*)file_p;
-    *pos_p = file.curPosition();
+    *pos_p = SD_FILE(file_p).curPosition();
     //*pos_p = f_tell(((file_t *)file_p));
     return LV_FS_RES_OK;
 }
@@ -286,7 +269,7 @@ static lv_fs_res_t fs_remove (lv_fs_drv_t * drv, const char *path)
  */
 static lv_fs_res_t fs_trunc (lv_fs_drv_t * drv, void * file_p)
 {
-    ((file_t*)file_p)->sync();
+    SD_FILE(file_p).sync();
     //f_sync(file_p);           /*If not syncronized fclose can write the truncated part*/
     //f_truncate(file_p);
     return LV_FS_RES_OK;
