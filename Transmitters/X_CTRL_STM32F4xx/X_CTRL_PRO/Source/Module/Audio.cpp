@@ -94,7 +94,7 @@ static void Wav_BufferUpdate()
 
 static void Init_WaveTest()
 {
-    wavFile = SD.open("UNTALG.wav");
+    wavFile = SD.open("Music/UNTALG.wav");
     while(WaveBuffer.available() < FIFO_Size - 16)
     {
         Wav_BufferUpdate();

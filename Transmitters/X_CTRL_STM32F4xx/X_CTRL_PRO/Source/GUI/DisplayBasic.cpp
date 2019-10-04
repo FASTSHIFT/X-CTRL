@@ -2,6 +2,9 @@
 #include "DisplayPrivate.h"
 #include "TasksManage.h"
 
+TaskHandle_t TaskHandle_Display = 0;
+TaskHandle_t TaskHandle_PageRun = 0;
+
 SCREEN_CLASS screen(
     TFT_PORT_Pin, TFT_RST_Pin, TFT_CS_Pin,
     TFT_RS_Pin, TFT_RW_Pin, TFT_RD_Pin

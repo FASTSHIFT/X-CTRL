@@ -1245,6 +1245,11 @@
               <FileType>1</FileType>
               <FilePath>..\Libraries\FreeRTOS\Source\cpu_utils.c</FilePath>
             </File>
+            <File>
+              <FileName>printf-stdarg.c</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Libraries\FreeRTOS\Source\printf-stdarg.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

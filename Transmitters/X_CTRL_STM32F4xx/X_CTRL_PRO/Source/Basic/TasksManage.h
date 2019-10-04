@@ -11,6 +11,10 @@
 #include "Source/cpu_utils.h"
 
 /*Ext Function*/
+#define KByteToWord(kb) (kb * 1024 / 4)
+
+#define uxTaskGetFreeStackByte(TaskHandle_x) (uxTaskGetStackHighWaterMark(TaskHandle_x)*4)
+
 #define xTaskReg(func,stack,priority,handle) xTaskCreate(func,#func,stack,NULL,priority,handle)
 
 #define xTimerReg(func,time) xTimerCreate(#func,time,pdTRUE,0,func)
@@ -30,6 +34,8 @@ void Task_ReadBattInfo(TimerHandle_t xTimer);
 /*TaskHandle*/
 extern TaskHandle_t TaskHandle_LuaScript;
 extern TaskHandle_t TaskHandle_WavPlayer;
+extern TaskHandle_t TaskHandle_Display;
+extern TaskHandle_t TaskHandle_PageRun;
 
 /*TimerHandle*/
 extern TimerHandle_t TimerHandle_Motor;
