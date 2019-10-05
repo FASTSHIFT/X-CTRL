@@ -85,7 +85,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event)
     {
         if(ListBtn_Grp[index].type == TYPE_PageJump)
         {
-            page.PageChangeTo(ListBtn_Grp[index].param);
+            page.PagePush(ListBtn_Grp[index].param);
         }
         else if(ListBtn_Grp[index].type == TYPE_FuncCall)
         {
@@ -161,7 +161,7 @@ static void Event(int event, void* param)
             }
             else
             {
-                page.PageChangeTo(PAGE_Home);
+                page.PagePop();
             }
         }
     }

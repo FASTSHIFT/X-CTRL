@@ -70,7 +70,7 @@ static void ImgbtnEvent_Handler(lv_obj_t * obj, lv_event_t event)
             if(obj == APP_Grp[i].imgbtn && APP_Grp[i].type == TYPE_PageJump)
             {
                 /*页面跳转*/
-                page.PageChangeTo(APP_Grp[i].param);
+                page.PagePush(APP_Grp[i].param);
                 /*播放跳转动画*/
                 AppSwitch_AnimClose(
                     false,

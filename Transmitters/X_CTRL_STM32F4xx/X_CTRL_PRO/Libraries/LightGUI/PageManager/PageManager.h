@@ -21,7 +21,7 @@ class PageManager {
         EventFunction_t EventCallback;
     } PageList_TypeDef;
 public:
-    PageManager(uint8_t pageMax);
+    PageManager(uint8_t pageMax, uint8_t pageStackSize = 10);
     uint8_t NowPage, LastPage, NextPage;
     bool PageRegister(
         uint8_t pageID,
@@ -31,11 +31,18 @@ public:
         EventFunction_t eventCallback
     );
     bool PageClear(uint8_t pageID);
+    bool PagePush(uint8_t pageID);
+    bool PagePop();
     void PageChangeTo(uint8_t pageID);
     void PageEventTransmit(int event, void* param);
+    void PageStackClear();
     void Running();
 private:
     PageList_TypeDef* PageList;
+    uint8_t *PageStack;
+    uint8_t PageStackSize;
+    uint8_t PageStackTop;
+
     uint8_t MaxPage;
     uint8_t NewPage;
     uint8_t OldPage;

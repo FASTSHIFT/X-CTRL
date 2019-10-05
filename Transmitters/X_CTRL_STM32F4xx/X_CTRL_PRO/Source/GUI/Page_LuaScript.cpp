@@ -182,7 +182,7 @@ static void Event(int event, void* param)
             }
             else
             {
-                page.PageChangeTo(page.LastPage);
+                page.PagePop();
             }
         }
     }

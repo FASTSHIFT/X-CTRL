@@ -8,7 +8,7 @@
   * @param  eventMax: 事件最大数量
   * @retval 无
   */
-PageManager::PageManager(uint8_t pageMax)
+PageManager::PageManager(uint8_t pageMax, uint8_t pageStackSize)
 {
     MaxPage = pageMax;
     NewPage = 0;
@@ -20,6 +20,11 @@ PageManager::PageManager(uint8_t pageMax)
     {
         PageClear(page);
     }
+    
+    /*页面栈配置*/
+    PageStackSize = pageStackSize;
+    PageStack = new uint8_t[PageStackSize];
+    PageStackClear();
 }
 
 /**
@@ -93,6 +98,41 @@ void PageManager::PageChangeTo(uint8_t pageID)
 
         IsPageBusy = true;
     }
+}
+
+bool PageManager::PagePush(uint8_t pageID)
+{
+    if(PageStackTop >= PageStackSize)
+        return false;
+    
+    if(pageID == PageStack[PageStackTop])
+        return false;
+
+    PageStackTop++;
+    PageStack[PageStackTop] = pageID;
+    PageChangeTo(PageStack[PageStackTop]);
+    
+    return true;
+}
+
+bool PageManager::PagePop()
+{
+    if(PageStackTop == 0)
+        return false;
+    
+    PageStackTop--;
+    PageChangeTo(PageStack[PageStackTop]);
+    
+    return true;
+}
+
+void PageManager::PageStackClear()
+{
+    for(uint8_t i = 0; i < PageStackSize; i++)
+    {
+        PageStack[i] = 0;
+    }
+    PageStackTop = 0;
 }
 
 /**

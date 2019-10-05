@@ -156,7 +156,7 @@ static void Event(int event, void* param)
     {
         if(btn == btnBack)
         {
-            page.PageChangeTo(page.LastPage);
+            page.PagePop();
         }
     }
 }

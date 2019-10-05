@@ -110,7 +110,8 @@ static void NaviButtonEvent_Handler(lv_obj_t * obj, lv_event_t event)
     {
         if(obj == btnHome)
         {
-            page.PageChangeTo(PAGE_Home);
+            page.PageStackClear();
+            page.PagePush(PAGE_Home);
         }
         if(IS_DropDownShow)
         {

@@ -102,7 +102,7 @@ static void OpenTextFile(const char * filename)
             TextClear();
             file.read(TextGetBuff(), TextGetSize());
             LuaCodeSet(TextGetBuff());
-            page.PageChangeTo(PAGE_LuaScript);
+            page.PagePush(PAGE_LuaScript);
         }
         else
         {
@@ -339,7 +339,7 @@ static void Event(int event, void* param)
             }
             else
             {
-                page.PageChangeTo(PAGE_Home);
+                page.PagePop();
             }
         }
     }
@@ -347,7 +347,7 @@ static void Event(int event, void* param)
     {
         if(btn == btnBack)
         {
-            page.PageChangeTo(PAGE_Home);
+            page.PagePop();
         }
     }
 }
