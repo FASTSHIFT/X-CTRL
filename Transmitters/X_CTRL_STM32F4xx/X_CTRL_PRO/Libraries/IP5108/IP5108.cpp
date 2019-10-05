@@ -7,7 +7,6 @@ IP5108::IP5108()
 void IP5108::begin(uint8_t addr)
 {
     Address = addr;
-    Wire.begin();
 }
 
 uint8_t IP5108::readReg(REG_t reg)

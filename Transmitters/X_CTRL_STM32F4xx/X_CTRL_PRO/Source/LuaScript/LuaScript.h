@@ -36,6 +36,7 @@ void LuaCodeSet(const char* code);
 void LuaReg_Time();
 void LuaReg_GPIO();
 void LuaReg_ModuleCtrl();
+void LuaReg_Com();
 
 void LuaScriptStart(const char *script);
 

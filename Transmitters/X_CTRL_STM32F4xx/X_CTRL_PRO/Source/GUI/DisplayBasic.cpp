@@ -1,6 +1,7 @@
 #include "FileGroup.h"
 #include "DisplayPrivate.h"
 #include "TasksManage.h"
+#include "Module.h"
 
 TaskHandle_t TaskHandle_Display = 0;
 TaskHandle_t TaskHandle_PageRun = 0;
@@ -41,9 +42,8 @@ void Task_Dispaly(void *pvParameters)
     screen.fillScreen(screen.Black);
     tp_dev.init();
     
-    PWM_Init(TFT_LED_Pin, 1000, 20000);
-    pwmWrite(TFT_LED_Pin, 500);
-    
+    BrightnessSet(500);
+
     lv_user_init();
     lv_user_fs_init();
     lv_theme_set_current(lv_theme_material_init(200, LV_FONT_DEFAULT));

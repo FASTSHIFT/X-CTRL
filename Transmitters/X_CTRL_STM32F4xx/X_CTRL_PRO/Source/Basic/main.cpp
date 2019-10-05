@@ -18,12 +18,14 @@ void Task_FreeStackMonitor(TimerHandle_t xTimer)
 void setup()
 {
     Serial.begin(115200);
+    Wire.begin();
     
     /*Task Create*/
     xTaskReg(Task_Dispaly,   KByteToWord(4), 2, &TaskHandle_Display);
     //xTaskReg(Task_WavPlayer, 512,    0, &TaskHandle_WavPlayer);
     xTaskReg(Task_PageRun,   KByteToWord(2), 1, &TaskHandle_PageRun);
     xTaskReg(Task_LuaScript, KByteToWord(2), 0, &TaskHandle_LuaScript);
+//    xTaskReg(Task_TransferData, KByteToWord(0.5f), 0, &TaskHandle_TransferData);
     
     /*Timer Create*/
     TimerHandle_Motor = xTimerReg(Task_MotorRunning, 10);
@@ -31,6 +33,9 @@ void setup()
 
     TimerHandle_Charger = xTimerReg(Task_ReadBattInfo, 500);
     xTimerStartSafe(TimerHandle_Charger);
+    
+//    TimerHandle_IMU_Claculate = xTimerReg(Task_IMU_Claculate, 20);
+//    xTimerStartSafe(TimerHandle_IMU_Claculate);
 
 #if (USE_STACK_CHECK > 0)    
     TimerHandle_FreeStackMonitor = xTimerReg(Task_FreeStackMonitor, 1000);

@@ -89,43 +89,75 @@ void PageManager::PageEventTransmit(int event, void* param)
   */
 void PageManager::PageChangeTo(uint8_t pageID)
 {
+    if(!IS_PAGE(pageID))
+        return;
+    
     if(!IsPageBusy)
     {
-        if(IS_PAGE(pageID))
-        {
-            NextPage = NewPage = pageID;
-        }
+        NextPage = NewPage = pageID;
 
         IsPageBusy = true;
     }
 }
 
+/**
+  * @brief  页面压栈，跳转至该页面
+  * @param  pageID: 页面编号
+  * @retval true:成功 false:失败
+  */
 bool PageManager::PagePush(uint8_t pageID)
 {
-    if(PageStackTop >= PageStackSize)
+    if(!IS_PAGE(pageID))
         return false;
     
+    /*防止栈溢出*/
+    if(PageStackTop >= PageStackSize - 1)
+        return false;
+    
+    /*防止重复页面压栈*/
     if(pageID == PageStack[PageStackTop])
         return false;
 
+    /*栈顶指针上移*/
     PageStackTop++;
+    
+    /*页面压栈*/
     PageStack[PageStackTop] = pageID;
+    
+    /*页面跳转*/
     PageChangeTo(PageStack[PageStackTop]);
     
     return true;
 }
 
+/**
+  * @brief  页面弹栈，跳转至上一个页面
+  * @param  无
+  * @retval true:成功 false:失败
+  */
 bool PageManager::PagePop()
 {
+    /*防止栈溢出*/
     if(PageStackTop == 0)
         return false;
     
+    /*清空当前页面*/
+    PageStack[PageStackTop] = 0;
+    
+    /*栈顶指针下移*/
     PageStackTop--;
+    
+    /*页面弹栈，跳转*/
     PageChangeTo(PageStack[PageStackTop]);
     
     return true;
 }
 
+/**
+  * @brief  清空页面栈
+  * @param  无
+  * @retval 无
+  */
 void PageManager::PageStackClear()
 {
     for(uint8_t i = 0; i < PageStackSize; i++)

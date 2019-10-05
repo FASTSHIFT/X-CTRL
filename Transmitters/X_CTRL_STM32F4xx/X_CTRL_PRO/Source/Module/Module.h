@@ -20,4 +20,8 @@ char * TextGetBuff(uint32_t start = 0);
 uint32_t TextGetSize();
 void TextClear(uint8_t n = 0);
 
+/*Brightness*/
+uint16_t BrightnessGet();
+void BrightnessSet(uint16_t val);
+
 #endif

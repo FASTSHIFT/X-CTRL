@@ -71,6 +71,6 @@ extern "C"
     
     void HardFault_Handler()
     {
-        ShowCrashReports("hard fault");
+        ShowCrashReports("fuck! hard fault");
     }
 }

@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,HSE_VALUE=8000000,ARDUINO=111,LV_CONF_INCLUDE_SIMPLE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\ArduinoAPI;..\Core;..\Libraries\Adafruit_GFX_Library;..\Libraries\TFT_ILI9488;..\Libraries\GT911;..\Libraries\StrPrinter;..\Libraries\lvgl;..\Libraries\lvgl\lv_examples;..\Libraries\FreeRTOS;..\Libraries\FreeRTOS\Source\include;..\Libraries\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\Source\Basic;..\Source\GUI;..\Source\LuaScript;..\Source\Module;..\Libraries\lua-5.3.2\src;..\Libraries\SdFat\src\FatLib;..\Libraries\SdFat\src\SdCard;..\Libraries\SdFat\src\SpiDriver;..\Libraries\SdFat\src;..\Libraries\NRF;..\Libraries\lvgl\lv_examples\lv_apps\demo;..\Libraries\IP5108;..\Libraries\LightGUI\PageManager;..\Libraries\FifoQueue;..\Libraries\WavDecoder</IncludePath>
+              <IncludePath>..\ArduinoAPI;..\Core;..\Libraries\Adafruit_GFX_Library;..\Libraries\TFT_ILI9488;..\Libraries\GT911;..\Libraries\StrPrinter;..\Libraries\lvgl;..\Libraries\lvgl\lv_examples;..\Libraries\FreeRTOS;..\Libraries\FreeRTOS\Source\include;..\Libraries\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\Source\Basic;..\Source\GUI;..\Source\LuaScript;..\Source\Module;..\Libraries\lua-5.3.2\src;..\Libraries\SdFat\src\FatLib;..\Libraries\SdFat\src\SdCard;..\Libraries\SdFat\src\SpiDriver;..\Libraries\SdFat\src;..\Libraries\NRF;..\Libraries\IP5108;..\Libraries\LightGUI\PageManager;..\Libraries\FifoQueue;..\Libraries\WavDecoder;..\Libraries\I2Cdev;..\Libraries\MPU6050</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -465,6 +465,16 @@
               <FileName>IP5108.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Libraries\IP5108\IP5108.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>I2Cdev.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Libraries\I2Cdev\I2Cdev.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>MPU6050.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Libraries\MPU6050\MPU6050.cpp</FilePath>
             </File>
             <File>
               <FileName>NRF.cpp</FileName>
@@ -667,6 +677,16 @@
               <FilePath>..\Source\Module\Audio.cpp</FilePath>
             </File>
             <File>
+              <FileName>Brightness.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\Module\Brightness.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>IMU.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\Module\IMU.cpp</FilePath>
+            </File>
+            <File>
               <FileName>Motor.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Source\Module\Motor.cpp</FilePath>
@@ -710,6 +730,11 @@
               <FileName>LuaModule.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Source\LuaScript\LuaModule.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>LuaCom.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\LuaScript\LuaCom.cpp</FilePath>
             </File>
           </Files>
         </Group>

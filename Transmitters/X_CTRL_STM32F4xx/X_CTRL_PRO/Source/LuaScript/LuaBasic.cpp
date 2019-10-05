@@ -19,6 +19,7 @@ void Task_LuaScript(void *pvParameters)
     LuaReg_Time();
     LuaReg_GPIO();
     LuaReg_ModuleCtrl();
+    LuaReg_Com();
 
     for(;;)
     {

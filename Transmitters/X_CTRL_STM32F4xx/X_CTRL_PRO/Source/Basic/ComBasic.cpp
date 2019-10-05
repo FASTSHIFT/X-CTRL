@@ -1,5 +1,8 @@
 #include "FileGroup.h"
+#include "TasksManage.h"
 #include "ComPrivate.h"
+
+TaskHandle_t TaskHandle_TransferData;
 
 /*失联超时500ms*/
 #define ConnectLost_TimeOut 500
@@ -35,7 +38,7 @@ int16_t NRF_SignalStrength = 0;
 NRF_Config_TypeDef NRF_Cfg = {0, 0, 40};
 
 /*发送数据使能*/
-bool State_RF = OFF;
+bool State_RF = ON;
 
 /*回传使能*/
 bool State_PassBack = ON;
@@ -54,7 +57,7 @@ bool State_Handshake = ON;
   * @param  无
   * @retval true成功 false失败
   */
-bool Init_NRF()
+static bool Init_NRF()
 {
     /*总初始化*/
     nrf.init(nrf.TXRX_MODE, NRF_TxBuff, sizeof(NRF_TxBuff), sizeof(NRF_RxBuff));
@@ -229,46 +232,63 @@ static void LoadDataPack()
   */
 void Task_TransferData(void *pvParameters)
 {
-    if(State_RF == OFF) return;
-
-    LoadDataPack();//打包数据包
-
-    if(ConnectState.Pattern == Pattern_NRF)
+    if(State_RF == OFF)
     {
-        /*是否开启回传*/
-        if(State_PassBack)
+        while(1);
+    }
+    
+    if(!Init_NRF())
+    {
+        while(1);
+    }
+    
+    for(;;)
+    {
+        vTaskDelay(10);
+        
+        if(State_RF)
         {
-            /*NRF收发数据*/
-            nrf.TranRecvSafe(NRF_TxBuff, NRF_RxBuff);
+        
+            LoadDataPack();//打包数据包
 
-            /*数组第二位为0说明是用户自定义回传类型*/
-            if(NRF_RxBuff[1] == 0)
+            if(ConnectState.Pattern == Pattern_NRF)
             {
-                Enable_CommonPassBack = false;
-
-                /*调用用户自定义回传数据解析数据*/
-                for(uint8_t i = 0; i < __Sizeof(LoadUserCustomPassBack_Group); i++)
+                /*是否开启回传*/
+                if(State_PassBack)
                 {
-                    if(LoadUserCustomPassBack_Group[i])
-                        LoadUserCustomPassBack_Group[i](NRF_RxBuff);
+                    /*NRF收发数据*/
+                    nrf.TranRecvSafe(NRF_TxBuff, NRF_RxBuff);
+
+                    /*数组第二位为0说明是用户自定义回传类型*/
+                    if(NRF_RxBuff[1] == 0)
+                    {
+                        Enable_CommonPassBack = false;
+
+                        /*调用用户自定义回传数据解析数据*/
+                        for(uint8_t i = 0; i < __Sizeof(LoadUserCustomPassBack_Group); i++)
+                        {
+                            if(LoadUserCustomPassBack_Group[i])
+                                LoadUserCustomPassBack_Group[i](NRF_RxBuff);
+                            else
+                                break;
+                        }
+                    }
                     else
-                        break;
-                }
-            }
-            else
-            {
-                Enable_CommonPassBack = true;
+                    {
+                        Enable_CommonPassBack = true;
 
-                /*是否锁定回传数据*/
-                if(!Lock_CommonPassback)
+                        /*是否锁定回传数据*/
+                        if(!Lock_CommonPassback)
+                        {
+                            Common_Passback = __TypeExplain(Protocol_Passback_CommonDisplay_t, NRF_RxBuff);
+                        }
+                    }
+                }
+                else
                 {
-                    Common_Passback = __TypeExplain(Protocol_Passback_CommonDisplay_t, NRF_RxBuff);
+                    nrf.Tran(NRF_TxBuff);//NRF发送数据
                 }
             }
-        }
-        else
-        {
-            nrf.Tran(NRF_TxBuff);//NRF发送数据
         }
     }
 }

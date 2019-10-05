@@ -1,11 +1,10 @@
 #include "FileGroup.h"
 #include "DisplayPrivate.h"
+#include "Module.h"
 
 /****************** Bright Ctrl ****************/
 static lv_obj_t * sliderBright;
 static lv_obj_t * labelBright;
-
-#define getBright() timer_get_compare(PIN_MAP[TFT_LED_Pin].TIMx, PIN_MAP[TFT_LED_Pin].TimerChannel)
 
 static void event_handler(lv_obj_t * obj, lv_event_t event)
 {
@@ -13,7 +12,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event)
     {
         int value = lv_slider_get_value(obj);
         lv_label_set_text_format(labelBright, "%d%%", value / 10);
-        analogWrite(TFT_LED_Pin, value);
+        BrightnessSet(value);
     }
 }
 
@@ -22,7 +21,7 @@ static void Creat_Slider(lv_obj_t** slider)
     /*Create a slider*/
     *slider = lv_slider_create(appWindow, NULL);
     lv_slider_set_range(*slider, 5, 1000);
-    lv_slider_set_value(*slider, getBright(), LV_ANIM_ON);
+    lv_slider_set_value(*slider, BrightnessGet(), LV_ANIM_ON);
     
     lv_obj_set_size(*slider, APP_WIN_WIDTH - 30, 20);
     lv_obj_align(*slider, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -32,7 +31,7 @@ static void Creat_Slider(lv_obj_t** slider)
 static void Creat_Label(lv_obj_t** label)
 {
     *label = lv_label_create(appWindow, NULL);
-    lv_label_set_text_format(*label, "%d%%", getBright() / 10);
+    lv_label_set_text_format(*label, "%d%%", BrightnessGet() / 10);
     lv_obj_align(*label, sliderBright, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
 }
 

@@ -30,15 +30,18 @@ void Task_PageRun(void *pvParameters);
 /*Timer Functions*/
 void Task_MotorRunning(TimerHandle_t xTimer);
 void Task_ReadBattInfo(TimerHandle_t xTimer);
+void Task_IMU_Claculate(TimerHandle_t xTimer);
 
 /*TaskHandle*/
 extern TaskHandle_t TaskHandle_LuaScript;
 extern TaskHandle_t TaskHandle_WavPlayer;
 extern TaskHandle_t TaskHandle_Display;
 extern TaskHandle_t TaskHandle_PageRun;
+extern TaskHandle_t TaskHandle_TransferData;
 
 /*TimerHandle*/
 extern TimerHandle_t TimerHandle_Motor;
 extern TimerHandle_t TimerHandle_Charger;
+extern TimerHandle_t TimerHandle_IMU_Claculate;
 
 #endif

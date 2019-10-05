@@ -60,8 +60,8 @@ static void Creat_Keyboard(lv_obj_t * parent, lv_obj_t * ta, lv_event_cb_t keybo
 
 static void kb_hide_anim_end(lv_anim_t * a)
 {
-    lv_obj_del((lv_obj_t*)a->var);
-    keyboard = NULL;
+//    lv_obj_del((lv_obj_t*)a->var);
+    lv_obj_del_safe(&keyboard);
 }
 
 void Keyboard_Activate(bool isact, lv_obj_t * parent, lv_obj_t * ta, lv_event_cb_t keyboard_event_cb)

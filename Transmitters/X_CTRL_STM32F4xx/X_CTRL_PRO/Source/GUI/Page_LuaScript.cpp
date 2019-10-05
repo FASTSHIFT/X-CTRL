@@ -148,7 +148,9 @@ static void keyboard_event_cb(lv_obj_t * keyboard, lv_event_t event)
   */
 static void Setup()
 {
-    PageCreat_LuaScript();
+    __ExecuteOnce(PageCreat_LuaScript());
+    lv_obj_set_hidden(tv, false);
+    lv_ta_set_text(ta_input, luaCode);
 }
 
 /**
@@ -159,8 +161,8 @@ static void Setup()
 static void Exit()
 {
     luaScript.end();
-
-    lv_obj_del_safe(&tv);
+    lv_obj_set_hidden(tv, true);
+    //lv_obj_del_safe(&tv);
 }
 
 /**
