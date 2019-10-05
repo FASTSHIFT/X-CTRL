@@ -22,6 +22,7 @@ static void Init_Pages()
     PageRegister_SetDisplay(PAGE_SetDisplay);
     PageRegister_FileExplorer(PAGE_FileExplorer);
     PageRegister_SubAPPs(PAGE_SubAPPs);
+    PageRegister_TextEditor(PAGE_TextEditor);
     
     page.PagePush(PAGE_Home);
 }

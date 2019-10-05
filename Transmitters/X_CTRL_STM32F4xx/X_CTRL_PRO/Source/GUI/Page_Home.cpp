@@ -48,7 +48,7 @@ static APP_TypeDef APP_Grp[] =
     {&ImgSubApps,  "APPs",     TYPE_PageJump, PAGE_SubAPPs},
     {&ImgFiles,    "Files",    TYPE_PageJump, PAGE_FileExplorer},
     {&ImgInternet, "Internet"},
-    {&ImgMessage,  "Message"},
+    {&ImgMessage,  "Message",  TYPE_PageJump, PAGE_TextEditor},
     {&ImgPlay,     "Player"},
     {&ImgUSB,      "USB"},
 };

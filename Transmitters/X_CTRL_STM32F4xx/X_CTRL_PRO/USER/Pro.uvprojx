@@ -666,6 +666,11 @@
               <FileType>8</FileType>
               <FilePath>..\Source\GUI\Page_SubAPPs.cpp</FilePath>
             </File>
+            <File>
+              <FileName>Page_TextEditor.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Source\GUI\Page_TextEditor.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

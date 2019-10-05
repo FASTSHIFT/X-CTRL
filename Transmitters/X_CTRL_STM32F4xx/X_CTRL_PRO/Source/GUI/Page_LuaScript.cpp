@@ -5,13 +5,13 @@
 
 static void write_create(lv_obj_t * parent);
 static void luaoutput_creat(lv_obj_t * parent);
-static void text_area_event_handler(lv_obj_t * text_area, lv_event_t event);
-static void keyboard_event_cb(lv_obj_t * keyboard, lv_event_t event);
+static void TextAreaEvent_Handler(lv_obj_t * text_area, lv_event_t event);
+static void KeyboardEvent_Handler(lv_obj_t * kb, lv_event_t event);
 
 static lv_obj_t * ta_input;
 static lv_obj_t * ta_output;
 static lv_obj_t * tv;
-static lv_obj_t * btn_clear;
+static lv_obj_t * keyboard;
 
 void PageCreat_LuaScript()
 {   
@@ -44,14 +44,6 @@ void LuaCodeSet(const char* code)
     luaCode = code;
 }
 
-static void btn_event_handler(lv_obj_t * obj, lv_event_t event)
-{
-    if(event == LV_EVENT_LONG_PRESSED)
-    {
-        lv_ta_set_text(ta_input, "");
-    }
-}
-
 static void write_create(lv_obj_t * parent)
 {
     lv_page_set_style(parent, LV_PAGE_STYLE_BG, &lv_style_transp_fit);
@@ -63,15 +55,8 @@ static void write_create(lv_obj_t * parent)
     ta_input = lv_ta_create(parent, NULL);
     lv_obj_set_size(ta_input, lv_page_get_scrl_width(parent), lv_obj_get_height(parent));
     lv_ta_set_text(ta_input, luaCode);
-    lv_obj_set_event_cb(ta_input, text_area_event_handler);
+    lv_obj_set_event_cb(ta_input, TextAreaEvent_Handler);
     lv_ta_set_text_sel(ta_input, true);
-    
-    /*btn*/
-    btn_clear = lv_btn_create(ta_input, NULL);
-    lv_obj_set_event_cb(btn_clear, btn_event_handler);
-    lv_obj_align(btn_clear, ta_input, LV_ALIGN_IN_BOTTOM_RIGHT, -5, -5);
-    lv_obj_t * label = lv_label_create(btn_clear, NULL);
-    lv_label_set_text(label, "Clear");
 }
 
 static void luaoutput_creat(lv_obj_t * parent)
@@ -88,14 +73,14 @@ static void luaoutput_creat(lv_obj_t * parent)
     lv_ta_set_text(ta_output, "");
 }
 
-static void text_area_event_handler(lv_obj_t * text_area, lv_event_t event)
+static void TextAreaEvent_Handler(lv_obj_t * text_area, lv_event_t event)
 {
     /*Text area is on the scrollable part of the page but we need the page itself*/
     lv_obj_t * parent = lv_obj_get_parent(lv_obj_get_parent(ta_input));
 
     if(event == LV_EVENT_CLICKED)
     {
-        Keyboard_Activate(true, parent, ta_input, keyboard_event_cb);
+        Keyboard_Activate(&keyboard, true, parent, ta_input, KeyboardEvent_Handler);
     }
 }
 
@@ -117,13 +102,22 @@ static void LuaPrintCallback(const char* s)
  * @param keyboard pointer to the keyboard
  * @return
  */
-static void keyboard_event_cb(lv_obj_t * keyboard, lv_event_t event)
+static void KeyboardEvent_Handler(lv_obj_t * kb, lv_event_t event)
 {
-    lv_kb_def_event_cb(keyboard, event);
+    lv_kb_def_event_cb(kb, event);
+    const char * txt = lv_btnm_get_active_btn_text(kb);
     
     if(event == LV_EVENT_PRESSED)
     {
         Motor_Vibrate(1.0f, 20);
+    }
+    
+    if(event == LV_EVENT_LONG_PRESSED_REPEAT)
+    {
+        if(strcmp(txt, "Bksp") == 0)
+        {
+            lv_ta_set_text(ta_input, "");
+        }
     }
     
     if(event == LV_EVENT_APPLY)
@@ -137,7 +131,12 @@ static void keyboard_event_cb(lv_obj_t * keyboard, lv_event_t event)
     if(event == LV_EVENT_CANCEL)
     {
         luaScript.end();
-        Keyboard_Activate(false, NULL, NULL, NULL);
+        Keyboard_Activate(&keyboard, false, NULL, NULL, NULL);
+    }
+    
+    if(event == LV_EVENT_DELETE)
+    {
+        keyboard = NULL;
     }
 }
 
@@ -178,9 +177,9 @@ static void Event(int event, void* param)
     {
         if(btn == btnBack)
         {
-            if(Keyboard_GetObj())
+            if(keyboard)
             {
-                lv_event_send(Keyboard_GetObj(), LV_EVENT_CANCEL, NULL);
+                lv_event_send(keyboard, LV_EVENT_CANCEL, NULL);
             }
             else
             {

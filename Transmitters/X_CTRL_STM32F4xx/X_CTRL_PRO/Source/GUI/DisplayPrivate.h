@@ -40,6 +40,7 @@ typedef enum
     PAGE_LuaScript,
     PAGE_FileExplorer,
     PAGE_SubAPPs,
+    PAGE_TextEditor,
     PAGE_MAX
 } Page_Type;
 
@@ -52,6 +53,7 @@ void PageRegister_Settings(uint8_t pageID);
 void PageRegister_SetDisplay(uint8_t pageID);
 void PageRegister_FileExplorer(uint8_t pageID);
 void PageRegister_SubAPPs(uint8_t pageID);
+void PageRegister_TextEditor(uint8_t pageID);
 
 /*Bar*/
 void Init_Bar();
@@ -66,9 +68,20 @@ extern lv_obj_t * btnBack;
 #define APP_WIN_WIDTH  (lv_obj_get_width(appWindow))
 
 /*Widget*/
-void Preloader_Activate(bool isact, lv_obj_t * parent);
-void Keyboard_Activate(bool isact, lv_obj_t * parent, lv_obj_t * ta, lv_event_cb_t keyboard_event_cb);
-lv_obj_t * Keyboard_GetObj();
+void Preloader_Activate(
+    bool isact, 
+    lv_obj_t * parent
+);
+    
+void Keyboard_Activate(
+    lv_obj_t** kb,
+    bool isact, 
+    lv_obj_t * parent, 
+    lv_obj_t * ta, 
+    lv_event_cb_t 
+    keyboard_event_cb
+);
+    
 void MessageBox_Activate(
     bool isact, 
     lv_obj_t * parent, 

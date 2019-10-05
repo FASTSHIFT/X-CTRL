@@ -81,7 +81,7 @@ static void IMUupdate(float ax, float ay, float az, float gx, float gy, float gz
   */
 static void Init_MPU6050()
 {
-    __LoopExecute(mpu.initialize(), 10);
+    __LoopExecute(mpu.initialize(), 100);
 //    mpu.setClockSource(MPU6050_CLOCK_INTERNAL);
 //    mpu.setDLPFMode(0);
 //    mpu.setRate(15);
@@ -108,8 +108,6 @@ void Task_IMU_Claculate(TimerHandle_t xTimer)
     MPU_Data.Y = -fmap(Roll, -max, max, -CtrlOutput_MaxValue, CtrlOutput_MaxValue);
     __LimitValue(MPU_Data.X, -CtrlOutput_MaxValue, CtrlOutput_MaxValue);
     __LimitValue(MPU_Data.Y, -CtrlOutput_MaxValue, CtrlOutput_MaxValue);
-    
-    Serial.print(MPU_Data.X);
     
 //    /*Page_SetGravity.cpp*/
 //    /*将MPU所产生的数据替代摇杆值*/

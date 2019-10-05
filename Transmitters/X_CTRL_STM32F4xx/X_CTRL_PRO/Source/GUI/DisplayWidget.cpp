@@ -29,28 +29,27 @@ void Preloader_Activate(bool isact, lv_obj_t * parent)
 }
 
 /***************************Keyboard****************************/
-static lv_obj_t * keyboard = NULL;
-
-static void Creat_Keyboard(lv_obj_t * parent, lv_obj_t * ta, lv_event_cb_t keyboard_event_cb)
+static void Creat_Keyboard(lv_obj_t** kb, lv_obj_t * parent, lv_obj_t * ta, lv_event_cb_t keyboard_event_cb)
 {
-    keyboard = lv_kb_create(parent, NULL);
-    lv_obj_set_size(keyboard, lv_obj_get_width_fit(parent), lv_obj_get_height_fit(parent) / 2);
-    lv_obj_align(keyboard, barNavigation, LV_ALIGN_OUT_TOP_MID, 0, 0);
+    *kb = lv_kb_create(parent, NULL);
+//    lv_obj_set_size(*kb, lv_obj_get_width_fit(parent), lv_obj_get_height_fit(parent) / 2);
+    lv_obj_set_size(*kb, APP_WIN_WIDTH, APP_WIN_HEIGHT / 2);
+    lv_obj_align(*kb, barNavigation, LV_ALIGN_OUT_TOP_MID, 0, 0);
     
     if(ta)
     {
-        lv_kb_set_ta(keyboard, ta);
+        lv_kb_set_ta(*kb, ta);
     }
     
     if(keyboard_event_cb)
     {
-        lv_obj_set_event_cb(keyboard, keyboard_event_cb);
+        lv_obj_set_event_cb(*kb, keyboard_event_cb);
     }
 
     static lv_anim_t a;
-    a.var = keyboard;
+    a.var = *kb;
     a.start = LV_VER_RES;
-    a.end = lv_obj_get_y(keyboard);
+    a.end = lv_obj_get_y(*kb);
     a.exec_cb = (lv_anim_exec_xcb_t)lv_obj_set_y;
     a.path_cb = lv_anim_path_linear;
     a.ready_cb = NULL;
@@ -60,26 +59,31 @@ static void Creat_Keyboard(lv_obj_t * parent, lv_obj_t * ta, lv_event_cb_t keybo
 
 static void kb_hide_anim_end(lv_anim_t * a)
 {
-//    lv_obj_del((lv_obj_t*)a->var);
-    lv_obj_del_safe(&keyboard);
+    lv_obj_del((lv_obj_t*)a->var);
 }
 
-void Keyboard_Activate(bool isact, lv_obj_t * parent, lv_obj_t * ta, lv_event_cb_t keyboard_event_cb)
+void Keyboard_Activate(
+    lv_obj_t** kb, 
+    bool isact, 
+    lv_obj_t * parent,
+    lv_obj_t * ta, 
+    lv_event_cb_t keyboard_event_cb
+)
 {
     if(isact)
     {
-        if(!keyboard)
+        if(!(*kb))
         {
-            Creat_Keyboard(parent, ta, keyboard_event_cb);
+            Creat_Keyboard(&(*kb), parent, ta, keyboard_event_cb);
         }
     }
     else
     {
-        if(keyboard)
+        if(*kb)
         {
             static lv_anim_t a;
-            a.var = keyboard;
-            a.start = lv_obj_get_y(keyboard);
+            a.var = *kb;
+            a.start = lv_obj_get_y(*kb);
             a.end = LV_VER_RES;
             a.exec_cb = (lv_anim_exec_xcb_t)lv_obj_set_y;
             a.path_cb = lv_anim_path_linear;
@@ -88,11 +92,6 @@ void Keyboard_Activate(bool isact, lv_obj_t * parent, lv_obj_t * ta, lv_event_cb
             lv_anim_create(&a);
         }
     }
-}
-
-lv_obj_t * Keyboard_GetObj()
-{
-    return keyboard;
 }
 
 /***************************MessageBox****************************/
