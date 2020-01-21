@@ -44,13 +44,13 @@ static LightGUI::ProgressBar<SCREEN_CLASS> WavPrg(&screen, 5, PRG_POS_Y, PRG_WID
 
 static void Task_UpdateProgress()
 {
-    WavPrg.setProgress((float)wav.DataPosition/wav.DataSize);
+    WavPrg.setProgress((float)wav.DataPosition / wav.DataSize);
     TextSetDefault();
     screen.setCursor(5, WavPrg.Y - TEXT_HEIGHT_2 - 2);
     int sec = wav.DataPosition / wav.Header.BytePerSecond;
     int min = sec / 60;
     screen.printfX("%02d:%02d ", min, sec % 60);
-    
+
     if(wav.IsEnd)
         page.PagePop();
 }
@@ -72,7 +72,7 @@ static uint8_t Wav_TestInterface(HWAVEFILE handle, uint8_t size, uint8_t **buffe
 {
     static uint8_t BUFFER[40];
     int bufferPos = 0;
-    
+
     while(size --)
     {
         BUFFER[bufferPos ++] = WavFifo.read();
@@ -140,7 +140,7 @@ static void Setup()
     TextSetDefault();
     TextMidPrint(0.5f, 0.5f, (char*)WavFilePath.c_str());
     Init_WaveTest();
-    
+
     mtm_WavPlayer.TaskRegister(0, Task_WavBufferUpdate, 0);
     mtm_WavPlayer.TaskRegister(1, Task_UpdateProgress, 400);
 }
@@ -170,7 +170,7 @@ static void Exit()
     digitalWrite(Buzz_Pin, LOW);
     State_BuzzSound = lastState_BuzzSound;
     ClearPage();
-    
+
     Init_StatusBar();
 }
 
@@ -179,7 +179,7 @@ static void Exit()
   * @param  нч
   * @retval нч
   */
-static void Event(int event, void * param)
+static void Event(int event, void* param)
 {
     if(EVENT_ButtonPress)
     {

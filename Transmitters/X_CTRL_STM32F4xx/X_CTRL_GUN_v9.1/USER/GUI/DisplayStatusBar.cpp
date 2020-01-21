@@ -179,7 +179,7 @@ void Init_StatusBar()
     mtm_StatusBar.TaskRegister(0, Task_DrawBattUsage, 20);
     mtm_StatusBar.TaskRegister(1, Task_1000msUpdate, 1000);
     mtm_StatusBar.TaskRegister(2, Task_DrawNrfTxRxState, 123);
-    
+
     State_StatusBarEnable = true;
 }
 
@@ -203,6 +203,6 @@ void Thread_StatusBar()
 {
     if(!State_StatusBarEnable)
         return;
-    
+
     mtm_StatusBar.Running(millis());
 }

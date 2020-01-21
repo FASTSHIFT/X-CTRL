@@ -128,7 +128,7 @@ static void Exit()
   * @param  нч
   * @retval нч
   */
-static void Event(int event, void * param)
+static void Event(int event, void* param)
 {
     if(param == &ecd)
     {
@@ -138,7 +138,7 @@ static void Event(int event, void * param)
         if(ecd > 0 && CursorSelect < 1)
             CursorSelect++;
     }
-    
+
     if(event == EVENT_ButtonPress)
     {
         if(btDOWN && CursorSelect > 0)CursorSelect--;

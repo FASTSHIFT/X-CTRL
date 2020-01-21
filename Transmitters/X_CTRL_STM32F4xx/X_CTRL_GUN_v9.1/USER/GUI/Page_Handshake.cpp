@@ -290,12 +290,12 @@ static void Exit()
   * @param  нч
   * @retval нч
   */
-static void Event(int event, void * param)
+static void Event(int event, void* param)
 {
     if(event == EVENT_ButtonPress)
     {
         HaveButtonEvent = true;
-        
+
         if(btOK || btEcd)
         {
             page.PagePush(PAGE_CtrlInfo);

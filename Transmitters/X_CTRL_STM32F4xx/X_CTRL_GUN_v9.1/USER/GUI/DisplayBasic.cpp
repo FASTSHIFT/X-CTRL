@@ -35,9 +35,9 @@ void assert_failed(uint8_t* file, uint32_t line)
 void Init_Display()
 {
     Serial.begin(115200);
-    
+
     screen.begin();
-    
+
     pinMode(TFT_LED, OUTPUT);
     digitalWrite(TFT_LED, LOW);
 
@@ -79,6 +79,7 @@ static void Init_Pages()
     PAGE_REG(BvPlayer);
     PAGE_REG(WavPlayer);
     PAGE_REG(LuaScript);
+    PAGE_REG(Jamming);
 
     /*跳转至主菜单*/
     page.PagePush(PAGE_MainMenu);
@@ -176,12 +177,12 @@ extern "C" {
         SoftDelay(5000);
         NVIC_SystemReset();
     }
-    
+
     __asm void HardFault_Handler()
     {
         extern vApplicationHardFaultHook
         extern cm_backtrace_fault
-            
+
         mov r0, lr
         mov r1, sp
         bl cm_backtrace_fault

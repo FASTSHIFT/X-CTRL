@@ -531,6 +531,11 @@
               <FileType>8</FileType>
               <FilePath>.\GUI\Page_LuaScript.cpp</FilePath>
             </File>
+            <File>
+              <FileName>Page_Jamming.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\GUI\Page_Jamming.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

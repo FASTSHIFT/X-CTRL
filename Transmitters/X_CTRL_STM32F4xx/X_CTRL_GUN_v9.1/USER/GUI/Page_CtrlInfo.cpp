@@ -205,7 +205,7 @@ static void Exit()
   * @param  нч
   * @retval нч
   */
-static void Event(int event, void * param)
+static void Event(int event, void* param)
 {
     if(event == EVENT_ButtonLongPressed)
     {

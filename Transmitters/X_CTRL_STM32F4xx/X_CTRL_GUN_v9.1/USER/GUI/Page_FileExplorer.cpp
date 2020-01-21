@@ -221,12 +221,12 @@ static void LoadFileDir(const char *path)
     /*路径是否合法*/
     if (!root.open(path))
         return;
-    
+
     /*获取当前目录下文件个数*/
     FileCnt = 0;
     /*文件目录*/
     SdFile file;
-    
+
     /*遍历目录所有项*/
     while (file.openNext(&root, O_RDONLY))
     {
@@ -375,7 +375,7 @@ static void Exit()
   * @param  无
   * @retval 无
   */
-static void Event(int event, void * param)
+static void Event(int event, void* param)
 {
     if(event == EVENT_ButtonPress)
     {

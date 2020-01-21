@@ -26,13 +26,13 @@ static void Task_UpdateProgress()
     {
         PrgBrightness = 15;
     }
-    
+
 
     if(PrgBrightness < 0)
         return;
-    
+
     BvPrg.Color_FM = BvPrg.Color_PB = StrPrinter_ColorMap(screen.Black, screen.White, PrgBrightness);
-    
+
     BvPrg.Progress = (float)BvPlayer.NowFrame / BvPlayer.EndFrame * 1000.0f;
     BvPrg.display();
 }
@@ -100,7 +100,7 @@ static void Exit()
   * @param  нч
   * @retval нч
   */
-static void Event(int event, void * param)
+static void Event(int event, void* param)
 {
     if(event == EVENT_ButtonPress)
     {

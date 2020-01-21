@@ -5,8 +5,8 @@
 // the nRF24L01+ can tune to 128 channels with 1 MHz spacing from 2.400 GHz to 2.527 GHz.
 #define CHANNELS 128
 #define TEXT_BASE_Y (StatusBar_POS + TEXT_HEIGHT_1)
-#define BASE_Y (TEXT_HEIGHT_1+10)
-#define MAX_HEIGHT (screen.height() - StatusBar_POS - BASE_Y - 5)
+#define DISP_BASE_Y (TEXT_HEIGHT_1+10)
+#define DISP_MAX_HEIGHT (screen.height() - StatusBar_POS - DISP_BASE_Y - 5)
 static uint16_t signalStrength[CHANNELS]; // smooths signal strength with numerical range 0 - 0x7FFF
 static uint8_t NRF_BKUP_EN_AA = 0;
 static uint8_t NRF_BKUP_RF_SETUP = 0;
@@ -14,6 +14,27 @@ static uint8_t NRF_BKUP_RF_CH = 0;
 static uint8_t NRF_BKUP_CONFIG = 0;
 static bool HoldGraph = false;
 static float RecvSensitivity = 0.4f;
+
+void Draw_RFScaleplate(int16_t x, int16_t y, int16_t length, uint16_t color)
+{
+    //screen.drawFastHLine(0, screen.height() - BASE_Y + 1, CHANNELS, screen.White);
+    screen.drawFastHLine(x, y, length, color);
+
+    for (int f = 0; f < length; f++)
+    {
+        if (!(f % 10))
+        {
+            screen.drawFastVLine(x + f, y, 3, color); // graduation tick every 10 MHz
+        }
+        if (f >= 10 && ((f - 10) % 50 == 0))
+        {
+            screen.drawFastVLine(x + f, y, 5, color); // scale markers at 2.41, 2.46, and 2.51 GHz
+            screen.setTextColor(color);
+            screen.setCursor((x + f) - TEXT_WIDTH_1 * 1.5f, y + 6);
+            screen.print(2.4f + 0.001f * f, 2);
+        }
+    }
+}
 
 /********** 基本 ************/
 /**
@@ -58,25 +79,7 @@ static void Setup()
     delayMicroseconds(130);
     nrf.SetRF_Enable(true);
 
-    screen.drawFastHLine(0, screen.height() - BASE_Y + 1, CHANNELS, screen.White);
-
-    for (int x = 0; x < CHANNELS; x++)
-    {
-        if (!(x % 10))
-        {
-            screen.drawFastVLine(x, screen.height() - BASE_Y + 1, 3, screen.White); // graduation tick every 10 MHz
-        }
-        if (x == 10 || x == 60 || x == 110)
-        {
-            screen.drawFastVLine(x, screen.height() - BASE_Y + 1, 5, screen.White);; // scale markers at 2.41, 2.46, and 2.51 GHz
-        }
-    }
-    screen.setCursor(10 - TEXT_WIDTH_1 * 1.5f, screen.height() - TEXT_HEIGHT_1 - 2);
-    screen.print("2.41");
-    screen.setCursor(60 - TEXT_WIDTH_1 * 1.5f, screen.height() - TEXT_HEIGHT_1 - 2);
-    screen.print("2.46");
-    screen.setCursor(110 - TEXT_WIDTH_1 * 1.5f, screen.height() - TEXT_HEIGHT_1 - 2);
-    screen.print("2.51");
+    Draw_RFScaleplate(0, screen.height() - DISP_BASE_Y + 1, CHANNELS, screen.White);
 }
 
 /**
@@ -127,10 +130,10 @@ static void Loop()
         {
             refresh = 19; // speed up by only refreshing every n-th frequency loop - reset number should be relatively prime to CHANNELS
             float strength = ((signalStrength[MHz] + 0x0040) >> 7) * RecvSensitivity;
-            __LimitValue(strength, 0.0f, (float)MAX_HEIGHT);
+            __LimitValue(strength, 0.0f, (float)DISP_MAX_HEIGHT);
 
-            screen.drawFastVLine(MHz, screen.height() - BASE_Y - MAX_HEIGHT, MAX_HEIGHT - strength, screen.Black);
-            screen.drawFastVLine(MHz, screen.height() - BASE_Y - strength, strength, screen.Yellow);
+            screen.drawFastVLine(MHz, screen.height() - DISP_BASE_Y - DISP_MAX_HEIGHT, DISP_MAX_HEIGHT - strength, screen.Black);
+            screen.drawFastVLine(MHz, screen.height() - DISP_BASE_Y - strength, strength, screen.Yellow);
         }
     }
 }
@@ -155,7 +158,7 @@ static void Exit()
   * @param  无
   * @retval 无
   */
-static void Event(int event, void * param)
+static void Event(int event, void* param)
 {
     if(event == EVENT_ButtonPress)
     {

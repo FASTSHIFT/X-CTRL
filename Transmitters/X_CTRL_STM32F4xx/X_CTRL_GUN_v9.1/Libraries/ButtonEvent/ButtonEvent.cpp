@@ -61,15 +61,16 @@ void ButtonEvent::EventMonitor(uint8_t NowState)
         CallbackFunc(this, EVENT_ButtonPress);
         CallbackFunc(this, EVENT_ButtonChange);
     }
-    else if (IS_Pressed && ButtonEvent_Millis - LastPress_TimePoint > LongPressTimeMs && (NowState != Button_NoPressState))
+    else if (IS_Pressed && ButtonEvent_Millis - LastPress_TimePoint >= LongPressTimeMs && (NowState != Button_NoPressState))
     {
         Button_NowState = LongPress;
         if(!IS_LongPressed)
         {
             CallbackFunc(this, EVENT_ButtonLongPressed);
+            LastLongPress_TimePoint = ButtonEvent_Millis;
             IsLongPressed = IS_LongPressed = true;
         }
-        if(ButtonEvent_Millis - LastLongPress_TimePoint > LongPressTimeRepeatMs)
+        else if(ButtonEvent_Millis - LastLongPress_TimePoint >= LongPressTimeRepeatMs)
         {
             LastLongPress_TimePoint = ButtonEvent_Millis;
             CallbackFunc(this, EVENT_ButtonLongPressRepeat);

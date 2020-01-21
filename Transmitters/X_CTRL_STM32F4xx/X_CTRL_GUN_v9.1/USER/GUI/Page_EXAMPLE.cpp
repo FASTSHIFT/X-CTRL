@@ -1,6 +1,3 @@
-
-/*页面模板*/
-
 #include "GUI_Private.h"
 
 /********** 基本 ************/
@@ -36,7 +33,7 @@ static void Exit()
   * @param  无
   * @retval 无
   */
-static void Event(int event, void * param)
+static void Event(int event, void* param)
 {
 }
 
@@ -47,5 +44,5 @@ static void Event(int event, void * param)
   */
 void PageRegister_X(uint8_t ThisPage)
 {
-    page.PageRegister_Basic(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
 }

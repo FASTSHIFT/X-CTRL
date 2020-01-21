@@ -10,9 +10,14 @@
 #include "BV_Player.h"
 #include "ButtonEvent.h"
 
+/*按键事件命名空间*/
 using namespace ButtonEvent_Type;
-
+/*屏幕类名*/
 #define SCREEN_CLASS TFT_SSD1283A
+extern SCREEN_CLASS screen;
+
+/*Page管理器*/
+extern PageManager page;
 
 /*标准Adafruit等宽字体*/
 #define TEXT_HEIGHT_1   8
@@ -21,25 +26,36 @@ using namespace ButtonEvent_Type;
 /*XWZ抗锯齿非等宽字体*/
 #define TEXT_HEIGHT_2  14
 
+/*Page填色*/
 #define FillPage(color)     screen.fillRect(0,StatusBar_POS+1,screen.width(),screen.height()-(StatusBar_POS+1),color)
 
+/*状态栏坐标*/
 #define StatusBar_POS       (TEXT_HEIGHT_2+3)
+
+/*清全屏*/
 #define ClearDisplay()      screen.fillScreen(screen.Black)
+/*清Page*/
 #define ClearPage()         FillPage(screen.Black)
+/*清状态栏*/
 #define ClearStatusBar()    screen.fillRect(0,0,screen.width(),StatusBar_POS+1,screen.Black)
 
+/*设置默认字体状态*/
 #define TextSetDefault() screen.setTextColor(screen.White,screen.Black),screen.setTextSize(1)
+/*字符串中心坐标*/
 #define TextMid(x,textnum) (screen.width()*(x)-(TEXT_WIDTH_1*(textnum))/2.0f)
+/*字符串居中打印*/
 #define TextMidPrint(x,y,text) screen.setCursor(TextMid(x,strlen(text)),screen.height()*(y)-TEXT_HEIGHT_1/2.0f),screen.print(text)
+/*屏幕中心坐标*/
 #define ScreenMid_W (screen.width()/2)
 #define ScreenMid_H (screen.height()/2)
 
-extern SCREEN_CLASS screen;
-extern PageManager page;
+
 
 typedef enum
 {
+    /*保留*/
     PAGE_None,
+    /*用户页面*/
     PAGE_MainMenu,
     PAGE_CtrlInfo,
     PAGE_Options,
@@ -55,6 +71,8 @@ typedef enum
     PAGE_BvPlayer,
     PAGE_WavPlayer,
     PAGE_LuaScript,
+    PAGE_Jamming,
+    /*保留*/
     PAGE_MAX
 } PageNum_Type;
 
@@ -68,6 +86,7 @@ void PageRegister_MainMenuDymanic(uint8_t ThisPage);
 void PageRegister_MainMenu(uint8_t ThisPage);
 
 void Draw_RGBBitmap_Logo(float x, float y, uint16_t time, bool dir = 0);
+void Draw_RFScaleplate(int16_t x, int16_t y, int16_t length, uint16_t color);
 
 void Init_StatusBar();
 void Thread_StatusBar();

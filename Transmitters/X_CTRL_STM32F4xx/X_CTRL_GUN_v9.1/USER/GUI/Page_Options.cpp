@@ -56,6 +56,7 @@ enum
     SetBlueTooth,
     SetGravity,
     FreqGraph,
+    Jamming,
     FileExplorer,
     About,
     SaveExit,
@@ -436,6 +437,7 @@ static void Setup()
     menu.UpdateItem(ItemNum::SetBlueTooth, ".BlueTooth", menu.TYPE_PageJump, PAGE_SetBluetooth);
     menu.UpdateItem(ItemNum::SetGravity,   ".Gravity",  menu.TYPE_PageJump, PAGE_SetGravity);
     menu.UpdateItem(ItemNum::FreqGraph,   ".Spectrum", menu.TYPE_PageJump, PAGE_FreqGraph);
+    menu.UpdateItem(ItemNum::Jamming,     ".Jamming", menu.TYPE_PageJump, PAGE_Jamming);
     menu.UpdateItem(ItemNum::FileExplorer, ".Explorer", menu.TYPE_PageJump, PAGE_FileExplorer);
     menu.UpdateItem(ItemNum::About,        ".About",    menu.TYPE_PageJump, PAGE_About);
     menu.UpdateItem(ItemNum::SaveExit,     ".Save & Exit",    menu.TYPE_None, 0);
@@ -506,7 +508,7 @@ static void Exit()
   * @param  нч
   * @retval нч
   */
-static void Event(int event, void * param)
+static void Event(int event, void* param)
 {
     if(event == EVENT_ButtonPress || event == EVENT_ButtonLongPressRepeat)
     {

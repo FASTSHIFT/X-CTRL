@@ -38,28 +38,28 @@ static void Setup()
     screen.print("Loading ");
     screen.print(LuaFilePath);
     screen.println("...");
-    
+
     LuaFile = SD.open(LuaFilePath);
     if(!LuaFile)
     {
         return;
     }
     LuaFile.setTimeout(20);
-    
+
     IsLuaError = false;
     luaScript.registerStrOutput(ScreenPrint);
     Lua_Begin();
 
 //    luaL_dostring(L, "print(\"> Version:\",_VERSION)");
-    
+
     if(LuaFile.available())
     {
         String UserInput = LuaFile.readString();
         const char *LuaCode_buffer = UserInput.c_str();
-        
+
         screen.println("\r\n" + UserInput);
         PageDelay(1000);
-        
+
         IsLuaError = luaScript.doString(LuaCode_buffer);
     }
     else
@@ -98,7 +98,7 @@ static void Exit()
   * @param  нч
   * @retval нч
   */
-static void Event(int event, void * param)
+static void Event(int event, void* param)
 {
     if(param == &btBACK)
     {

@@ -22,7 +22,7 @@ static void Setup()
     ClearPage();
 
     screen.setTextColor(screen.White);
-    screen.setTextSize(1);    
+    screen.setTextSize(1);
     screen.setFont(&FreeSerif9pt7b);
     screen.setCursor((screen.width() - 90) / 2, START_Y);
     screen.print("VIFEXTech");
@@ -81,7 +81,7 @@ static void Exit()
   * @param  нч
   * @retval нч
   */
-static void Event(int event, void * param)
+static void Event(int event, void* param)
 {
     if(event == EVENT_ButtonPress)
     {
