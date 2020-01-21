@@ -31,10 +31,16 @@ static void JamFreqProcess()
 
     if(!JamEnable)
         return;
+    
+    randomSeed(RNG_GetRandNum());
+    
+    for(int i = 0; i < __Sizeof(JamData); i++)
+    {
+        JamData[i] = random(0, 0xFF);
+    }
 
     if(JamEnableRandMode)
     {
-        randomSeed(RNG_GetRandNum());
         JamFreq = random(JamFreqStart, JamFreqEnd);
     }
     else
