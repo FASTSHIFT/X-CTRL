@@ -1,0 +1,7 @@
+{
+    "board": "Arduino_STM32:STM32F1:genericSTM32F103T",
+    "configuration": "device_variant=STM32F103TB,upload_method=DFUUploadMethod,cpu_speed=speed_72mhz,opt=osstd",
+    "port": "COM9",
+    "programmer": "AVR ISP",
+    "sketch": "RC_GOODUSB_FHSS.ino"
+}
