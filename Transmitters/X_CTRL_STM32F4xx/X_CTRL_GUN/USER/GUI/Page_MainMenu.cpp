@@ -1,5 +1,5 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 #include "ComPrivate.h"
 
 /*实例化当前页面调度器*/
@@ -165,10 +165,10 @@ static void Event(int event, void* param)
 
 /**
   * @brief  主菜单页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_MainMenu(uint8_t ThisPage)
+void PageRegister_MainMenu(uint8_t pageID)
 {
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

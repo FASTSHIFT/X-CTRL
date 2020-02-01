@@ -1,10 +1,12 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 #include "ComPrivate.h"
 #include "math.h"
 
+using namespace RCX;
+
 /*选项起始坐标*/
-#define ItemStartY (StatusBar_POS+8)
+#define ItemStartY (StatusBar_Height+8)
 #define ItemStartX 14
 
 #define TextHeight 16
@@ -33,7 +35,7 @@ static void UpdateItemStr()
 {
     for(uint8_t i = 0; i < 4; i++)
     {
-        if(!HandshakePack_Slave[i].HeadCode)continue;
+        if(!Handshake::GetSlave(i)->BroadcastHead)continue;
 
         if(i == ItemSelect)
         {
@@ -46,8 +48,8 @@ static void UpdateItemStr()
 
         /*显示从机ID和文本描述*/
         screen.setCursor(ItemStartX, ItemStartY + i * TextHeight);
-        screen.printfX("ID:0x%x", HandshakePack_Slave[i].ID);
-        screen.printfX(" %s", HandshakePack_Slave[i].Description);
+        screen.printfX("ID:0x%x", Handshake::GetSlave(i)->ID);
+        screen.printfX(" %s", Handshake::GetSlave(i)->Description);
     }
 }
 
@@ -152,9 +154,19 @@ static void Setup()
     HaveButtonEvent = false;
     ItemSelect_MAX = 0;
     ItemSelect = 0;
+    
+    /*配置基本信息*/
+    Handshake::Pack_t* master = Handshake::GetMaster();
+    master->ID = random(1, 255);
+    master->EnableFunction.Passback = State_PassBack;
+    master->EnableFunction.FHSS = State_FHSS;
+    master->Speed = NRF_Cfg.Speed;
 
+    /*握手初始化*/
+    Handshake::Init(&nrfTRM, &nrfFHSS, _X_CTRL_NAME);
+    
     /*主机准备握手*/
-    HandshakeRun(HandshakeState_Prepare);
+    Handshake::Process(Handshake::State_Prepare);
 
     /*实例化滚动条控件*/
     LightGUI::ProgressBar<SCREEN_CLASS> SearchProgress(&screen, 0, screen.height() - 20, screen.width(), 10, 0);
@@ -170,7 +182,7 @@ static void Setup()
     while(millis() - time < 12000)
     {
         /*获取从机列表数量*/
-        ItemSelect_MAX = HandshakeRun(HandshakeState_Search);
+        ItemSelect_MAX = Handshake::Process(Handshake::State_Search);
 
         if(ItemSelect_MAX)
         {
@@ -245,15 +257,15 @@ static void Exit()
     /*尝试连接从机*/
     screen.setTextColor(screen.White, screen.Black);
     screen.setCursor(ItemStartX, ItemStartY);
-    screen.printfX(HandshakePack_Slave[ItemSelect].Description);
+    screen.printfX(Handshake::GetSlave(ItemSelect)->Description);
     screen.setCursor(ItemStartX, ItemStartY + TextHeight);
     screen.printfX("Connecting...");
-    XFS_Speak("正在尝试连接到%s", HandshakePack_Slave[ItemSelect].Description);
+    XFS_Speak("正在尝试连接到%s", Handshake::GetSlave(ItemSelect)->Description);
     /*超时设置*/
     uint32_t timeout = millis();
     bool IsTimeout = false;
     /*等待从机响应握手信号*/
-    while(HandshakeRun(HandshakeState_ReqConnect, ItemSelect, CMD_AttachConnect) != CMD_AgreeConnect)
+    while(Handshake::Process(Handshake::State_ReqConnect, ItemSelect, Handshake::CMD_AttachConnect) != Handshake::CMD_AgreeConnect)
     {
         /*2500ms超时*/
         if(millis() - timeout > 2500)
@@ -269,10 +281,7 @@ static void Exit()
     }
 
     /*握手收尾设置，跳转至约定好的握手频率以及地址*/
-    HandshakeRun(HandshakeState_Connected);
-
-    /*对应从机类型*/
-    CTRL.Info.CtrlObject = HandshakePack_Slave[ItemSelect].CtrlType;
+    Handshake::Process(Handshake::State_Connected);
 
     /*如果未超时表示握手成功*/
     if(!IsTimeout)
@@ -322,10 +331,10 @@ static void Event(int event, void* param)
 
 /**
   * @brief  握手页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_Handshake(uint8_t ThisPage)
+void PageRegister_Handshake(uint8_t pageID)
 {
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

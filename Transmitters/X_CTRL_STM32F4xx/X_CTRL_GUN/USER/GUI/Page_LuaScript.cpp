@@ -1,6 +1,6 @@
 #include "FileGroup.h"
 #include "FileSystem.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 #include "LuaGroup.h"
 
 /*Lua文件路径*/
@@ -28,6 +28,7 @@ static void Setup()
     CloseStatusBar();
     ClearPage();
     TextSetDefault();
+    screen.setTextWrap(true);
     
     luaScript.registerStrOutput(ScreenPrint);
     Lua_Begin();
@@ -82,10 +83,10 @@ static void Event(int event, void* param)
 
 /**
   * @brief  页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_LuaScript(uint8_t ThisPage)
+void PageRegister_LuaScript(uint8_t pageID)
 {
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

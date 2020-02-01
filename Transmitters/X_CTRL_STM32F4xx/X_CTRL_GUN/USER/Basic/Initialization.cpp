@@ -25,7 +25,6 @@ bool Init_Value()
     /*注册需要掉电储保存的变量*/
     StorageDataReg(JS_L);                   //左摇杆信息
     StorageDataReg(JS_R);                   //右摇杆信息
-    StorageDataReg(CTRL.Info);              //控制器基本信息
     StorageDataReg(DR_ST_Value);            //转向限幅信息
     StorageDataReg(DR_TH_Value);            //油门限幅信息
     StorageDataReg(NRF_Cfg);                //NRF配置信息
@@ -45,8 +44,7 @@ bool Init_Value()
 
     if(EEPROM_Handle(EEPROM_Chs::ReadData) == false)//读取信息，如果失败，使用默认参数初始化
     {
-        CTRL.Info.CtrlObject = X_COMMON;    //通用对象
-        ConnectState.Pattern = Pattern_NRF; //使用NRF遥控
+        RCX::SetObjectType(RCX::X_COMMON);//通用对象  
 
         JS_L.Xmin = 0;
         JS_L.Xmid = ADC_MaxValue / 2;
@@ -99,11 +97,8 @@ void Init_X_CTRL()
 
     IS_KEY_PRESSED(KEY_SEL_Pin, State_LuaScript = ON);
 
-    if(ConnectState.Pattern == Pattern_NRF)//是否选择使用NRF遥控
-    {
-        /*判断是否成功初始化NRF，并播放对应的提示音*/
-        Init_NRF() 
-        ? BuzzMusic(MC_Type::MC_StartUp) 
-        : BuzzMusic(MC_Type::MC_Error);
-    }
+    /*判断是否成功初始化NRF，并播放对应的提示音*/
+    Init_NRF() 
+    ? BuzzMusic(MC_Type::MC_StartUp) 
+    : BuzzMusic(MC_Type::MC_Error);
 }

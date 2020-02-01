@@ -1,5 +1,5 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 #include "FileSystem.h"
 
 bool State_BV_Enable = false;
@@ -9,9 +9,9 @@ bool State_BV_Enable = false;
 
 uint8_t BV_Buffer[8 * 1024];
 
-BV_Player player1(BV_Buffer, sizeof(BV_Buffer), 0, StatusBar_POS + (screen.height() - StatusBar_POS - BV_HEIGHT) / 2);
+BV_Player player1(BV_Buffer, sizeof(BV_Buffer), 0, StatusBar_Height + (screen.height() - StatusBar_Height - BV_HEIGHT) / 2);
 BV_Player player2(BV_Buffer, sizeof(BV_Buffer), screen.width() - BV_WIDTH - 1, player1.BaseY);
-BV_Player BvPlayer(BV_Buffer, sizeof(BV_Buffer), 0, StatusBar_POS + 1);
+BV_Player BvPlayer(BV_Buffer, sizeof(BV_Buffer), 0, StatusBar_Height + 1);
 
 static void Screen_FastDrawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap, int16_t w, int16_t h)
 {

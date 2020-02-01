@@ -3,7 +3,7 @@ todo: Moving this to CPP looks like it takes more Flash storage. Figure out why.
 */
 
 #include <Wire.h>
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 #include "constants.h"
 #include "sprites.h"
 

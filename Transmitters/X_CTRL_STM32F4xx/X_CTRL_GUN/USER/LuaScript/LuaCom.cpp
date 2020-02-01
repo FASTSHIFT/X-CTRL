@@ -2,6 +2,8 @@
 #include "LuaGroup.h"
 #include "ComPrivate.h"
 
+using namespace RCX;
+
 static int Lua_SetRFState(lua_State *L)
 {
     int nValue = lua_gettop(L);
@@ -36,23 +38,22 @@ static int Lua_Handshake(lua_State *L)
 
     Lua_SERIAL.println("Handshake preparing...");
     /*主机准备握手*/
-    HandshakeRun(HandshakeState_Prepare);
+    Handshake::Process(Handshake::State_Prepare);
 
     uint32_t StopTime = millis() + lua_tonumber(L, 1);
     uint8_t ItemSelect_MAX_Last = 0;
     while(millis() < StopTime)
     {
         /*获取从机列表数量*/
-        ItemSelect_MAX = HandshakeRun(HandshakeState_Search);
+        ItemSelect_MAX = Handshake::Process(Handshake::State_Search);
 
         if(ItemSelect_MAX != ItemSelect_MAX_Last)
         {
             Lua_SERIAL.printf(
                 "Find-> ID:0x%x %s\r\n",
-                HandshakePack_Slave[ItemSelect_MAX_Last].ID,
-                HandshakePack_Slave[ItemSelect_MAX_Last].Description
+                Handshake::GetSlave(ItemSelect_MAX_Last)->ID,
+                Handshake::GetSlave(ItemSelect_MAX_Last)->Description
             );
-
             ItemSelect_MAX_Last = ItemSelect_MAX;
         }
     }
@@ -101,13 +102,13 @@ static int Lua_ConnectSlave(lua_State *L)
 
 
     /*尝试连接从机*/
-    Lua_SERIAL.printf("connecting to %s...\r\n", HandshakePack_Slave[ItemSelect].Description);
+    Lua_SERIAL.printf("connecting to %s...\r\n", Handshake::GetSlave(ItemSelect)->Description);
 
     /*超时设置*/
     uint32_t timeout = millis();
     bool IsTimeout = false;
     /*等待从机响应握手信号*/
-    while(HandshakeRun(HandshakeState_ReqConnect, ItemSelect, CMD_AttachConnect) != CMD_AgreeConnect)
+    while(Handshake::Process(Handshake::State_ReqConnect, ItemSelect, Handshake::CMD_AttachConnect) != Handshake::CMD_AgreeConnect)
     {
         /*2500ms超时*/
         if(millis() - timeout > 2500)
@@ -119,10 +120,10 @@ static int Lua_ConnectSlave(lua_State *L)
     }
 
     /*握手收尾设置，跳转至约定好的握手频率以及地址*/
-    HandshakeRun(HandshakeState_Connected);
+    Handshake::Process(Handshake::State_Connected);
 
     /*对应从机类型*/
-    CTRL.Info.CtrlObject = HandshakePack_Slave[ItemSelect].CtrlType;
+    SetObjectType(Handshake::GetSlave(ItemSelect)->Type);
 
     /*如果未超时表示握手成功*/
     if(!IsTimeout)
@@ -137,14 +138,18 @@ static int Lua_ConnectSlave(lua_State *L)
 static int Lua_GetSlaveInfo(lua_State *L)
 {
     uint8_t ItemSelect = lua_tonumber(L, 1);
+    
+    
     if(ItemSelect >= ItemSelect_MAX)
     {
         lua_pushstring(L, "Error slave require");
         lua_error(L);
     }
-    lua_pushinteger(L, HandshakePack_Slave[ItemSelect].ID);
-    lua_pushstring(L, HandshakePack_Slave[ItemSelect].Description);
-    lua_pushinteger(L, HandshakePack_Slave[ItemSelect].CtrlType);
+    const Handshake::Pack_t* slave = RCX::Handshake::GetSlave(ItemSelect);
+
+    lua_pushinteger(L, slave->ID);
+    lua_pushstring(L, slave->Description);
+    lua_pushinteger(L, slave->Type);
     return 3;
 }
 
@@ -163,23 +168,22 @@ static int Lua_SetChannle(lua_State *L)
         lua_error(L);
     }
 
-    SetJoystickConnectEnable(false);
     uint8_t channle = lua_tointeger(L, 1);
     float value = (float)lua_tonumber(L, 2);
 
     switch(channle)
     {
     case 0:
-        CTRL.Left.X = constrain(value, -CtrlOutput_MaxValue, CtrlOutput_MaxValue);
+        CTRL.Left.X = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
         break;
     case 1:
-        CTRL.Left.Y = constrain(value, -CtrlOutput_MaxValue, CtrlOutput_MaxValue);
+        CTRL.Left.Y = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
         break;
     case 2:
-        CTRL.Right.X = constrain(value, -CtrlOutput_MaxValue, CtrlOutput_MaxValue);
+        CTRL.Right.X = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
         break;
     case 3:
-        CTRL.Right.Y = constrain(value, -CtrlOutput_MaxValue, CtrlOutput_MaxValue);
+        CTRL.Right.Y = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
         break;
     default:
         lua_pushstring(L, "Error Channle num");
@@ -259,11 +263,11 @@ static int Lua_SetButton(lua_State *L)
 
     if(val)
     {
-        CTRL.Key |= 1 << bt;
+        CTRL.Key.Value |= 1 << bt;
     }
     else
     {
-        CTRL.Key &= ~(1 << bt);
+        CTRL.Key.Value &= ~(1 << bt);
     }
 
     return 0;

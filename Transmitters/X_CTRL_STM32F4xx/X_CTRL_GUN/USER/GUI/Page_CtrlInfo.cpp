@@ -1,29 +1,31 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 #include "ComPrivate.h"
+#include "IMU_Private.h"
 
 /*实例化当前页面调度器，开启优先级*/
 static MillisTaskManager mtm_CtrlInfo(4, true);
 
-/*滚动条宽度*/
-#define PBx_Width (screen.width()*0.7)
+typedef struct{
+    int16_t x;
+    int16_t y;
+    int16_t w;
+    int16_t h;
+}Area_t;
 
-/*滚动条高度*/
-#define PBx_Height 10
+const Area_t PB_AREA = {
+    5, StatusBar_Height + Page_Height / 2 - 10,
+    screen.width() - 10, Page_Height / 2 + 5
+};
 
-/*滚动条X轴Y轴起始坐标*/
-#define PBY_START (StatusBar_POS+50)
-#define PBX_START ((screen.width()-PBx_Width)/2+15)
+#define ELEMENT_WIDTH  (PB_AREA.w/2)
+#define ELEMENT_HEIGHT (PB_AREA.h/4)
+#define ELEMENT_X(i)   (i < 4 ? PB_AREA.x : (PB_AREA.x + ELEMENT_WIDTH))
+#define ELEMENT_Y(i)   (PB_AREA.y + 5 + (i % 4) * ELEMENT_HEIGHT)
 
-/*滚动条间隔*/
-#define PBx_INTERVAL 3
 
 /*实例化滚动条控件对象*/
-LightGUI::ScrollBar<SCREEN_CLASS> BarThr(&screen, PBX_START, PBY_START, PBx_Width, PBx_Height, 0, 8);
-LightGUI::ScrollBar<SCREEN_CLASS> BarStr(&screen, PBX_START, PBY_START + PBx_Height + PBx_INTERVAL, PBx_Width, PBx_Height, 0, 8);
-
-LightGUI::ProgressBar<SCREEN_CLASS> BarLimit_L(&screen, PBX_START, PBY_START + (PBx_Height + PBx_INTERVAL) * 2, PBx_Width, PBx_Height, 0);
-LightGUI::ProgressBar<SCREEN_CLASS> BarLimit_R(&screen, PBX_START, PBY_START + (PBx_Height + PBx_INTERVAL) * 3, PBx_Width, PBx_Height, 0);
+LightGUI::ScrollBar<SCREEN_CLASS>* BarChannel_Grp[8];
 
 
 /**
@@ -31,13 +33,17 @@ LightGUI::ProgressBar<SCREEN_CLASS> BarLimit_R(&screen, PBX_START, PBY_START + (
   * @param  无
   * @retval 无
   */
-static void Task_DrawProgress()
+static void Task_BarChannelUpdate()
 {
-    BarThr.setScroll(fmap(CTRL.Left.Y, -CtrlOutput_MaxValue, CtrlOutput_MaxValue, 0.0, 1.01));
-    BarStr.setScroll(fmap(CTRL.Right.X, -CtrlOutput_MaxValue, CtrlOutput_MaxValue, 0.0, 1.01));
-
-    BarLimit_L.setProgress(CTRL.KnobLimit.L / (float)CtrlOutput_MaxValue);
-    BarLimit_R.setProgress(CTRL.KnobLimit.R / (float)CtrlOutput_MaxValue);
+    if(!BarChannel_Grp[0])
+        return;
+    
+    for(int i = 0; i < __Sizeof(BarChannel_Grp); i++)
+    {
+        int16_t chVal = RCX::ChannelReadValue(i);
+        float prg = __Map(chVal, -RCX_ChannelData_Max, RCX_ChannelData_Max, 0.0f, 1.0f);
+        BarChannel_Grp[i]->setProgress(prg);
+    }
 }
 
 /**
@@ -47,7 +53,7 @@ static void Task_DrawProgress()
   */
 static void Task_PrintUseTime()
 {
-    screen.setCursor(TextMid(0.8, 10), StatusBar_POS + 9);
+    screen.setCursor(TextMid(0.8, 10), StatusBar_Height + 9);
     screen.setTextColor(screen.White, screen.Black);
     screen.setTextSize(1);
     uint16_t hh = (millis() / (3600 * 1000)) % 100;
@@ -56,11 +62,6 @@ static void Task_PrintUseTime()
     screen.printfX("%02d:%02d:%02d", hh, mm, ss);
 }
 
-/*锁定回传数据包标志位*/
-bool Lock_CommonPassback = false;
-/*回传数据包重新初始化标志位*/
-bool Is_CommonInfoInit = false;
-
 /**
   * @brief  显示通用回传数据
   * @param  无
@@ -68,35 +69,7 @@ bool Is_CommonInfoInit = false;
   */
 static void DisplayCommonInfo()
 {
-    /*锁定回传数据包，禁止NRF修改*/
-    Lock_CommonPassback = true;
-
-    if(!Is_CommonInfoInit)//是否已初始化
-    {
-        /*配置默认回传数据*/
-        Common_Passback.X = 70;
-        Common_Passback.Y = 42;
-        Common_Passback.TextSize = 1;
-        Common_Passback.TextColor = screen.White;
-        Common_Passback.BackColor = screen.Black;
-        Common_Passback.Text[0] = '\0';
-        __TypeExplain(Protocol_Passback_CommonDisplay_t, NRF_RxBuff) = Common_Passback;
-        Is_CommonInfoInit = true;
-    }
-    else
-    {
-        /*判断是否位于合法区域*/
-        if(Common_Passback.Y > StatusBar_POS && Common_Passback.TextSize < 5)
-        {
-            screen.setCursor(Common_Passback.X, Common_Passback.Y);
-            screen.setTextColor(Common_Passback.TextColor, Common_Passback.BackColor);
-            screen.setTextSize(Common_Passback.TextSize);
-            screen.print(Common_Passback.Text);
-        }
-    }
-
-    /*解锁回传数据包*/
-    Lock_CommonPassback = false;
+    
 }
 
 /**
@@ -130,6 +103,45 @@ static void Task_CheckSignal()
         Task_SignalMonitor();
 }
 
+static void DrawCtrlObjImg()
+{
+    uint16_t *gImage_Bitmap_x;
+
+    uint8_t objType = RCX::GetObjectType();
+    if(objType == RCX::CAR_ServoSteering)
+        gImage_Bitmap_x = (uint16_t*)gImage_Bitmap_RC;
+    else if(objType == RCX::CAR_DifferentalSteering)
+        gImage_Bitmap_x = (uint16_t*)gImage_Bitmap_DS;
+    else
+        gImage_Bitmap_x = (uint16_t*)gImage_Bitmap_Common;
+
+    screen.drawRGBBitmap(15, StatusBar_Height + 3, gImage_Bitmap_x, 30, 30);
+}
+
+static void DrawBarChannel()
+{
+    TextSetDefault();
+    for(int i = 0; i < __Sizeof(BarChannel_Grp); i++)
+    {
+        screen.setCursor(ELEMENT_X(i) + 2, ELEMENT_Y(i));
+        screen.printf("CH%d", i);
+        if(!BarChannel_Grp[i])
+        {
+            BarChannel_Grp[i] = new LightGUI::ScrollBar<SCREEN_CLASS>(
+                    &screen,
+                    ELEMENT_X(i) + 2 + TEXT_WIDTH_1 * 3,
+                    ELEMENT_Y(i),
+                    ELEMENT_WIDTH - 4 - TEXT_WIDTH_1 * 3,
+                    TEXT_HEIGHT_1,
+                    0,
+                    2
+                );
+            BarChannel_Grp[i]->Color_SB = screen.Yellow;
+        }
+        BarChannel_Grp[i]->display();
+    }
+}
+
 /**
   * @brief  页面初始化事件
   * @param  无
@@ -138,45 +150,24 @@ static void Task_CheckSignal()
 static void Setup()
 {
     nrf.SetRF_Enable(true);
+    RCX::ChannelReset();
     ClearPage();
     SetupTimePoint = millis();//记录时间戳
-    BarThr.Color_SB = screen.Yellow;
-    BarStr.Color_SB = screen.Yellow;
-    BarLimit_L.Color_PB = screen.White;
-    BarLimit_R.Color_PB = screen.White;
 
-    const uint8_t TextStartX = 8;
-    screen.setTextColor(screen.White, screen.Black);
-    screen.setCursor(TextStartX, BarThr.Y - (TEXT_HEIGHT_2 - PBx_Height) / 2);
-    screen.printfX("THR");
-    screen.setCursor(TextStartX, BarStr.Y - (TEXT_HEIGHT_2 - PBx_Height) / 2);
-    screen.printfX("STR");
-    screen.setCursor(TextStartX, BarLimit_L.Y - (TEXT_HEIGHT_2 - PBx_Height) / 2);
-    screen.printfX("LTL");
-    screen.setCursor(TextStartX, BarLimit_R.Y - (TEXT_HEIGHT_2 - PBx_Height) / 2);
-    screen.printfX("LTR");
+    DrawCtrlObjImg();
+    
+    screen.drawRoundRect(PB_AREA.x, PB_AREA.y, PB_AREA.w, PB_AREA.h, 5, screen.Blue);
+//    TextSetDefault();
+//    TextMidPrint(0.5f, ((PB_AREA.y) / (float)screen.height()), " CHANNELS ");
+    
+    DrawBarChannel();
 
-    uint16_t *gImage_Bitmap_x;
-
-    if(CTRL.Info.CtrlObject == CAR_ServoSteering)
-        gImage_Bitmap_x = (uint16_t*)gImage_Bitmap_RC;
-    else if(CTRL.Info.CtrlObject == CAR_DifferentalSteering)
-        gImage_Bitmap_x = (uint16_t*)gImage_Bitmap_DS;
-    else
-        gImage_Bitmap_x = (uint16_t*)gImage_Bitmap_Common;
-
-    screen.drawRGBBitmap(15, StatusBar_POS + 3, gImage_Bitmap_x, 30, 30);
-
-    mtm_CtrlInfo.TaskRegister(0, Task_DrawProgress, 20);
+    mtm_CtrlInfo.TaskRegister(0, Task_BarChannelUpdate, 20);
     mtm_CtrlInfo.TaskRegister(1, Task_CheckSignal, 20);
     mtm_CtrlInfo.TaskRegister(2, Task_PrintPassback, 30);
     mtm_CtrlInfo.TaskRegister(3, Task_PrintUseTime, 1000);
 
-    BarLimit_R.display();
-    BarLimit_L.display();
-
     State_RF = ON;
-    Is_CommonInfoInit = false;
 }
 
 /**
@@ -222,7 +213,6 @@ static void Event(int event, void* param)
     {
         if(param == &btOK)
         {
-            extern void IMU_CalibrateStart();
             IMU_CalibrateStart();
         }
     }
@@ -230,10 +220,10 @@ static void Event(int event, void* param)
 
 /**
   * @brief  控制信息页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_CtrlInfo(uint8_t ThisPage)
+void PageRegister_CtrlInfo(uint8_t pageID)
 {
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

@@ -134,15 +134,30 @@ bool NRF_Basic::Init()
     pinMode(CE_Pin, OUTPUT);
     pinMode(CSN_Pin, OUTPUT);
     
-    NRF_CE_HIGH();
-    delay(100);
     NRF_CE_LOW();
     NRF_CSN_HIGH();
     
+    bool isRst = Reset();
     ClearFlag();
     SetDefault();
     
-    return IsDetect();
+    return (IsDetect() && isRst);
+}
+
+/**
+  * @brief  复位
+  * @param  无
+  * @retval true成功 false失败
+  */
+bool NRF_Basic::Reset()
+{
+    SetRF_Enable(false);
+    SPI_RW_Reg(FLUSH_TX, 0);
+    SPI_RW_Reg(FLUSH_RX, 0);
+    uint8_t status1 = SPI_RW_Reg(NOP, 0);
+    uint8_t status2 = GetStatus();
+    SetPowerUp(false);
+    return (status1 == status2 && (status1 & 0x0F) == 0x0E);
 }
 
 /**
@@ -541,8 +556,11 @@ uint8_t NRF_Basic::GetStatus(void)
   */
 void NRF_Basic::ClearFlag()
 {
-    uint8_t status = GetStatus();
-    SPI_RW_Reg(WRITE_REG + STATUS, status);//清状态寄存器标志位
+    REGREAD(STATUS);
+    REG_STATUS.RX_DR = 1;
+    REG_STATUS.TX_DS = 1;
+    REG_STATUS.MAX_RT = 1;
+    REGWRITE(STATUS);
 }
 
 /**
@@ -605,20 +623,23 @@ uint8_t NRF_Basic::SPI_Read_Buf(uint8_t reg, uint8_t *pBuf, uint8_t bytes)
 
 /**
   * @brief  设置为发送模式
-  * @param  *txbuff:发送缓冲区地址
+  * @param  rfDelay:是否延时
   * @retval 无
   */
-void NRF_Basic::TX_Mode()
+void NRF_Basic::TX_Mode(bool rfDelay)
 {
     RF_State = State_TX;
-    REGREAD(CONFIG);
-    if(REG_CONFIG.PRIM_RX == 0)
-        return;
     
     NRF_CE_LOW();
     ClearFlag();
     REG_CONFIG.PRIM_RX = 0;
     REGWRITE(CONFIG);
+    
+    if(rfDelay)
+    {
+        delayMicroseconds(130);
+    }
+    
     SetRF_Enable(RF_Enabled);
 }
 
@@ -627,17 +648,20 @@ void NRF_Basic::TX_Mode()
   * @param  无
   * @retval 无
   */
-void NRF_Basic::RX_Mode()
+void NRF_Basic::RX_Mode(bool rfDelay)
 {
     RF_State = State_RX;
-    REGREAD(CONFIG);
-    if(REG_CONFIG.PRIM_RX == 1)
-        return;
     
     NRF_CE_LOW();
     ClearFlag();
     REG_CONFIG.PRIM_RX = 1;
     REGWRITE(CONFIG);
+    
+    if(rfDelay)
+    {
+        delayMicroseconds(130);
+    }
+    
     SetRF_Enable(RF_Enabled);
 }
 
@@ -650,7 +674,16 @@ void NRF_Basic::SetPowerUp(bool en)
 {
     NRF_CE_LOW();
     REGREAD(CONFIG);
-    REG_CONFIG.PWR_UP = en;
+    if(en)
+    {
+        REG_CONFIG.PWR_UP = 1;
+    }
+    else
+    {
+        REG2U8(REG_CONFIG) = 0;
+        REG_CONFIG.EN_CRC = 1;
+        RF_Enabled = false;
+    }
     REGWRITE(CONFIG);
     SetRF_Enable(RF_Enabled);
 }

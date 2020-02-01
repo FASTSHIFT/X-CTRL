@@ -147,13 +147,14 @@ public:
     }
 
     bool Init();
+    bool Reset();
     bool IsDetect();
     void ClearFlag();
     void Tran(void* txbuff);
     int8_t TranCheck();
     bool Recv(void* rxbuff);
-    void TX_Mode();
-    void RX_Mode();
+    void TX_Mode(bool rfDelay = false);
+    void RX_Mode(bool rfDelay = false);
     
     uint8_t SPI_RW(uint8_t Data);
     uint8_t SPI_RW_Reg(uint8_t reg, uint8_t value);
@@ -255,10 +256,9 @@ public:
     {
         Basic = nrf;
     }
+    NRF_Basic* Basic;
     void TranRecv(void* txbuff, void* rxbuff);
     void RecvTran(void* rxbuff, void* txbuff);
-private:
-    NRF_Basic* Basic;
 };
 
 /*NRF跳频+单工/半双工通信*/
@@ -275,6 +275,7 @@ public:
         LastRxTime = 0;
         InterruptTime = 10;
     }
+    NRF_Basic* Basic;
 
     void SetFreqHoppingList(uint8_t* list, uint16_t length)
     {
@@ -291,7 +292,6 @@ public:
     uint32_t LastRxTime;
     
 private:
-    NRF_Basic* Basic;
     bool FH_Enable;
     const uint8_t* FH_List;
     uint16_t FH_List_Length;

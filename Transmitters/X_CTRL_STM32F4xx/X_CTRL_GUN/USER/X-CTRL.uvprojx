@@ -337,7 +337,7 @@
               <MiscControls>--gnu</MiscControls>
               <Define>USE_STDPERIPH_DRIVER,ARDUINO=111,HSE_VALUE=8000000,PLL_M=8</Define>
               <Undefine></Undefine>
-              <IncludePath>..\USER;..\ArduinoAPI;..\Core;..\Libraries\I2Cdev;..\Libraries\MPU6050;..\Libraries\NRF;..\Libraries\Adafruit_GFX_Library;..\Libraries\MillisTaskManager;..\Libraries\DigitalFilter;..\Libraries\EncoderEvent;..\Libraries\Bluetooth_HC05;..\Libraries\ButtonEvent;..\Libraries\EEPROM;..\Libraries\Adafruit_GFX_Library\Fonts;..\Libraries\XFS;..\Libraries\FifoQueue;..\Libraries\LightGUI;..\Libraries\LightGUI\Engine3D;..\Libraries\LightGUI\MenuManager;..\Libraries\LightGUI\PageManager;..\Libraries\MusicPlayer;..\Libraries\TFT_SSD1283A;..\Libraries\BV_Player;..\Libraries\SoftwareSPI;..\Libraries\lua-5.3.2\src;..\Libraries\StrPrinter;..\Libraries\Arduboy;..\Libraries\WavDecoder;..\Libraries\cm_backtrace;..\Libraries\SdFat\src;..\Libraries\SdFat\src\FatLib;..\Libraries\SdFat\src\SdCard;..\Libraries\SdFat\src\SpiDriver;.\Game\hopper;.\Game\doom-nano;.\GUI;.\GUI\Bitmap;.\Handler;.\Basic;.\Handle;.\LuaScript</IncludePath>
+              <IncludePath>..\USER;..\ArduinoAPI;..\Core;..\Libraries\I2Cdev;..\Libraries\MPU6050;..\Libraries\NRF;..\Libraries\Adafruit_GFX_Library;..\Libraries\MillisTaskManager;..\Libraries\DigitalFilter;..\Libraries\EncoderEvent;..\Libraries\Bluetooth_HC05;..\Libraries\ButtonEvent;..\Libraries\EEPROM;..\Libraries\Adafruit_GFX_Library\Fonts;..\Libraries\XFS;..\Libraries\FifoQueue;..\Libraries\LightGUI;..\Libraries\LightGUI\MenuManager;..\Libraries\LightGUI\PageManager;..\Libraries\MusicPlayer;..\Libraries\TFT_SSD1283A;..\Libraries\BV_Player;..\Libraries\SoftwareSPI;..\Libraries\lua-5.3.2\src;..\Libraries\StrPrinter;..\Libraries\Arduboy;..\Libraries\WavDecoder;..\Libraries\cm_backtrace;..\Libraries\SdFat\src;..\Libraries\SdFat\src\FatLib;..\Libraries\SdFat\src\SdCard;..\Libraries\SdFat\src\SpiDriver;.\Game\hopper;.\Game\doom-nano;.\GUI;.\GUI\Bitmap;.\Handler;.\Basic;.\Handle;.\LuaScript;.\Communication</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -419,18 +419,68 @@
             <File>
               <FileName>ComBasic.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\Basic\ComBasic.cpp</FilePath>
+              <FilePath>.\Communication\ComBasic.cpp</FilePath>
             </File>
             <File>
-              <FileName>ComHandshake.cpp</FileName>
+              <FileName>ComPrivate.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Communication\ComPrivate.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Communication/RCX</GroupName>
+          <Files>
+            <File>
+              <FileName>RCX_Channel.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\Basic\ComHandshake.cpp</FilePath>
+              <FilePath>.\Communication\RCX\Master\RCX_Channel.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>RCX_Handshake.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Communication\RCX\Master\RCX_Handshake.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>RCX_Package.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Communication\RCX\Master\RCX_Package.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>RCX_Passback.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Communication\RCX\Master\RCX_Passback.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>crc.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Communication\RCX\crc.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>RCX_Handshake.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Communication\RCX\RCX_Handshake.h</FilePath>
+            </File>
+            <File>
+              <FileName>RCX_Type.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Communication\RCX\RCX_Type.h</FilePath>
+            </File>
+            <File>
+              <FileName>RCX.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Communication\RCX\Master\RCX.h</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
           <GroupName>GUI</GroupName>
           <Files>
+            <File>
+              <FileName>DisplayPrivate.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\GUI\DisplayPrivate.h</FilePath>
+            </File>
             <File>
               <FileName>DisplayBasic.cpp</FileName>
               <FileType>8</FileType>
@@ -452,9 +502,59 @@
               <FilePath>.\GUI\Page_EXAMPLE.cpp</FilePath>
             </File>
             <File>
+              <FileName>Page_About.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\GUI\Page_About.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_BvPlayer.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\GUI\Page_BvPlayer.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_ChannelCfg.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\GUI\Page_ChannelCfg.cpp</FilePath>
+            </File>
+            <File>
               <FileName>Page_CtrlInfo.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>.\GUI\Page_CtrlInfo.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_FileExplorer.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\GUI\Page_FileExplorer.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_FreqGraph.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\GUI\Page_FreqGraph.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_GameDoom.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\GUI\Page_GameDoom.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_GameHopper.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\GUI\Page_GameHopper.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_Handshake.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\GUI\Page_Handshake.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_Jamming.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\GUI\Page_Jamming.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_LuaScript.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\GUI\Page_LuaScript.cpp</FilePath>
             </File>
             <File>
               <FileName>Page_MainMenu.cpp</FileName>
@@ -487,54 +587,9 @@
               <FilePath>.\GUI\Page_SetGravity.cpp</FilePath>
             </File>
             <File>
-              <FileName>Page_About.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\GUI\Page_About.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Page_GameDoom.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\GUI\Page_GameDoom.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Page_GameHopper.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\GUI\Page_GameHopper.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Page_Handshake.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\GUI\Page_Handshake.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Page_FreqGraph.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\GUI\Page_FreqGraph.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Page_FileExplorer.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\GUI\Page_FileExplorer.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Page_BvPlayer.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\GUI\Page_BvPlayer.cpp</FilePath>
-            </File>
-            <File>
               <FileName>Page_WavPlayer.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>.\GUI\Page_WavPlayer.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Page_LuaScript.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\GUI\Page_LuaScript.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Page_Jamming.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\GUI\Page_Jamming.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -562,11 +617,6 @@
               <FilePath>.\Handle\Handle_DataStorage.cpp</FilePath>
             </File>
             <File>
-              <FileName>Handle_HMI.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\Handle\Handle_HMI.cpp</FilePath>
-            </File>
-            <File>
               <FileName>Handle_EncoderEvent.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>.\Handle\Handle_EncoderEvent.cpp</FilePath>
@@ -582,19 +632,9 @@
               <FilePath>.\Handle\Handle_Motor.cpp</FilePath>
             </File>
             <File>
-              <FileName>Handle_MPU6050.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\Handle\Handle_MPU6050.cpp</FilePath>
-            </File>
-            <File>
               <FileName>Handle_SD.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>.\Handle\Handle_SD.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>SdInfo.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\Handle\SdInfo.cpp</FilePath>
             </File>
             <File>
               <FileName>Handle_XFS.cpp</FileName>
@@ -605,6 +645,11 @@
               <FileName>Handle_XBox360Sim.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>.\Handle\Handle_XBox360Sim.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Handle_IMU.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Handle\Handle_IMU.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -1303,11 +1348,6 @@
         <Group>
           <GroupName>README</GroupName>
           <Files>
-            <File>
-              <FileName>UpgradeLogs.txt</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\UpgradeLogs.txt</FilePath>
-            </File>
             <File>
               <FileName>README.txt</FileName>
               <FileType>5</FileType>

@@ -5,10 +5,10 @@
 #include "math.h"
 
 /*左摇杆*/
-Joystick_t JS_L;
+RCX::Joystick_t JS_L;
 
 /*右摇杆*/
-Joystick_t JS_R;
+RCX::Joystick_t JS_R;
 
 /*曲线设置*/
 double JS_L_SlopeStart = 5.0f;
@@ -18,13 +18,6 @@ double JS_R_SlopeStart = 5.0f;
 double JS_R_SlopeEnd  = 5.0f;
 
 float CPU_Temperature = 0.0f;
-
-static bool JoystickConnectEnable = true;
-
-void SetJoystickConnectEnable(bool state)
-{
-    JoystickConnectEnable = state;
-}
 
 /**
   * @brief  传感器初始化
@@ -77,24 +70,24 @@ double NonlinearMap(double value, double in_min, double in_max, double out_min, 
   * @param  adc_y: Y轴ADC值
   * @retval 无
   */
-static void JoystickMap(Joystick_t &js, int16_t adc_x, int16_t adc_y, double slopeStart, double slopeEnd)
+static void JoystickMap(RCX::Joystick_t &js, int16_t adc_x, int16_t adc_y, double slopeStart, double slopeEnd)
 {
     __LimitValue(adc_x, js.Xmin, js.Xmax);
     __LimitValue(adc_y, js.Ymin, js.Ymax);
 
     js.X = constrain(
                ((adc_x - js.Xmid) >= 0) ?
-               NonlinearMap(adc_x, js.Xmid, js.Xmax, 0, CtrlOutput_MaxValue, slopeStart, slopeEnd) :
-               NonlinearMap(adc_x, js.Xmid, js.Xmin, 0, -CtrlOutput_MaxValue, slopeStart, slopeEnd),
-               -CtrlOutput_MaxValue,
-               CtrlOutput_MaxValue
+               NonlinearMap(adc_x, js.Xmid, js.Xmax, 0, RCX_ChannelData_Max, slopeStart, slopeEnd) :
+               NonlinearMap(adc_x, js.Xmid, js.Xmin, 0, -RCX_ChannelData_Max, slopeStart, slopeEnd),
+               -RCX_ChannelData_Max,
+               RCX_ChannelData_Max
            );
     js.Y = constrain(
                ((adc_y - js.Ymid) >= 0) ?
-               NonlinearMap(adc_y, js.Ymid, js.Ymax, 0, CtrlOutput_MaxValue, slopeStart, slopeEnd) :
-               NonlinearMap(adc_y, js.Ymid, js.Ymin, 0, -CtrlOutput_MaxValue, slopeStart, slopeEnd),
-               -CtrlOutput_MaxValue,
-               CtrlOutput_MaxValue
+               NonlinearMap(adc_y, js.Ymid, js.Ymax, 0, RCX_ChannelData_Max, slopeStart, slopeEnd) :
+               NonlinearMap(adc_y, js.Ymid, js.Ymin, 0, -RCX_ChannelData_Max, slopeStart, slopeEnd),
+               -RCX_ChannelData_Max,
+               RCX_ChannelData_Max
            );
 }
 
@@ -110,8 +103,8 @@ static void Read_Joystick()
     
     if(IS_EnableCtrl())//是否开启解锁开关
     {
-        CTRL.KnobLimit.L = DR_TH_Value;//map(ADL_ADC(), 0, ADC_MaxValue, 0, CtrlOutput_MaxValue);//左限幅旋钮读取
-        CTRL.KnobLimit.R = DR_ST_Value;//map(ADR_ADC(), 0, ADC_MaxValue, 0, CtrlOutput_MaxValue);//右限幅旋钮读取
+        CTRL.KnobLimit.L = DR_TH_Value;//map(ADL_ADC(), 0, ADC_MaxValue, 0, RCX_ChannelData_Max);//左限幅旋钮读取
+        CTRL.KnobLimit.R = DR_ST_Value;//map(ADR_ADC(), 0, ADC_MaxValue, 0, RCX_ChannelData_Max);//右限幅旋钮读取
     }
     else
     {
@@ -120,13 +113,10 @@ static void Read_Joystick()
         CTRL.KnobLimit.R = 0;
     }
     
-    if(JoystickConnectEnable)
-    {
-        CTRL.Left.X = JS_L.X;
-        CTRL.Left.Y = JS_L.Y;
-        CTRL.Right.X = JS_R.X;
-        CTRL.Right.Y = JS_R.Y;
-    }
+    CTRL.Left.X = JS_L.X;
+    CTRL.Left.Y = JS_L.Y;
+    CTRL.Right.X = JS_R.X;
+    CTRL.Right.Y = JS_R.Y;
 }
 
 /*电池电压，电池电量*/

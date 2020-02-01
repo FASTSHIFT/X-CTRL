@@ -1,24 +1,11 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
+#include "ComPrivate.h"
+#include "IMU_Private.h"
 
 /*实例化当前页面调度器*/
 static MillisTaskManager mtm_SetGravity(2);
 
-/*MPU数据传输通道*/
-int16_t *IMU_Data[4];
-#define from_MPU_LX IMU_Data[0]
-#define from_MPU_LY IMU_Data[1]
-#define from_MPU_RX IMU_Data[2]
-#define from_MPU_RY IMU_Data[3]
-
-/*控件外框大小*/
-#define FM_Size 40
-
-/*实例化摇杆控件对象*/
-static LightGUI::Joystick<SCREEN_CLASS> MPU_Pos(&screen, (screen.width() - FM_Size) / 2, StatusBar_POS + 4, FM_Size, FM_Size, 4);
-
-extern bool IsCalibrateStart;
-extern void IMU_CalibrateStart();
 
 /**
   * @brief  更新MPU数据任务
@@ -27,7 +14,6 @@ extern void IMU_CalibrateStart();
   */
 static void Task_UpdateMPUPos()
 {
-    MPU_Pos.setJsPos((float)MPU_Data.X / CtrlOutput_MaxValue, (float)MPU_Data.Y / CtrlOutput_MaxValue);
 }
 
 /**
@@ -37,47 +23,26 @@ static void Task_UpdateMPUPos()
   */
 static void Task_UpdateMPU_State()
 {
-    extern float Pitch, Roll, Yaw;
-    screen.setCursor(5, StatusBar_POS + TEXT_HEIGHT_1);
+    screen.setCursor(5, StatusBar_Height + TEXT_HEIGHT_1);
     screen.setTextSize(1);
     if(State_MPU)
     {
-        screen.setTextColor(screen.Green, screen.Black);
-        screen.print("ON ");
-        SetJoystickConnectEnable(false);
+        screen.setTextColor(IsCalibrateStart ? screen.Yellow : screen.Green, screen.Black);
+        screen.print(IsCalibrateStart ? "CAB" : "ON ");
     }
     else
     {
         screen.setTextColor(screen.Red, screen.Black);
         screen.print("OFF");
-        SetJoystickConnectEnable(true);
     }
 
     screen.setTextColor(screen.White, screen.Black);
-    screen.setCursor(5, StatusBar_POS + 2 * TEXT_HEIGHT_1);
-    screen.print("GX->");
-    screen.setCursor(5, StatusBar_POS + 3 * TEXT_HEIGHT_1);
-    if(&MPU_Data.X == from_MPU_LX)screen.print("JsLX");
-    else if(&MPU_Data.X == from_MPU_RX)screen.print("JsRX");
-    else screen.print("None");
-
-    screen.setCursor(5, StatusBar_POS + 4 * TEXT_HEIGHT_1);
-    screen.print("GY->");
-    screen.setCursor(5, StatusBar_POS + 5 * TEXT_HEIGHT_1);
-    if(&MPU_Data.Y == from_MPU_LY)screen.print("JsLY");
-    else if(&MPU_Data.Y == from_MPU_RY)screen.print("JsRY");
-    else screen.print("None");
-
-    screen.setCursor(5, StatusBar_POS + 6 * TEXT_HEIGHT_1);
-    screen.printf("Pitch:% 6.2f", Pitch);
-    screen.setCursor(5, StatusBar_POS + 7 * TEXT_HEIGHT_1);
-    screen.printf("Roll: % 6.2f", Roll);
-    screen.setCursor(5, StatusBar_POS + 8 * TEXT_HEIGHT_1);
-    screen.printf("Yaw:  % 6.2f", Yaw);
-   
-    screen.setTextColor(IsCalibrateStart ? screen.Green : screen.Black, screen.Black);
-    screen.setCursor(5, StatusBar_POS + 9 * TEXT_HEIGHT_1);
-    screen.printf("Calibrating...");
+    screen.setCursor(5, StatusBar_Height + 6 * TEXT_HEIGHT_1);
+    screen.printf("Pitch:% 7.2f", IMU_Axis.Pitch.Angle);
+    screen.setCursor(5, StatusBar_Height + 7 * TEXT_HEIGHT_1);
+    screen.printf("Roll: % 7.2f", IMU_Axis.Roll.Angle);
+    screen.setCursor(5, StatusBar_Height + 8 * TEXT_HEIGHT_1);
+    screen.printf("Yaw:  % 7.2f", IMU_Axis.Yaw.Angle);
 }
 
 /**
@@ -87,13 +52,6 @@ static void Task_UpdateMPU_State()
   */
 static void Setup()
 {
-    int16_t target = StatusBar_POS + 4;
-    for(int16_t i = screen.height(); i > target; i--)
-    {
-        MPU_Pos.setPosition(MPU_Pos.X, i);
-        MPU_Pos.setJsPos((float)MPU_Data.X / CtrlOutput_MaxValue, (float)MPU_Data.Y / CtrlOutput_MaxValue);
-    }
-
     mtm_SetGravity.TaskRegister(0, Task_UpdateMPUPos, 10);
     mtm_SetGravity.TaskRegister(1, Task_UpdateMPU_State, 50);
 }
@@ -115,11 +73,6 @@ static void Loop()
   */
 static void Exit()
 {
-    for(int16_t i = MPU_Pos.Y; i < screen.height(); i++)
-    {
-        MPU_Pos.setPosition(MPU_Pos.X, i);
-        MPU_Pos.setJsPos((float)MPU_Data.X / CtrlOutput_MaxValue, (float)MPU_Data.Y / CtrlOutput_MaxValue);
-    }
 }
 
 /**
@@ -133,46 +86,23 @@ static void Event(int event, void* param)
     {
         if(param == &btUP)
         {
-            if(from_MPU_LX == 0 && from_MPU_RX == 0)
-            {
-                from_MPU_LX = &MPU_Data.X;
-                from_MPU_RX = 0;
-            }
-            else if(from_MPU_LX != 0 && from_MPU_RX == 0)
-            {
-                from_MPU_LX = 0;
-                from_MPU_RX = &MPU_Data.X;
-            }
-            else
-            {
-                from_MPU_LX = from_MPU_RX = 0;
-            }
+            
         }
         if(param == &btDOWN)
         {
-            if(from_MPU_LY == 0 && from_MPU_RY == 0)
-            {
-                from_MPU_LY = &MPU_Data.Y;
-                from_MPU_RY = 0;
-            }
-            else if(from_MPU_LY != 0 && from_MPU_RY == 0)
-            {
-                from_MPU_LY = 0;
-                from_MPU_RY = &MPU_Data.Y;
-            }
-            else
-            {
-                from_MPU_LY = from_MPU_RY = 0;
-            }
+            
         }
     }
     else if(event == EVENT_ButtonLongPressed)
     {
-        if(param == &btBACK && !IsCalibrateStart)
+        if(IsCalibrateStart)
+            return; 
+        
+        if(param == &btBACK)
         {
             page.PagePop();
         }
-        if(param == &btOK && !IsCalibrateStart)
+        if(param == &btOK)
         {
             State_MPU = !State_MPU;
         }
@@ -188,10 +118,10 @@ static void Event(int event, void* param)
 
 /**
   * @brief  重力感应页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_SetGravity(uint8_t ThisPage)
+void PageRegister_SetGravity(uint8_t pageID)
 {
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

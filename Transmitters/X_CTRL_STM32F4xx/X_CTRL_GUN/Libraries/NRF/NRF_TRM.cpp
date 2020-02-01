@@ -8,17 +8,15 @@
   */
 void NRF_TRM::TranRecv(void* txbuff, void* rxbuff)
 {
-    uint8_t status = Basic->GetStatus();
     if(Basic->RF_State == Basic->State_TX)
     {
-        if(status & Basic->TX_DS)
+        if(Basic->TranCheck() > 0)
         {
-            Basic->TranSuccess_Cnt++;
             Basic->RX_Mode();
         }
         else
         {
-            Basic->TX_Mode();
+            Basic->TX_Mode(true);
             Basic->Tran(txbuff);
         }
     }

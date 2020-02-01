@@ -1,5 +1,5 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 #include "ComPrivate.h"
 
 /*状态栏时间片调度器，开启优先级*/
@@ -14,7 +14,7 @@ bool State_DisplayCPU_Usage = false;
 static bool State_StatusBarEnable = true;
 
 /*文本Y轴基坐标*/
-#define TextPosBase_Y (StatusBar_POS-15)
+#define TextPosBase_Y (StatusBar_Height-15)
 
 /**
   * @brief  电池电量显示更新任务
@@ -64,19 +64,19 @@ static void Task_DrawBattUsage()
 static void Task_DrawNrfTxRxState()
 {
     const int16_t PosBase = screen.width() / 2 + 5;
-    screen.fillRect(PosBase, StatusBar_POS - 10, 5, 7, screen.Black);
+    screen.fillRect(PosBase, StatusBar_Height - 10, 5, 7, screen.Black);
     if(nrf.RF_Enabled)
     {
         //screen.drawFastVLine(PosBase + 2, 2, 7, screen.White);
         if(nrf.RF_State == nrf.State_TX)
         {
-            screen.drawLine(PosBase + 2, StatusBar_POS - 10, PosBase + 2 - 2, StatusBar_POS - 10 + 2, screen.White);
-            screen.drawLine(PosBase + 2, StatusBar_POS - 10, PosBase + 2 + 2, StatusBar_POS - 10 + 2, screen.White);
+            screen.drawLine(PosBase + 2, StatusBar_Height - 10, PosBase + 2 - 2, StatusBar_Height - 10 + 2, screen.White);
+            screen.drawLine(PosBase + 2, StatusBar_Height - 10, PosBase + 2 + 2, StatusBar_Height - 10 + 2, screen.White);
         }
         else if(nrf.RF_State == nrf.State_RX)
         {
-            screen.drawLine(PosBase + 2, StatusBar_POS - 4, PosBase + 2 - 2, StatusBar_POS - 4 - 2, screen.White);
-            screen.drawLine(PosBase + 2, StatusBar_POS - 4, PosBase + 2 + 2, StatusBar_POS - 4 - 2, screen.White);
+            screen.drawLine(PosBase + 2, StatusBar_Height - 4, PosBase + 2 - 2, StatusBar_Height - 4 - 2, screen.White);
+            screen.drawLine(PosBase + 2, StatusBar_Height - 4, PosBase + 2 + 2, StatusBar_Height - 4 - 2, screen.White);
         }
     }
 }
@@ -99,7 +99,7 @@ static void Task_1000msUpdate()
         else
             screen.setTextColor(screen.Green, screen.Black);
 
-        screen.setCursor(10, StatusBar_POS + 2);
+        screen.setCursor(10, StatusBar_Height + 2);
         screen.printfX("CPU:%0.2f%% %0.1fC", CPU_Usage, CPU_Temperature);
     }
 
@@ -130,7 +130,7 @@ static void Task_1000msUpdate()
         screen.printfX(StrBtc[Bluetooth_ConnectObject]);
     }
     else
-        screen.fillRect(33, StatusBar_POS - 16, 22, 16, screen.Black);
+        screen.fillRect(33, StatusBar_Height - 16, 22, 16, screen.Black);
 
     /* 射频通信状态 */
     if(nrf.RF_Enabled)
@@ -164,15 +164,15 @@ void Init_StatusBar()
     /*状态栏合拢动画*/
     for(float i = 0.0f; i < 1.0f; i += 0.001f)
     {
-        screen.drawFastHLine(0, StatusBar_POS, screen.width() / 2 * i + 1, screen.White);
-        screen.drawFastHLine(screen.width() - screen.width() / 2 * i, StatusBar_POS, screen.width() / 2 * i + 1, screen.White);
+        screen.drawFastHLine(0, StatusBar_Height, screen.width() / 2 * i + 1, screen.White);
+        screen.drawFastHLine(screen.width() - screen.width() / 2 * i, StatusBar_Height, screen.width() / 2 * i + 1, screen.White);
     }
 
     /*电池电量显示控件属性设置*/
     PB_Batt.Width = 20;
     PB_Batt.Height = 10;
     PB_Batt.X = screen.width() - PB_Batt.Width - 5;
-    PB_Batt.Y = StatusBar_POS - PB_Batt.Height - 2;
+    PB_Batt.Y = StatusBar_Height - PB_Batt.Height - 2;
     PB_Batt.display();
 
     /*任务注册*/

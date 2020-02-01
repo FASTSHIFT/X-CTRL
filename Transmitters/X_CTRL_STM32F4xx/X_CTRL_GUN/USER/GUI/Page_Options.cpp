@@ -1,12 +1,12 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 #include "ComPrivate.h"
 
 /*实例化当前页面调度器*/
 static MillisTaskManager mtm_Options(2);
 
 /*目录坐标*/
-#define ItemStartY (StatusBar_POS+4)
+#define ItemStartY (StatusBar_Height+4)
 #define ItemStartX (TEXT_WIDTH_1+8)
 #define ItemEndX   (screen.width()-35)
 
@@ -18,7 +18,6 @@ static LightGUI::Cursor<SCREEN_CLASS> ItemCursor(&screen, ItemStartX, screen.hei
 
 /*自定义选项字符串*/
 String StrBtc[BC_Type::BC_END] = {"HMI", "XFS", "PHE"};
-static String StrModel[] = {"COMMON", "CAR-DS", "CAR-SS", "CUSTOM"};
 static String StrSpeed[] = {"250Kbps", "1Mbps", "2Mbps"};
 
 /*当前选项显示的位置*/
@@ -39,11 +38,14 @@ namespace ItemNum
 /*选项枚举*/
 enum
 {
-    Mode,
+    /*Value*/
+    Model,
     Btc,
     Addr,
     Freq,
     Speed,
+    
+    /*Switch*/
     PassBack,
     Handshake,
     FHSS,
@@ -52,12 +54,19 @@ enum
     Bluetooth,
     CPU_Usage,
     NoOperationMonitor,
+    
+    /*Config*/
     SetJoystick,
-    SetBlueTooth,
+    SetChannel,
     SetGravity,
+    SetBlueTooth,
+    
+    /*Tools*/
     FreqGraph,
     Jamming,
     FileExplorer,
+    
+    /*Others*/
     About,
     SaveExit,
     MAX
@@ -72,7 +81,7 @@ enum
  */
 static MenuManager menu(
     ItemNum::MAX,
-    (screen.height() - StatusBar_POS) / TEXT_HEIGHT_2 - 1,
+    (screen.height() - StatusBar_Height) / TEXT_HEIGHT_2 - 1,
     &page
 );
 
@@ -80,7 +89,7 @@ static MenuManager menu(
 static LightGUI::ScrollBar<SCREEN_CLASS> Scroll(
     &screen,
     screen.width() + 5,
-    StatusBar_POS + 4,
+    StatusBar_Height + 4,
     4,
     menu.ItemNumDisplay_Max * TEXT_HEIGHT_2,
     1,
@@ -236,9 +245,9 @@ static void When_ItemSelect_IncDec(int8_t step)
     String str_temp;
     switch(menu.ItemSelect)
     {
-    case ItemNum::Mode:
-        __ValueStep(CTRL.Info.CtrlObject, step, __Sizeof(StrModel));
-        menu.UpdateItem(ItemNum::Mode, ".Model:" + StrModel[CTRL.Info.CtrlObject]);
+    case ItemNum::Model:
+        RCX::SetObjectType(RCX::GetObjectType() + 1);
+        menu.UpdateItem(ItemNum::Model, ".Model:" + String(RCX::GetObjectType()));
         break;
 
     case ItemNum::Btc:
@@ -277,7 +286,7 @@ static void When_ItemSelect()
 {
     switch(menu.ItemSelect)
     {
-    case ItemNum::Mode:
+    case ItemNum::Model:
         ItemFlashUpdating = true;//进入闪烁状态
         break;
 
@@ -300,12 +309,6 @@ static void When_ItemSelect()
         break;
 
     case ItemNum::Speed:
-//        /*在握手使能时，拦截事件，禁止更改*/
-//        if(State_Handshake)
-//        {
-//            BuzzTone(100, 20);
-//            break;
-//        }
         ItemFlashUpdating = true;
         break;
 
@@ -406,27 +409,37 @@ static void Setup()
     /*菜单选项选中事件绑定*/
     menu.CallbackFunc_ItemSelectEvent = When_ItemSelect;
     /*菜单选项注册*/
-    menu.UpdateItem(ItemNum::Mode,    ".Model:"   + StrModel[CTRL.Info.CtrlObject]);
+    /*Value*/
+    menu.UpdateItem(ItemNum::Model,   ".Model:"   + String(RCX::GetObjectType()));
     menu.UpdateItem(ItemNum::Btc,     ".Btc:"     + StrBtc[Bluetooth_ConnectObject]);
     menu.UpdateItem(ItemNum::Addr,    ".Address:" + String(NRF_Cfg.Address));
     menu.UpdateItem(ItemNum::Freq,    ".Freq:"    + String(2400 + nrf.GetFreqency()) + "MHz");
-    menu.UpdateItem(ItemNum::Speed,   ".Baud:"   + StrSpeed[nrf.GetSpeed()]);
+    menu.UpdateItem(ItemNum::Speed,   ".Baud:"    + StrSpeed[nrf.GetSpeed()]);
+    
+    /*Switch*/
     menu.UpdateItem(ItemNum::PassBack,   ".PassBack",   menu.TYPE_Bool, (int)&State_PassBack);
     menu.UpdateItem(ItemNum::Handshake,  ".Handshake",  menu.TYPE_Bool, (int)&State_Handshake);
     menu.UpdateItem(ItemNum::FHSS,       ".FHSS",       menu.TYPE_Bool, (int)&State_FHSS);
     menu.UpdateItem(ItemNum::Sound,      ".Sound",      menu.TYPE_Bool, (int)&State_BuzzSound);
     menu.UpdateItem(ItemNum::Vibration,  ".Vibration",  menu.TYPE_Bool, (int)&State_MotorVibrate);
     menu.UpdateItem(ItemNum::Bluetooth,  ".Bluetooth",  menu.TYPE_Bool, (int)&State_Bluetooth);
-    menu.UpdateItem(ItemNum::CPU_Usage,   ".CPU Load", menu.TYPE_Bool, (int)&State_DisplayCPU_Usage);
+    menu.UpdateItem(ItemNum::CPU_Usage,   ".CPU Load",  menu.TYPE_Bool, (int)&State_DisplayCPU_Usage);
     menu.UpdateItem(ItemNum::NoOperationMonitor, ".OpaMonit", menu.TYPE_Bool, (int)&State_NoOperationMonitor);
-    menu.UpdateItem(ItemNum::SetJoystick,  ".Joystick", menu.TYPE_PageJump, PAGE_SetJoystick);
+    
+    /*Config*/
+    menu.UpdateItem(ItemNum::SetJoystick,  ".Joystick",  menu.TYPE_PageJump, PAGE_SetJoystick);
+    menu.UpdateItem(ItemNum::SetChannel,   ".Channel",   menu.TYPE_PageJump, PAGE_ChannelCfg);
+    menu.UpdateItem(ItemNum::SetGravity,   ".Gravity",   menu.TYPE_PageJump, PAGE_SetGravity);
     menu.UpdateItem(ItemNum::SetBlueTooth, ".BlueTooth", menu.TYPE_PageJump, PAGE_SetBluetooth);
-    menu.UpdateItem(ItemNum::SetGravity,   ".Gravity",  menu.TYPE_PageJump, PAGE_SetGravity);
-    menu.UpdateItem(ItemNum::FreqGraph,   ".Spectrum", menu.TYPE_PageJump, PAGE_FreqGraph);
-    menu.UpdateItem(ItemNum::Jamming,     ".Jamming", menu.TYPE_PageJump, PAGE_Jamming);
+    
+    /*Tools*/
+    menu.UpdateItem(ItemNum::FreqGraph,   ".Spectrum",  menu.TYPE_PageJump, PAGE_FreqGraph);
+    menu.UpdateItem(ItemNum::Jamming,     ".Jamming",   menu.TYPE_PageJump, PAGE_Jamming);
     menu.UpdateItem(ItemNum::FileExplorer, ".Explorer", menu.TYPE_PageJump, PAGE_FileExplorer);
-    menu.UpdateItem(ItemNum::About,        ".About",    menu.TYPE_PageJump, PAGE_About);
-    menu.UpdateItem(ItemNum::SaveExit,     ".Save & Exit",    menu.TYPE_None, 0);
+    
+    /*Others*/
+    menu.UpdateItem(ItemNum::About,        ".About",       menu.TYPE_PageJump, PAGE_About);
+    menu.UpdateItem(ItemNum::SaveExit,     ".Save & Exit", menu.TYPE_None, 0);
 
     menu.UpdateItemStrBuffer();
     for(uint8_t i = 0; i < menu.ItemNumDisplay_Max; i++)
@@ -498,7 +511,7 @@ static void Event(int event, void* param)
 {
     if(event == EVENT_ButtonPress || event == EVENT_ButtonLongPressRepeat)
     {
-        if(btUP)
+        if(param == &btUP)
         {
             if(ItemFlashUpdating)
             {
@@ -508,7 +521,7 @@ static void Event(int event, void* param)
             else
                 menu.SelectMove(+1);//菜单光标下移
         }
-        if(btDOWN)
+        if(param == &btDOWN)
         {
             if(ItemFlashUpdating)
             {
@@ -521,7 +534,7 @@ static void Event(int event, void* param)
     }
     if(event == EVENT_ButtonPress)
     {
-        if(btOK || btEcd)
+        if(param == &btOK || param == &btEcd)
         {
             if(ItemFlashUpdating)
                 ItemFlashUpdating_ReqExit = true;
@@ -529,7 +542,7 @@ static void Event(int event, void* param)
                 menu.ItemSelectEvent();//触发选项被选中事件
         }
 
-        if(btBACK)
+        if(param == &btBACK)
         {
             if(ItemFlashUpdating)
                 ItemFlashUpdating_ReqExit = true;
@@ -545,10 +558,10 @@ static void Event(int event, void* param)
 
 /**
   * @brief  设置页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_Options(uint8_t ThisPage)
+void PageRegister_Options(uint8_t pageID)
 {
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

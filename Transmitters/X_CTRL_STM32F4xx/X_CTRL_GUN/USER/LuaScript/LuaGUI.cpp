@@ -1,5 +1,5 @@
 #include "LuaGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 
 using namespace LightGUI;
 

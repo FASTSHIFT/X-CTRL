@@ -4,9 +4,9 @@
 enum TaskPriority
 {
     TP_TransferData,
-    TP_ClacSystemUsage,
     TP_SensorUpdate,
-    TP_MPU6050Read,
+    TP_IMU_Process,
+    TP_ClacSystemUsage,
     TP_MotorRunning,
     TP_MusicPlayerRunning,
     TP_XFS_ListCheck,
@@ -23,8 +23,10 @@ static void Thread_Control();
 float CPU_Usage;
 static void Task_ClacSystemUsage()
 {
-    if(State_DisplayCPU_Usage)
-        CPU_Usage = ControlTask.GetCPU_Usage();
+    if(!State_DisplayCPU_Usage)
+        return;
+    
+    CPU_Usage = ControlTask.GetCPU_Usage();
 }
 
 /**
@@ -41,7 +43,7 @@ static void SystemSetup()
     /*主调度器任务注册*/
     ControlTask.TaskRegister(TP_TransferData,       Task_TransferData,          10);    //数据发送任务，执行周期10ms
     ControlTask.TaskRegister(TP_SensorUpdate,       Task_SensorUpdate,          10);    //传感器读取任务，执行周期10ms
-    ControlTask.TaskRegister(TP_MPU6050Read,        Task_MPU6050Read,           20);    //姿态解算任务，执行周期20ms
+    ControlTask.TaskRegister(TP_IMU_Process,        Task_IMU_Process,           20);    //姿态解算任务，执行周期20ms
     ControlTask.TaskRegister(TP_MotorRunning,       Task_MotorRunning,          10);    //电机振动任务，执行周期10ms
     ControlTask.TaskRegister(TP_MusicPlayerRunning, Task_MusicPlayerRunning,    20);    //音乐播放任务，执行周期20ms
     ControlTask.TaskRegister(TP_XFS_ListCheck,      Task_XFS_ListCheck,         500);   //语音合成队列扫描任务，执行周期500ms
@@ -69,7 +71,6 @@ static void SystemSetup()
 static void Thread_Main()
 {
     Thread_GUI();//GUI线程
-    //Thread_HMI();//HMI线程
     Thread_SD_Monitor();//SD热插拔监控线程
 }
 

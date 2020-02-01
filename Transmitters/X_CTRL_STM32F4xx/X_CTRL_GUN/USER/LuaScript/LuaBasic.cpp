@@ -1,7 +1,7 @@
 #include "FileGroup.h"
 #include "LuaCallCpp.h"
 #include "LuaGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 
 /*Lua¿ªÆô×´Ì¬*/
 bool State_LuaScript = false;

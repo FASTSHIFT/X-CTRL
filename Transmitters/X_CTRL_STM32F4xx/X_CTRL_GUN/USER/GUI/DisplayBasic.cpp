@@ -1,5 +1,5 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 #include "Fonts/FreeMono12pt7b.h"
 #include "cm_backtrace.h"
 #include <stdarg.h>
@@ -65,22 +65,22 @@ static void Init_Pages()
         PageRegister_MainMenu(PAGE_MainMenu);
 
     /*其他页面注册*/
+    PAGE_REG(About);
+    PAGE_REG(BvPlayer);
+    PAGE_REG(ChannelCfg);
     PAGE_REG(CtrlInfo);
+    PAGE_REG(FreqGraph);
+    PAGE_REG(FileExplorer);
+    PAGE_REG(GameHopper);
+    PAGE_REG(GameDoom);
+    PAGE_REG(Handshake);
+    PAGE_REG(Jamming);
+    PAGE_REG(LuaScript);
     PAGE_REG(Options);
     PAGE_REG(SetJoystick);
     PAGE_REG(SetBluetooth);
     PAGE_REG(SetGravity);
-    PAGE_REG(About);
-    PAGE_REG(Handshake);
-    PAGE_REG(GameHopper);
-    PAGE_REG(GameDoom);
-    PAGE_REG(FreqGraph);
-    PAGE_REG(FileExplorer);
-    PAGE_REG(BvPlayer);
     PAGE_REG(WavPlayer);
-    PAGE_REG(LuaScript);
-    PAGE_REG(Jamming);
-
     /*跳转至主菜单*/
     page.PagePush(PAGE_MainMenu);
 }
@@ -96,7 +96,6 @@ void Init_GUI(uint8_t step)
     if(step == 0)
     {
         Draw_RGBBitmap_Logo(0.5, 0.5, 30);  //绘制LOGO动画
-        //Init_HMI();                         //初始化HMI
     }
     else
     {

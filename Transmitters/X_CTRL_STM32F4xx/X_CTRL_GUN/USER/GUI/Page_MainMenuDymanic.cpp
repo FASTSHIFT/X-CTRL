@@ -1,5 +1,5 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 #include "ComPrivate.h"
 
 /*实例化当前页面调度器*/
@@ -67,11 +67,11 @@ static void Task_UpdateTextOpacity()
     }
 
     screen.setTextColor(screen.White, screen.Black);
-    screen.setCursor(17, StatusBar_POS + 15);
+    screen.setCursor(17, StatusBar_Height + 15);
     screen.setOpacityX(Opacity);
     screen.printfX("PLAY");
 
-    screen.setCursor(76, StatusBar_POS + 15);
+    screen.setCursor(76, StatusBar_Height + 15);
     screen.setOpacityX(255 - Opacity);
     screen.printfX("CONFIG");
 
@@ -203,10 +203,10 @@ static void Event(int event, void* param)
 
 /**
   * @brief  主菜单页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_MainMenuDymanic(uint8_t ThisPage)
+void PageRegister_MainMenuDymanic(uint8_t pageID)
 {
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

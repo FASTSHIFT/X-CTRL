@@ -8,7 +8,7 @@
 bool Keyboard_Print(char* str)
 {
     bool status = true;
-
+    uint8_t NRF_TxBuff[32];
     State_RF = 0;
     uint32_t timeOut;
     uint16_t strLength = strlen(str);

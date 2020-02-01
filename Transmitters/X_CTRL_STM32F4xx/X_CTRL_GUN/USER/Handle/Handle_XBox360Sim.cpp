@@ -31,5 +31,5 @@ static void XBox360Sim_PassBack_Handler(uint8_t *rxbuff)
 void Init_XBox360Sim()
 {
     DEBUG_FUNC();
-    AddUserCustomPassBack_Callback(XBox360Sim_PassBack_Handler);
+    RCX::PassBackAddCustom(XBox360Sim_PassBack_Handler);
 }

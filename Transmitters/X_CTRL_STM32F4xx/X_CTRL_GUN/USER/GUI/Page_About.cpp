@@ -1,10 +1,10 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 
 /*字库*/
 #include "FreeSerif9pt7b.h"
 
-#define START_Y (StatusBar_POS + (screen.height() - StatusBar_POS - TEXT_HEIGHT_1 * 2 - 12) * 0.5f)
+#define START_Y (StatusBar_Height + (screen.height() - StatusBar_Height - TEXT_HEIGHT_1 * 2 - 12) * 0.5f)
 
 static LightGUI::ProgressBar<SCREEN_CLASS> GameProgress(&screen, 0, screen.height() - 10, screen.width(), 10, 0);
 static float progress;
@@ -99,10 +99,10 @@ static void Event(int event, void* param)
 
 /**
   * @brief  设计者信息页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_About(uint8_t ThisPage)
+void PageRegister_About(uint8_t pageID)
 {
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

@@ -3,7 +3,7 @@
 
 #include "lua.hpp"
 #include "LuaScript.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 
 bool Lua_Begin();
 

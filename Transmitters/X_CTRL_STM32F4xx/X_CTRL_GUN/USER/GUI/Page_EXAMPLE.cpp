@@ -1,6 +1,6 @@
-#include "GUI_Private.h"
+#include "FileGroup.h"
+#include "DisplayPrivate.h"
 
-/********** 基本 ************/
 /**
   * @brief  页面初始化事件
   * @param  无
@@ -35,14 +35,21 @@ static void Exit()
   */
 static void Event(int event, void* param)
 {
+    if(param == &btBACK)
+    {
+        if(event == EVENT_ButtonLongPressed)
+        {
+            page.PagePop();
+        }
+    }
 }
 
 /**
   * @brief  页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_X(uint8_t ThisPage)
+void PageRegister_X(uint8_t pageID)
 {
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

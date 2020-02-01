@@ -1,5 +1,5 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 
 /**
   * @brief  ªÊ÷∆LOGO∂Øª≠

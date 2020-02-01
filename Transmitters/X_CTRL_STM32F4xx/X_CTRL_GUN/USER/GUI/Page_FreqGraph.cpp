@@ -1,12 +1,12 @@
 #include "FileGroup.h"
 #include "ComPrivate.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 
 // the nRF24L01+ can tune to 126 channels with 1 MHz spacing from 2.400 GHz to 2.525 GHz.
 #define NRF_CHANNELS 126
-#define TEXT_BASE_Y (StatusBar_POS + TEXT_HEIGHT_1)
+#define TEXT_BASE_Y (StatusBar_Height + TEXT_HEIGHT_1)
 #define DISP_BASE_Y (TEXT_HEIGHT_1+10)
-#define DISP_MAX_HEIGHT (screen.height() - StatusBar_POS - DISP_BASE_Y - 5)
+#define DISP_MAX_HEIGHT (screen.height() - StatusBar_Height - DISP_BASE_Y - 5)
 static uint16_t SignalStrength[NRF_CHANNELS]; // smooths signal strength with numerical range 0 - 0x7FFF
 static uint8_t NRF_BKUP_EN_AA = 0;
 static uint8_t NRF_BKUP_RF_SETUP = 0;
@@ -113,7 +113,7 @@ static void Loop()
             (int(RecvSensitivity * 10)),
             (
                 screen.setTextColor(screen.White, screen.Black),
-                screen.setCursor(TextMid(0.8f, 3), StatusBar_POS + TEXT_HEIGHT_1),
+                screen.setCursor(TextMid(0.8f, 3), StatusBar_Height + TEXT_HEIGHT_1),
                 screen.print(RecvSensitivity, 1)
             )
         );
@@ -183,10 +183,10 @@ static void Event(int event, void* param)
 
 /**
   * @brief  页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_FreqGraph(uint8_t ThisPage)
+void PageRegister_FreqGraph(uint8_t pageID)
 {
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

@@ -1,5 +1,5 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 #include "ComPrivate.h"
 
 /*实例化按键对象*/
@@ -21,8 +21,8 @@ static ButtonEvent btTRIM_TH_DOWN;
 
 static ButtonEvent swSPDT;
 
-int16_t DR_ST_Value = CtrlOutput_MaxValue;
-int16_t DR_TH_Value = CtrlOutput_MaxValue;
+int16_t DR_ST_Value = RCX_ChannelData_Max;
+int16_t DR_TH_Value = RCX_ChannelData_Max;
 
 static void BuzzRing_DR(bool isST)
 {
@@ -39,7 +39,7 @@ static void DR_EventHandler(ButtonEvent* btn, int event)
     {
         if (*btn == btDR_ST_UP)
         {
-            if(DR_ST_Value < CtrlOutput_MaxValue)
+            if(DR_ST_Value < RCX_ChannelData_Max)
             {
                 DR_ST_Value += ChangeStep;
                 BuzzRing_DR(true);
@@ -60,7 +60,7 @@ static void DR_EventHandler(ButtonEvent* btn, int event)
 
         else if (*btn == btDR_TH_UP)
         {
-            if(DR_TH_Value < CtrlOutput_MaxValue)
+            if(DR_TH_Value < RCX_ChannelData_Max)
             {
                 DR_TH_Value += ChangeStep;
                 BuzzRing_DR(false);
@@ -84,45 +84,35 @@ static void DR_EventHandler(ButtonEvent* btn, int event)
 
 static void TRIM_EventHandler(ButtonEvent* btn, int event)
 {
+    uint8_t keyVal;
     if(event == EVENT_ButtonPress)
     {
         BuzzTone(600, 20);
-        if (*btn == btTRIM_ST_UP)
-        {
-            CTRL.Key |= BT_L2;
-        }
-        if (*btn == btTRIM_ST_DOWN)
-        {
-            CTRL.Key |= BT_R2;
-        }
-        if (*btn == btTRIM_TH_UP)
-        {
-            CTRL.Key |= BT_L1;
-        }
-        if (*btn == btTRIM_TH_DOWN)
-        {
-            CTRL.Key |= BT_R1;
-        }
+        keyVal = 1;
     }
     else if(event == EVENT_ButtonRelease)
     {
         BuzzTone(900, 20);
-        if (*btn == btTRIM_ST_UP)
-        {
-            CTRL.Key &= ~BT_L2;
-        }
-        if (*btn == btTRIM_ST_DOWN)
-        {
-            CTRL.Key &= ~BT_R2;
-        }
-        if (*btn == btTRIM_TH_UP)
-        {
-            CTRL.Key &= ~BT_L1;
-        }
-        if (*btn == btTRIM_TH_DOWN)
-        {
-            CTRL.Key &= ~BT_R1;
-        }
+        keyVal = 0;
+    }
+    else 
+        return;
+    
+    if (*btn == btTRIM_ST_UP)
+    {
+        CTRL.Key.Bit.BT_L2 = keyVal;
+    }
+    if (*btn == btTRIM_ST_DOWN)
+    {
+        CTRL.Key.Bit.BT_R2 = keyVal;
+    }
+    if (*btn == btTRIM_TH_UP)
+    {
+        CTRL.Key.Bit.BT_L1 = keyVal;
+    }
+    if (*btn == btTRIM_TH_DOWN)
+    {
+        CTRL.Key.Bit.BT_R1 = keyVal;
     }
 }
 
@@ -133,35 +123,32 @@ static void TRIM_EventHandler(ButtonEvent* btn, int event)
   */
 static void Page_EventHandler(ButtonEvent* btn, int event)
 {
+    uint8_t keyVal;
     if(event == EVENT_ButtonPress)
     {
         MotorVibrate(1.0f, 50);
         BuzzTone(500, 20);//播放操作音(500Hz, 持续20ms)
-
-        /*置位对应的CTRL按键标志位*/
-        if (*btn == btUP)
-            CTRL.Key |= BT_UP;
-        if (*btn == btDOWN)
-            CTRL.Key |= BT_DOWN;
-        if (*btn == btOK)
-            CTRL.Key |= BT_OK;
-        if (*btn == btBACK)
-            CTRL.Key |= BT_BACK;
+        keyVal = 1;
     }
     else if(event == EVENT_ButtonRelease)
     {
         BuzzTone(700, 20);//播放操作音(700Hz, 持续20ms)
-
-        /*清除对应的CTRL按键标志位*/
-        if (*btn == btUP)
-            CTRL.Key &= ~BT_UP;
-        if (*btn == btDOWN)
-            CTRL.Key &= ~BT_DOWN;
-        if (*btn == btOK)
-            CTRL.Key &= ~BT_OK;
-        if (*btn == btBACK)
-            CTRL.Key &= ~BT_BACK;
+        keyVal = 0;
     }
+    else
+        goto PageEvent;
+    
+    /*对应的CTRL按键标志位*/
+    if (*btn == btUP)
+        CTRL.Key.Bit.BT_UP = keyVal;
+    if (*btn == btDOWN)
+        CTRL.Key.Bit.BT_DOWN = keyVal;
+    if (*btn == btOK)
+        CTRL.Key.Bit.BT_OK = keyVal;
+    if (*btn == btBACK)
+        CTRL.Key.Bit.BT_BACK = keyVal;
+
+PageEvent:
     /*传递到页面事件*/
     page.PageEventTransmit(event, btn);
 }

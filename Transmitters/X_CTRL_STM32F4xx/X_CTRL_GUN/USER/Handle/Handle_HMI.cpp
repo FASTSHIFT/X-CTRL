@@ -100,12 +100,12 @@ static void Task_20msUpdate()
     HMI_ShowDST(RC_Distance);
     HMI_ShowKph(kph);
     HMI_ShowRPM(kph);
-    HMI_ShowRPM_Cvs(fmap(abs(JS_L.Y) * (CTRL.KnobLimit.L / 1000.0), 0, CtrlOutput_MaxValue, 0.0, 1.0), 1.0);
+    HMI_ShowRPM_Cvs(fmap(abs(JS_L.Y) * (CTRL.KnobLimit.L / 1000.0), 0, RCX::ChannelData_Max, 0.0, 1.0), 1.0);
 }
 
 static void Task_100msUpdate()
 {
-    HMI_ShowGear(map(CTRL.KnobLimit.L, 0, CtrlOutput_MaxValue - 10, 1, 9));
+    HMI_ShowGear(map(CTRL.KnobLimit.L, 0, RCX::ChannelData_Max - 10, 1, 9));
 }
 
 static void HMI_EventHandler()

@@ -1,5 +1,6 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
+#include "ComPrivate.h"
 
 /*实例化当前页面调度器*/
 static MillisTaskManager mtm_SetJoystick(3);
@@ -8,18 +9,18 @@ static MillisTaskManager mtm_SetJoystick(3);
 #define FM_Size 35
 
 /*实例化摇杆控件对象*/
-static LightGUI::Joystick<SCREEN_CLASS> JSPos_L(&screen, 0, StatusBar_POS + 4, FM_Size, FM_Size, 4);
-static LightGUI::Joystick<SCREEN_CLASS> JSPos_R(&screen, screen.width() - FM_Size, StatusBar_POS + 4, FM_Size, FM_Size, 4);
+static LightGUI::Joystick<SCREEN_CLASS> JSPos_L(&screen, 0, StatusBar_Height + 4, FM_Size, FM_Size, 4);
+static LightGUI::Joystick<SCREEN_CLASS> JSPos_R(&screen, screen.width() - FM_Size, StatusBar_Height + 4, FM_Size, FM_Size, 4);
 
 /*摇杆数据备份*/
-static Joystick_t JS_L_BK, JS_R_BK;
+static RCX::Joystick_t JS_L_BK, JS_R_BK;
 
 /*坐标轴参数配置*/
 #define Coor_Y (screen.height()-20)
 #define Coor_X_JSL 7
 #define Coor_X_JSR (screen.width()/2+Coor_X_JSL)
 #define Coor_W (screen.width()/2-15)
-#define Coor_H (screen.height() - StatusBar_POS - FM_Size - 20 - 18)
+#define Coor_H (screen.height() - StatusBar_Height - FM_Size - 20 - 18)
 
 bool UpdateCurveReq_L = true;
 bool UpdateCurveReq_R = true;
@@ -108,13 +109,13 @@ void DrawCurve(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t linecolor,
 void Task_UpdateJsPos()
 {
     JSPos_L.setJsPos(
-        __Map(JS_L.X, -CtrlOutput_MaxValue, CtrlOutput_MaxValue, -1.0, 1.0),
-        __Map(JS_L.Y, -CtrlOutput_MaxValue, CtrlOutput_MaxValue, -1.0, 1.0)
+        __Map(JS_L.X, -RCX_ChannelData_Max, RCX_ChannelData_Max, -1.0, 1.0),
+        __Map(JS_L.Y, -RCX_ChannelData_Max, RCX_ChannelData_Max, -1.0, 1.0)
     );
 
     JSPos_R.setJsPos(
-        __Map(JS_R.X, -CtrlOutput_MaxValue, CtrlOutput_MaxValue, -1.0, 1.0),
-        __Map(JS_R.Y, -CtrlOutput_MaxValue, CtrlOutput_MaxValue, -1.0, 1.0)
+        __Map(JS_R.X, -RCX_ChannelData_Max, RCX_ChannelData_Max, -1.0, 1.0),
+        __Map(JS_R.Y, -RCX_ChannelData_Max, RCX_ChannelData_Max, -1.0, 1.0)
     );
 }
 
@@ -193,13 +194,13 @@ static void Setup()
     JS_R.Ymax = ADC_MaxValue / 2 + ADC_MaxValue / 20, JS_R.Ymin = ADC_MaxValue / 2 - ADC_MaxValue / 20;
 
     screen.setTextColor(screen.White, screen.Black);
-    screen.setCursor(TextMid(0.5f, 4), StatusBar_POS + TEXT_HEIGHT_1);
+    screen.setCursor(TextMid(0.5f, 4), StatusBar_Height + TEXT_HEIGHT_1);
     screen.print("Turn");
 
-    screen.setCursor(TextMid(0.5f, 6), StatusBar_POS + TEXT_HEIGHT_1 + 10);
+    screen.setCursor(TextMid(0.5f, 6), StatusBar_Height + TEXT_HEIGHT_1 + 10);
     screen.print("Around");
 
-    screen.setCursor(TextMid(0.5f, 8), StatusBar_POS + TEXT_HEIGHT_1 + 20);
+    screen.setCursor(TextMid(0.5f, 8), StatusBar_Height + TEXT_HEIGHT_1 + 20);
     screen.print("Joystick");
 
     DrawCoordinate(Coor_X_JSL, Coor_Y, Coor_W, Coor_H, screen.White, 2, "x", "y");
@@ -324,10 +325,10 @@ static void Event(int event, void* param)
 
 /**
   * @brief  摇杆设置页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_SetJoystick(uint8_t ThisPage)
+void PageRegister_SetJoystick(uint8_t pageID)
 {
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

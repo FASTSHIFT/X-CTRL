@@ -1,5 +1,5 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 
 /*·äÃùÆ÷ÆğÊ¼ÆµÂÊ2000Hz*/
 #define FreqStart 2000

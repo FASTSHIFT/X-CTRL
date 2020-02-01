@@ -1,6 +1,6 @@
 #include "FileGroup.h"
 #include "FileSystem.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 
 /*实例化当前页面调度器*/
 static MillisTaskManager mtm_FileExplorer(2);
@@ -33,7 +33,7 @@ static FileSupport_TypeDef FileSptGrp[] =
 MenuManager* FileMenu = NULL;
 
 /*目录坐标*/
-#define ItemStartY (StatusBar_POS+4)
+#define ItemStartY (StatusBar_Height+4)
 #define ItemStartX (TEXT_WIDTH_1+8)
 #define ItemEndX   (screen.width()-35)
 
@@ -45,7 +45,7 @@ static int16_t ItemDispalyPos;
 static LightGUI::ScrollBar<SCREEN_CLASS> Scroll(
     &screen,
     screen.width() + 5,
-    StatusBar_POS + 4,
+    StatusBar_Height + 4,
     4,
     0,
     1,
@@ -246,7 +246,7 @@ static bool LoadFileDir(const char *path)
     /*创建菜单对象*/
     static MenuManager menu = MenuManager(
         FileCnt,
-        (screen.height() - StatusBar_POS) / TEXT_HEIGHT_2 - 1,
+        (screen.height() - StatusBar_Height) / TEXT_HEIGHT_2 - 1,
         &page
     );
     FileMenu = &menu;
@@ -432,10 +432,10 @@ static void Event(int event, void* param)
 
 /**
   * @brief  页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_FileExplorer(uint8_t ThisPage)
+void PageRegister_FileExplorer(uint8_t pageID)
 {
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

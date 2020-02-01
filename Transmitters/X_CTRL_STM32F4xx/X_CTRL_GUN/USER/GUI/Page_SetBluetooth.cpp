@@ -1,5 +1,5 @@
 #include "FileGroup.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 #include "ComPrivate.h"
 
 /*蓝牙使能控制*/
@@ -43,7 +43,7 @@ static bool ItemSelectUpdating = false;
 static bool SaveChanges = false;
 
 /*选项显示起始坐标*/
-#define ItemStartY (StatusBar_POS+8)
+#define ItemStartY (StatusBar_Height+8)
 #define ItemStartX 14
 
 
@@ -88,7 +88,7 @@ static void Setup()
     State_Bluetooth = OFF;
 
     screen.setTextColor(screen.White, screen.Black);
-    screen.setCursor(20, StatusBar_POS + 10);
+    screen.setCursor(20, StatusBar_Height + 10);
     screen.print("Enter AT Mode...");
 
     hc05.SetDelayCallback(BluetoothDelayCallback);
@@ -98,7 +98,7 @@ static void Setup()
         ItemSelect = 0;
         BaudRateSelect = 0;
         ItemSelectUpdating = false;
-        screen.setCursor(20, StatusBar_POS + 20);
+        screen.setCursor(20, StatusBar_Height + 20);
         screen.setTextColor(screen.Green, screen.Black);
         screen.print("SUCCESS");
 
@@ -157,11 +157,11 @@ static void Exit()
 {
     ClearPage();
     screen.setTextColor(screen.White, screen.Black);
-    screen.setCursor(20, StatusBar_POS + 10);
+    screen.setCursor(20, StatusBar_Height + 10);
     screen.print("Exit AT Mode...");
     if(SaveChanges)
     {
-        hc05.SetName(String(Master_Description));
+        hc05.SetName(_X_CTRL_NAME);
         hc05.SetBaudRate(UseBaudRate[BaudRateSelect]);
         hc05.SetPassword(Password);
         hc05.SetRole(Role);
@@ -228,10 +228,10 @@ static void Event(int event, void* param)
 
 /**
   * @brief  蓝牙设置页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_SetBluetooth(uint8_t ThisPage)
+void PageRegister_SetBluetooth(uint8_t pageID)
 {
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

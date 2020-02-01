@@ -1,6 +1,6 @@
 #include "FileGroup.h"
 #include "FileSystem.h"
-#include "GUI_Private.h"
+#include "DisplayPrivate.h"
 
 /*实例化当前页面调度器*/
 static MillisTaskManager mtm_BvPlayer(2, true);
@@ -146,11 +146,11 @@ static void Event(int event, void* param)
 
 /**
   * @brief  页面注册
-  * @param  ThisPage:为此页面分配的ID号
+  * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_BvPlayer(uint8_t ThisPage)
+void PageRegister_BvPlayer(uint8_t pageID)
 {
     /*基本*/
-    page.PageRegister(ThisPage, Setup, Loop, Exit, Event);
+    page.PageRegister(pageID, Setup, Loop, Exit, Event);
 }

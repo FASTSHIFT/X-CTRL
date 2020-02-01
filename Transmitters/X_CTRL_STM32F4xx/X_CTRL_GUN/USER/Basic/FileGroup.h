@@ -1,7 +1,7 @@
 #ifndef __FILEGROUP_H
 #define __FILEGROUP_H
 
-#define _X_CTRL_VERSION "v9.2"
+#define _X_CTRL_VERSION "v9.3"
 #define _X_CTRL_NAME    "X-CTRL_GUN"
 
 //*************** STM32 Core *****************//
@@ -23,8 +23,8 @@
 #include "ButtonEvent.h"
 #include "EncoderEvent.h"
 #include "MillisTaskManager.h"
-#include "RC_Protocol.h"
 #include "CommonMacro.h"
+#include "RCX/RCX_Type.h"
 #include "SysConfig.h"
 
 //************* Namespeac & Object & Struct & Value**************//
@@ -73,9 +73,8 @@ extern ButtonEvent btEcd;
 extern EncoderEvent ecd;
 
 /*Struct*/
-extern Joystick_t JS_L;
-extern Joystick_t JS_R;
-extern Axis_t MPU_Data;
+extern RCX::Joystick_t JS_L;
+extern RCX::Joystick_t JS_R;
 
 /*Value*/
 extern bool State_BuzzSound;
@@ -123,6 +122,7 @@ void Init_Sensors();
 bool Init_BvPlayer();
 void Init_LuaScript();
 void Init_XBox360Sim();
+void Init_DefaultChannel();
 
 bool Keyboard_Print(char* str);
 
@@ -130,14 +130,12 @@ void MotorVibrate(float strength, uint32_t time);
 
 double NonlinearMap(double value, double in_min, double in_max, double out_min, double out_max, double startK, double endK);
 
-void SetJoystickConnectEnable(bool state);
-
 void Thread_HMI();
 void Thread_GUI();
 void Thread_SD_Monitor();
 void Task_SensorUpdate();
 void Task_TransferData();
-void Task_MPU6050Read();
+void Task_IMU_Process();
 void Task_MusicPlayerRunning();
 void Task_XFS_ListCheck();
 void Task_MotorRunning();

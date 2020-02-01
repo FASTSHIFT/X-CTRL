@@ -47,7 +47,7 @@ do{\
   * @param  max:最大值
   * @retval 无
   */
-#define __ValueStep(src,step,max) ((src)=((step)>=0)?(((src)+(step))%(max)):(((src)+(max)+(step))%(max)))
+#define __ValueStep(src,step,max) ((src)=(((step)>=0)?(((src)+(step))%(max)):(((src)+(max)+(step))%(max))))
 
 /**
   * @brief  非阻塞式间隔指定时间执行一个函数
