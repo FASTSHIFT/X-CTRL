@@ -1,33 +1,10 @@
 #include "FileGroup.h"
 
-/*主调度器优先级分配表*/
-enum TaskPriority
-{
-    TP_TransferData,
-    TP_SensorUpdate,
-    TP_IMU_Process,
-    TP_ClacSystemUsage,
-    TP_MotorRunning,
-    TP_MusicPlayerRunning,
-    TP_XFS_ListCheck,
-    TP_MAX
-};
-
 /*实例化主调度器对象，开启优先级*/
-static MillisTaskManager ControlTask(TP_MAX, true);
+MillisTaskManager MainTask(TP_MAX, true);
 
-/*控制线程*/
-static void Thread_Control();
-
-/*计算CPU占用情况*/
-float CPU_Usage;
-static void Task_ClacSystemUsage()
-{
-    if(!State_DisplayCPU_Usage)
-        return;
-    
-    CPU_Usage = ControlTask.GetCPU_Usage();
-}
+/*主线程*/
+static void MainTask_Process();
 
 /**
   * @brief  系统初始化
@@ -41,50 +18,48 @@ static void SystemSetup()
     Init_X_CTRL();  //初始化遥控器
 
     /*主调度器任务注册*/
-    ControlTask.TaskRegister(TP_TransferData,       Task_TransferData,          10);    //数据发送任务，执行周期10ms
-    ControlTask.TaskRegister(TP_SensorUpdate,       Task_SensorUpdate,          10);    //传感器读取任务，执行周期10ms
-    ControlTask.TaskRegister(TP_IMU_Process,        Task_IMU_Process,           20);    //姿态解算任务，执行周期20ms
-    ControlTask.TaskRegister(TP_MotorRunning,       Task_MotorRunning,          10);    //电机振动任务，执行周期10ms
-    ControlTask.TaskRegister(TP_MusicPlayerRunning, Task_MusicPlayerRunning,    20);    //音乐播放任务，执行周期20ms
-    ControlTask.TaskRegister(TP_XFS_ListCheck,      Task_XFS_ListCheck,         500);   //语音合成队列扫描任务，执行周期500ms
-    ControlTask.TaskRegister(TP_ClacSystemUsage,    Task_ClacSystemUsage,       1000);
-    Timer_SetInterruptBase(TIM_ControlTask, 10, 10, Thread_Control, 1, 1);  //主调度器(控制线程)与硬件定时器绑定，主优先级1，从优先级1
+    MainTask.TaskRegister(TP_TransferData,       Task_TransferData,          10);    //数据发送任务，执行周期10ms
+    MainTask.TaskRegister(TP_SensorUpdate,       Task_SensorUpdate,          10);    //传感器读取任务，执行周期10ms
+    MainTask.TaskRegister(TP_IMU_Process,        Task_IMU_Process,           20);    //姿态解算任务，执行周期20ms
+    MainTask.TaskRegister(TP_MotorRunning,       Task_MotorRunning,          10);    //电机振动任务，执行周期10ms
+    MainTask.TaskRegister(TP_MusicPlayerRunning, Task_MusicPlayerRunning,    20);    //音乐播放任务，执行周期20ms
+    MainTask.TaskRegister(TP_XFS_ListCheck,      Task_XFS_ListCheck,         500);   //语音合成队列扫描任务，执行周期500ms
+    MainTask.TaskRegister(TP_CPUInfoUpdate,      Task_CPUInfoUpdate,         1000);
+    Timer_SetInterruptBase(TIM_ControlTask, 10, 10, MainTask_Process, 1, 1);  //主调度器(控制线程)与硬件定时器绑定，主优先级1，从优先级1
     Timer_SetInterruptTimeUpdate(TIM_ControlTask, 1000); //时间片1ms
     TIM_Cmd(TIM_ControlTask, ENABLE);//定时器使能
 
-    Init_GUI(0); //LOGO + HMI
+    Init_GUI(0); //LOGO
 
     if(Init_SD())
         Init_BvPlayer();
 
-    if(State_LuaScript)
+    if(CTRL.State.LuaScript)
         Init_LuaScript();
     
     Init_GUI(1); //GUI初始化
 }
 
 /**
-  * @brief  主线程
+  * @brief  主线程(主调度器)
   * @param  无
   * @retval 无
   */
-static void Thread_Main()
+static void MainTask_Process()
+{
+    MainTask.Running(millis());
+}
+
+/**
+  * @brief  副线程
+  * @param  无
+  * @retval 无
+  */
+static void SubTask_Process()
 {
     Thread_GUI();//GUI线程
     Thread_SD_Monitor();//SD热插拔监控线程
 }
-
-
-/**
-  * @brief  控制线程(主调度器)
-  * @param  无
-  * @retval 无
-  */
-static void Thread_Control()
-{
-    ControlTask.Running(millis());
-}
-
 
 /**
   * @brief  Main Function
@@ -93,8 +68,8 @@ static void Thread_Control()
   */
 int main()
 {
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); //NVIC中断组设置
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
     Delay_Init();
-    SystemSetup();                                  //系统初始化
-    for(;;)Thread_Main();                           //主线程执行
+    SystemSetup();
+    for(;;)SubTask_Process();
 }

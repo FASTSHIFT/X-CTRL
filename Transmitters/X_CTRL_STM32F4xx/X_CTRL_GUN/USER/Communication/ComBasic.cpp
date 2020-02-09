@@ -17,9 +17,6 @@ NRF_Basic nrf(
 NRF_TRM  nrfTRM(&nrf);
 NRF_FHSS nrfFHSS(&nrf);
 
-/*控制器*/
-CTRL_TypeDef CTRL;
-
 /*NRF发送数据缓冲区*/
 static uint8_t NRF_TxBuff[32];
 
@@ -43,50 +40,49 @@ int16_t NRF_SignalStrength = 0;
 /*NRF基本配置表*/
 NRF_Config_TypeDef NRF_Cfg = {0, 0, 40};
 
-/*发送数据使能*/
-bool State_RF = OFF;
+/*通信使能*/
+static bool Com_Enable = OFF;
 
-/*回传使能*/
-bool State_PassBack = ON;
+void Com_SetRFEnable(bool en)
+{
+    Com_Enable = en;
+    MainTask.TaskStateCtrl(Task_TransferData, en);
+}
 
-/*通用回传模式使能*/
-bool Enable_CommonPassBack = true;
-
-/*握手使能*/
-bool State_Handshake = ON;
-
-/*跳频使能*/
-bool State_FHSS = OFF;
+bool Com_GetRFEnable()
+{
+    return Com_Enable;
+}
 
 /**
   * @brief  初始化默认通道配置
   * @param  无
   * @retval 无
   */
-void Init_DefaultChannel()
+void Com_SetDefaultChannel()
 {
-    RCX::ChannelAttachValueSetEnable(true);
+    RCX::ChannelSetAttachEnable(true);
     
-    RCX::ChannelAttachValue(0, &CTRL.KnobLimit.L);
-    RCX::ChannelAttachValue(1, &CTRL.KnobLimit.R);
-    RCX::ChannelAttachValue(2, &CTRL.KnobCab.L);
-    RCX::ChannelAttachValue(3, &CTRL.KnobCab.R);
-    RCX::ChannelAttachValue(4, &CTRL.Left.X);
-    RCX::ChannelAttachValue(5, &CTRL.Left.Y);
-    RCX::ChannelAttachValue(6, &CTRL.Right.X);
-    RCX::ChannelAttachValue(7, &CTRL.Right.Y);
-    RCX::ChannelAttachValue(8, NULL);
-    RCX::ChannelAttachValue(9, NULL);
-    RCX::ChannelAttachValue(10, NULL);
-    RCX::ChannelAttachValue(11, NULL);
+    RCX::ChannelSetAttach(0, &CTRL.KnobLimit.L);
+    RCX::ChannelSetAttach(1, &CTRL.KnobLimit.R);
+    RCX::ChannelSetAttach(2, NULL);
+    RCX::ChannelSetAttach(3, NULL);
+    RCX::ChannelSetAttach(4, &CTRL.JS_L.X.Val);
+    RCX::ChannelSetAttach(5, &CTRL.JS_L.Y.Val);
+    RCX::ChannelSetAttach(6, &CTRL.JS_R.X.Val);
+    RCX::ChannelSetAttach(7, &CTRL.JS_R.Y.Val);
+    RCX::ChannelSetAttach(8, NULL);
+    RCX::ChannelSetAttach(9, NULL);
+    RCX::ChannelSetAttach(10, NULL);
+    RCX::ChannelSetAttach(11, NULL);
 }
 
 /**
-  * @brief  NRF初始化
+  * @brief  通信初始化
   * @param  无
   * @retval true成功 false失败
   */
-bool Init_NRF()
+bool Com_Init()
 {
     /*默认初始化*/
     bool isInit = nrf.Init();
@@ -113,19 +109,19 @@ bool Init_NRF()
     nrf.UpdateRegs();
 
     /*初始化默认通道*/
-    Init_DefaultChannel();
+    Com_SetDefaultChannel();
 
     /*返回连接情况*/
     return isInit;
 }
 
-void NRF_TxRx_Process()
+static void Com_TxRxProcess()
 {
-    if(State_FHSS)
+    if(CTRL.State.FHSS)
     {
         nrfFHSS.TxProcess(
             NRF_TxBuff,
-            State_PassBack ? NRF_RxBuff : NULL
+            CTRL.State.PassBack ? NRF_RxBuff : NULL
         );
     }
     else
@@ -133,7 +129,7 @@ void NRF_TxRx_Process()
         nrfTRM.TranRecv(NRF_TxBuff, NRF_RxBuff);
     }
 
-    if(State_PassBack)
+    if(CTRL.State.PassBack)
     {
         RCX::PassbackProcess(NRF_RxBuff);
     }
@@ -146,16 +142,17 @@ void NRF_TxRx_Process()
   */
 void Task_TransferData()
 {
-    if(State_RF == OFF) return;
+    if(!Com_Enable)
+        return;
     
     /*写入按键状态*/
     RCX::SetPackKey(CTRL.Key.Value);
     /*载入数据包到发送缓冲区*/
     RCX::LoadPack(NRF_TxBuff);
 
-    if(State_FHSS || State_PassBack)
+    if(CTRL.State.FHSS || CTRL.State.PassBack)
     {
-        NRF_TxRx_Process();
+        Com_TxRxProcess();
     }
     else
     {

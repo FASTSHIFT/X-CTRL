@@ -1,7 +1,7 @@
 #ifndef __FILEGROUP_H
 #define __FILEGROUP_H
 
-#define _X_CTRL_VERSION "v9.3"
+#define _X_CTRL_VERSION "v9.4"
 #define _X_CTRL_NAME    "X-CTRL_GUN"
 
 //*************** STM32 Core *****************//
@@ -26,8 +26,24 @@
 #include "CommonMacro.h"
 #include "RCX/RCX_Type.h"
 #include "SysConfig.h"
+#include "XC_Type.h"
 
 //************* Namespeac & Object & Struct & Value**************//
+
+/*主调度器优先级分配表*/
+enum TaskPriority
+{
+    TP_TransferData,
+    TP_SensorUpdate,
+    TP_IMU_Process,
+    TP_CPUInfoUpdate,
+    TP_MotorRunning,
+    TP_MusicPlayerRunning,
+    TP_XFS_ListCheck,
+    TP_MAX
+};
+extern MillisTaskManager MainTask;
+
 namespace EEPROM_Chs {
 typedef enum {
     ReadData,
@@ -38,7 +54,6 @@ typedef enum {
 
 namespace BC_Type {
 typedef enum {
-    BC_HMI,
     BC_XFS,
     BC_PHE,
     BC_END
@@ -68,36 +83,10 @@ extern ButtonEvent btUP;
 extern ButtonEvent btDOWN;
 extern ButtonEvent btOK;
 extern ButtonEvent btBACK;
-
 extern ButtonEvent btEcd;
 extern EncoderEvent ecd;
 
-/*Struct*/
-extern RCX::Joystick_t JS_L;
-extern RCX::Joystick_t JS_R;
-
-/*Value*/
-extern bool State_BuzzSound;
-extern bool State_Bluetooth;
-extern bool State_MPU;
-extern bool State_LuaScript;
-extern bool State_DisplayCPU_Usage;
-extern bool State_SD_Enable;
-extern bool State_BV_Enable;
-extern bool State_NoOperationMonitor;
-extern bool State_MotorVibrate;
-
-extern float BattUsage;
-extern float BattVoltage;
-extern uint8_t Bluetooth_ConnectObject;
-extern float CPU_Usage;
-extern float CPU_Temperature;
-extern double JS_L_SlopeStart;
-extern double JS_L_SlopeEnd;
-extern double JS_R_SlopeStart;
-extern double JS_R_SlopeEnd;
-
-extern String StrBtc[BC_Type::BC_END];
+extern CTRL_TypeDef CTRL;
 
 //****************** Functions********************//
 void BuzzMusic(uint8_t music);
@@ -114,15 +103,12 @@ void Init_BottonEvent();
 void Init_Display();
 void Init_EncoderEvent();
 void Init_GUI(uint8_t step);
-void Init_HMI();
-bool Init_NRF();
 void Init_XFS();
 bool Init_SD();
 void Init_Sensors();
 bool Init_BvPlayer();
 void Init_LuaScript();
 void Init_XBox360Sim();
-void Init_DefaultChannel();
 
 bool Keyboard_Print(char* str);
 
@@ -130,7 +116,10 @@ void MotorVibrate(float strength, uint32_t time);
 
 double NonlinearMap(double value, double in_min, double in_max, double out_min, double out_max, double startK, double endK);
 
-void Thread_HMI();
+bool SD_GetReady();
+
+bool BvPlayer_GetReady();
+
 void Thread_GUI();
 void Thread_SD_Monitor();
 void Task_SensorUpdate();
@@ -139,6 +128,7 @@ void Task_IMU_Process();
 void Task_MusicPlayerRunning();
 void Task_XFS_ListCheck();
 void Task_MotorRunning();
+void Task_CPUInfoUpdate();
 
 void XFS_Clear();
 void XFS_Speak(String str);

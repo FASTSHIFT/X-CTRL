@@ -2,9 +2,6 @@
 #include "DisplayPrivate.h"
 #include "ComPrivate.h"
 
-/*蓝牙使能控制*/
-bool State_Bluetooth = ON;
-
 static bool State_Bluetooth_Last;
 
 /*蓝牙连接对象*/
@@ -84,8 +81,8 @@ static void BluetoothDelayCallback()
 static void Setup()
 {
     SaveChanges = false;
-    State_Bluetooth_Last = State_Bluetooth;
-    State_Bluetooth = OFF;
+    State_Bluetooth_Last = CTRL.Bluetooth.Enable;
+    CTRL.Bluetooth.Enable = OFF;
 
     screen.setTextColor(screen.White, screen.Black);
     screen.setCursor(20, StatusBar_Height + 10);
@@ -168,7 +165,7 @@ static void Exit()
     }
     hc05.AT_Exit();
 
-    State_Bluetooth = State_Bluetooth_Last;
+    CTRL.Bluetooth.Enable = State_Bluetooth_Last;
 }
 
 /**

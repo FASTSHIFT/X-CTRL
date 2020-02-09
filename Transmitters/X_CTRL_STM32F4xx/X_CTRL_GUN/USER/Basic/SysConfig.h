@@ -112,7 +112,7 @@
 #define Bluetooth_SERIAL Serial3
 
 /*无操作时间超时设置(秒数)*/
-#define NoOperationTimeout (10*60)
+#define IdleWarnTimeout (10*60)
 
 /*函数DEBUG*/
 #define DEBUG_FUNC() Serial.printf("Time: %0.3fms, Function: %s\r\n", micros()/1000.0f, __FUNCTION__)

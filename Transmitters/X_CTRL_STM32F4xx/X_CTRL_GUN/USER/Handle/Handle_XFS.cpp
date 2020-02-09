@@ -11,7 +11,7 @@ XFS5152CE xfs(&XFS_SERIAL);
 FifoQueue<String> SpeakStr(5);
 
 /*语音合成允许标志位*/
-#define AllowRunXFS (State_Bluetooth && Bluetooth_ConnectObject == BC_Type::BC_XFS)
+#define AllowRunXFS (CTRL.Bluetooth.Enable && CTRL.Bluetooth.ConnectObject == BC_Type::BC_XFS)
 
 /*超时设置*/
 static uint32_t LastSpeakTime = 0;

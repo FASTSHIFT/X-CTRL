@@ -17,8 +17,8 @@ static LightGUI::Cursor<SCREEN_CLASS> ItemCursor(&screen, ItemStartX, screen.hei
 //static LightGUI::BoolSwitch<SCREEN_CLASS> Switch(&screen, screen.width() - 35, ItemStartY + 1 * 10, 15, 9, 2);
 
 /*自定义选项字符串*/
-String StrBtc[BC_Type::BC_END] = {"HMI", "XFS", "PHE"};
-static String StrSpeed[] = {"250Kbps", "1Mbps", "2Mbps"};
+const char* StrBtc[BC_Type::BC_END] = {"XFS", "PHE"};
+static const char* StrSpeed[] = {"250Kbps", "1Mbps", "2Mbps"};
 
 /*当前选项显示的位置*/
 static int16_t ItemDispalyPos;
@@ -53,7 +53,7 @@ enum
     Vibration,
     Bluetooth,
     CPU_Usage,
-    NoOperationMonitor,
+    IdleWarn,
     
     /*Config*/
     SetJoystick,
@@ -246,13 +246,13 @@ static void When_ItemSelect_IncDec(int8_t step)
     switch(menu.ItemSelect)
     {
     case ItemNum::Model:
-        RCX::SetObjectType(RCX::GetObjectType() + 1);
+        RCX::SetObjectType(RCX::GetObjectType() + step);
         menu.UpdateItem(ItemNum::Model, ".Model:" + String(RCX::GetObjectType()));
         break;
 
     case ItemNum::Btc:
-        __ValueStep(Bluetooth_ConnectObject, step, BC_Type::BC_END);
-        menu.UpdateItem(ItemNum::Btc, ".Btc:" + StrBtc[Bluetooth_ConnectObject]);
+        __ValueStep(CTRL.Bluetooth.ConnectObject, step, BC_Type::BC_END);
+        menu.UpdateItem(ItemNum::Btc, ".Btc:" + String(StrBtc[CTRL.Bluetooth.ConnectObject]));
         break;
 
     case ItemNum::Addr:
@@ -263,7 +263,7 @@ static void When_ItemSelect_IncDec(int8_t step)
         break;
 
     case ItemNum::Freq:
-        __ValueStep(NRF_Cfg.Freq, step, 128);
+        __ValueStep(NRF_Cfg.Freq, step, 126);
         str_temp.sprintf(".Freq:%dMHz", 2400 + NRF_Cfg.Freq);
         menu.UpdateItem(ItemNum::Freq, str_temp);
         nrf.SetFreqency(NRF_Cfg.Freq);
@@ -271,7 +271,7 @@ static void When_ItemSelect_IncDec(int8_t step)
 
     case ItemNum::Speed:
         __ValueStep(NRF_Cfg.Speed, step, 3);
-        menu.UpdateItem(ItemNum::Speed, ".Speed:" + StrSpeed[NRF_Cfg.Speed]);
+        menu.UpdateItem(ItemNum::Speed, ".Speed:" + String(StrSpeed[NRF_Cfg.Speed]));
         nrf.SetSpeed(NRF_Cfg.Speed);
         break;
     }
@@ -300,7 +300,7 @@ static void When_ItemSelect()
 
     case ItemNum::Freq:
         /*在握手使能时，拦截事件，禁止更改*/
-        if(State_Handshake)
+        if(CTRL.State.Handshake)
         {
             BuzzTone(100, 20);
             break;
@@ -325,7 +325,7 @@ static void When_ItemSelect()
         break;
 
     case ItemNum::Bluetooth:
-        hc05.Power(!State_Bluetooth);
+        hc05.Power(!CTRL.Bluetooth.Enable);
         break;
     }
 }
@@ -411,20 +411,20 @@ static void Setup()
     /*菜单选项注册*/
     /*Value*/
     menu.UpdateItem(ItemNum::Model,   ".Model:"   + String(RCX::GetObjectType()));
-    menu.UpdateItem(ItemNum::Btc,     ".Btc:"     + StrBtc[Bluetooth_ConnectObject]);
+    menu.UpdateItem(ItemNum::Btc,     ".Btc:"     + String(StrBtc[CTRL.Bluetooth.ConnectObject]));
     menu.UpdateItem(ItemNum::Addr,    ".Address:" + String(NRF_Cfg.Address));
     menu.UpdateItem(ItemNum::Freq,    ".Freq:"    + String(2400 + nrf.GetFreqency()) + "MHz");
-    menu.UpdateItem(ItemNum::Speed,   ".Baud:"    + StrSpeed[nrf.GetSpeed()]);
+    menu.UpdateItem(ItemNum::Speed,   ".Baud:"    + String(StrSpeed[nrf.GetSpeed()]));
     
     /*Switch*/
-    menu.UpdateItem(ItemNum::PassBack,   ".PassBack",   menu.TYPE_Bool, (int)&State_PassBack);
-    menu.UpdateItem(ItemNum::Handshake,  ".Handshake",  menu.TYPE_Bool, (int)&State_Handshake);
-    menu.UpdateItem(ItemNum::FHSS,       ".FHSS",       menu.TYPE_Bool, (int)&State_FHSS);
-    menu.UpdateItem(ItemNum::Sound,      ".Sound",      menu.TYPE_Bool, (int)&State_BuzzSound);
-    menu.UpdateItem(ItemNum::Vibration,  ".Vibration",  menu.TYPE_Bool, (int)&State_MotorVibrate);
-    menu.UpdateItem(ItemNum::Bluetooth,  ".Bluetooth",  menu.TYPE_Bool, (int)&State_Bluetooth);
-    menu.UpdateItem(ItemNum::CPU_Usage,   ".CPU Load",  menu.TYPE_Bool, (int)&State_DisplayCPU_Usage);
-    menu.UpdateItem(ItemNum::NoOperationMonitor, ".OpaMonit", menu.TYPE_Bool, (int)&State_NoOperationMonitor);
+    menu.UpdateItem(ItemNum::PassBack,   ".PassBack",   menu.TYPE_Bool, (int)&CTRL.State.PassBack);
+    menu.UpdateItem(ItemNum::Handshake,  ".Handshake",  menu.TYPE_Bool, (int)&CTRL.State.Handshake);
+    menu.UpdateItem(ItemNum::FHSS,       ".FHSS",       menu.TYPE_Bool, (int)&CTRL.State.FHSS);
+    menu.UpdateItem(ItemNum::Sound,      ".Sound",      menu.TYPE_Bool, (int)&CTRL.State.Sound);
+    menu.UpdateItem(ItemNum::Vibration,  ".Vibration",  menu.TYPE_Bool, (int)&CTRL.State.Vibrate);
+    menu.UpdateItem(ItemNum::Bluetooth,  ".Bluetooth",  menu.TYPE_Bool, (int)&CTRL.Bluetooth.Enable);
+    menu.UpdateItem(ItemNum::CPU_Usage,  ".CPU Load",   menu.TYPE_Bool, (int)&CTRL.CPU.Enable);
+    menu.UpdateItem(ItemNum::IdleWarn,   ".IdleWarn",   menu.TYPE_Bool, (int)&CTRL.State.IdleWarn);
     
     /*Config*/
     menu.UpdateItem(ItemNum::SetJoystick,  ".Joystick",  menu.TYPE_PageJump, PAGE_SetJoystick);

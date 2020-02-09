@@ -136,18 +136,18 @@ static void Loop()
 {
     if(!IsSpoke && millis() - StayPageTimePoint > 10000)
     {
-        if(BattUsage < 30)
+        if(CTRL.Battery.Usage < 30)
             XFS_Speak("警告：电池电量低。");
 
         XFS_Speak(
             "当前电池电压%0.1f伏，剩余电量%0.0f%%",
-            BattVoltage,
-            fmap(BattVoltage, BattEmptyVoltage, BattFullVoltage, 0.0, 100.0)
+            CTRL.Battery.Voltage,
+            CTRL.Battery.Usage
         );
 
-        if(BattUsage < 20)
+        if(CTRL.Battery.Usage < 20)
             XFS_Speak("请立即充电");
-        else if(BattUsage < 30)
+        else if(CTRL.Battery.Usage < 30)
             XFS_Speak("请及时充电");
 
         IsSpoke = true;
@@ -187,7 +187,7 @@ static void Event(int event, void* param)
             if(CursorCloseTo(PosCtrlInfo))
             {
                 CursorPosLast = PosCtrlInfo;
-                if(State_Handshake)
+                if(CTRL.State.Handshake)
                     page.PagePush(PAGE_Handshake);
                 else
                     page.PagePush(PAGE_CtrlInfo);

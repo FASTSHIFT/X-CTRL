@@ -59,7 +59,7 @@ void Init_Display()
 static void Init_Pages()
 {
     /*如果SD卡启动正确，注册动态主菜单，否则使用默认菜单*/
-    if(State_SD_Enable && State_BV_Enable)
+    if(SD_GetReady() && BvPlayer_GetReady())
         PageRegister_MainMenuDymanic(PAGE_MainMenu);
     else
         PageRegister_MainMenu(PAGE_MainMenu);
@@ -144,7 +144,7 @@ void Thread_GUI()
   * @param  无
   * @retval 无
   */
-static void ShowCrashReports()
+static void DisplayCrashReports()
 {
     screen.fillScreen(screen.Blue);
     screen.setTextColor(screen.White);
@@ -172,7 +172,7 @@ static void ShowCrashReports()
 extern "C" {
     void vApplicationHardFaultHook()
     {
-        ShowCrashReports();
+        DisplayCrashReports();
         SoftDelay(5000);
         NVIC_SystemReset();
     }

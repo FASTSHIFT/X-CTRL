@@ -9,9 +9,6 @@
 /*实例化MPU6050对象*/
 static MPU6050 mpu;
 
-/*MPU使能控制*/
-bool State_MPU = OFF;
-
 /*MPU角度数据*/
 IMU_Axis_TypeDef    IMU_Axis;
 IMU_Channel_TypeDef IMU_Channel;
@@ -84,7 +81,7 @@ static int32_t gx_sum = 0,gy_sum = 0,gz_sum = 0;
 
 void IMU_CalibrateStart()
 {
-    if(IsCalibrateStart || !State_MPU)
+    if(IsCalibrateStart || !CTRL.State.IMU)
         return;
     
     IsCalibrateStart = true;
@@ -162,7 +159,7 @@ static void Init_IMU()
   */
 void Task_IMU_Process()
 {
-    if(!State_MPU)
+    if(!CTRL.State.IMU)
         return;
 
     __ExecuteOnce(Init_IMU());

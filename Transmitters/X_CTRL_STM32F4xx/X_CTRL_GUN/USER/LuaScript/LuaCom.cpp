@@ -17,8 +17,8 @@ static int Lua_SetRFState(lua_State *L)
         lua_pushstring(L, "Error! Use integer set RF state");
         lua_error(L);
     }
-    State_RF = lua_tointeger(L, 1);
-    State_RF ? Lua_SERIAL.println("RF Enalbe") : Lua_SERIAL.println("RF Disable");
+    Com_SetRFEnable(lua_tointeger(L, 1));
+    Com_GetRFEnable() ? Lua_SERIAL.println("RF Enalbe") : Lua_SERIAL.println("RF Disable");
     return 0;
 }
 
@@ -26,7 +26,7 @@ static int Lua_SetRFState(lua_State *L)
 static uint8_t ItemSelect_MAX = 0;
 static int Lua_Handshake(lua_State *L)
 {
-    State_RF = OFF;//Ò£¿Ø¹Ø±Õ
+    Com_SetRFEnable(false);//Ò£¿Ø¹Ø±Õ
     ItemSelect_MAX = 0;
 
     int nValue = lua_gettop(L);
@@ -174,16 +174,16 @@ static int Lua_SetChannle(lua_State *L)
     switch(channle)
     {
     case 0:
-        CTRL.Left.X = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
+        CTRL.JS_L.X.Val = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
         break;
     case 1:
-        CTRL.Left.Y = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
+        CTRL.JS_L.Y.Val = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
         break;
     case 2:
-        CTRL.Right.X = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
+        CTRL.JS_R.X.Val = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
         break;
     case 3:
-        CTRL.Right.Y = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
+        CTRL.JS_R.Y.Val = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
         break;
     default:
         lua_pushstring(L, "Error Channle num");
@@ -215,16 +215,16 @@ static int Lua_GetChannle(lua_State *L)
     switch(channle)
     {
     case 0:
-        value = JS_L.X;
+        value = CTRL.JS_L.X.Val;
         break;
     case 1:
-        value = JS_L.Y;
+        value = CTRL.JS_L.Y.Val;
         break;
     case 2:
-        value = JS_R.X;
+        value = CTRL.JS_R.X.Val;
         break;
     case 3:
-        value = JS_R.Y;
+        value = CTRL.JS_R.Y.Val;
         break;
     default:
         lua_pushstring(L, "Error channle num");

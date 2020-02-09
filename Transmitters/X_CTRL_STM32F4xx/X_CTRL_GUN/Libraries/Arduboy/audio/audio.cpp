@@ -81,7 +81,7 @@ void ArduboyAudio::begin()
 {
     tune_playing = false;
     //if (EEPROM.read(EEPROM_AUDIO_ON_OFF))
-    if(State_BuzzSound)
+    if(CTRL.State.Sound)
         on();
     else
         off();

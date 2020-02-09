@@ -84,8 +84,8 @@ static uint8_t Wav_TestInterface(HWAVEFILE handle, uint8_t size, uint8_t **buffe
 static void Init_WaveTest()
 {
     pinMode(Buzz_Pin, INPUT);
-    lastState_BuzzSound = State_BuzzSound;
-    State_BuzzSound = OFF;
+    lastState_BuzzSound = CTRL.State.Sound;
+    CTRL.State.Sound = OFF;
 
     wavFile = SD.open(WavFilePath);
 
@@ -168,7 +168,7 @@ static void Exit()
     TIM_Cmd(PIN_MAP[Buzz_Pin].TIMx, DISABLE);
     pinMode(Buzz_Pin, OUTPUT);
     digitalWrite(Buzz_Pin, LOW);
-    State_BuzzSound = lastState_BuzzSound;
+    CTRL.State.Sound = lastState_BuzzSound;
     ClearPage();
 
     Init_StatusBar();

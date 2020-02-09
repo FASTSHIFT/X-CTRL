@@ -21,25 +21,25 @@ void input_setup()
 
 bool input_left()
 {
-    return(JS_R.X < -200);
+    return(CTRL.JS_R.X.Val < -200);
     //return digitalRead(K_LEFT) == INPUT_STATE;
 };
 
 bool input_right()
 {
-    return(JS_R.X > 200);
+    return(CTRL.JS_R.X.Val > 200);
     //return digitalRead(K_RIGHT) == INPUT_STATE;
 };
 
 bool input_up()
 {
-    return(JS_L.Y > 200);
+    return(CTRL.JS_L.Y.Val > 200);
     //return digitalRead(K_UP) == INPUT_STATE;
 };
 
 bool input_down()
 {
-    return(JS_L.Y < -200);
+    return(CTRL.JS_L.Y.Val < -200);
     //return digitalRead(K_DOWN) == INPUT_STATE;
 };
 

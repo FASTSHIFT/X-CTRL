@@ -44,7 +44,7 @@ void Draw_RFScaleplate(int16_t x, int16_t y, int16_t length, uint16_t color)
   */
 static void Setup()
 {
-    State_RF = false;
+    Com_SetRFEnable(false);
     HoldGraph = false;
     ClearPage();
 

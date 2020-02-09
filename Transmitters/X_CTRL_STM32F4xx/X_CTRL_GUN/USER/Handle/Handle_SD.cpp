@@ -3,13 +3,15 @@
 #include "FileSystem.h"
 #include "SoftwareSPI.h"
 
-extern void SdInfo_Setup();
-extern void SdInfo_Loop();
-
 SoftwareSPIClass swSPI(SD_SCK_Pin, SD_MOSI_Pin, SD_MISO_Pin);
 SdFat SD;
 
-bool State_SD_Enable = false;
+static bool Is_SdReady = false;
+
+bool SD_GetReady()
+{
+    return Is_SdReady;
+}
 
 bool Init_SD()
 {
@@ -21,8 +23,8 @@ bool Init_SD()
     pinMode(SD_CD_Pin, INPUT_PULLUP);
     if(digitalRead(SD_CD_Pin))
     {
-        State_SD_Enable = false;
-        return State_SD_Enable;
+        Is_SdReady = false;
+        return Is_SdReady;
     }
 #endif
       
@@ -31,26 +33,27 @@ bool Init_SD()
     if (!SD.begin(SD_CS_Pin, SD_SCK_MHZ(50)))
     {
         Debug_SERIAL.println("Card failed, or not present");
-        State_SD_Enable = false;
+        Is_SdReady = false;
     }
     else
     {
         Debug_SERIAL.println("card initialized.");
-        State_SD_Enable = true;
+        Is_SdReady = true;
     }
 
-    return State_SD_Enable;
+    return Is_SdReady;
 }
 
-static uint8_t SDInsert_Handle(bool isInsert)
+static uint8_t SD_InsertHandle(bool isInsert)
 {
+    bool BvReady = false;
     if(isInsert)
     {
         BuzzMusic(MC_Type::MC_DeviceInsert);
         if(Init_SD())
-            Init_BvPlayer();
+            BvReady = Init_BvPlayer();
         
-        if(State_SD_Enable && State_BV_Enable)
+        if(Is_SdReady && BvReady)
         {
             PageRegister_MainMenuDymanic(PAGE_MainMenu);
         }
@@ -71,7 +74,7 @@ static uint8_t SDInsert_Handle(bool isInsert)
         page.PagePush(PAGE_MainMenu);
     }
     
-    return (State_SD_Enable + State_BV_Enable);
+    return (Is_SdReady + BvReady);
 }
 
 void Thread_SD_Monitor()
@@ -80,7 +83,7 @@ void Thread_SD_Monitor()
     bool IsSDInsert = !digitalRead(SD_CD_Pin);
     __ValueMonitor(
         IsSDInsert,
-        SDInsert_Handle(IsSDInsert)
+        SD_InsertHandle(IsSDInsert)
     );
 #endif
 }

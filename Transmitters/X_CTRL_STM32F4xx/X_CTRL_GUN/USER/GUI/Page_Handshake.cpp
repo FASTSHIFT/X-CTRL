@@ -148,7 +148,7 @@ void SearchingAnimation(uint32_t ms)
 static void Setup()
 {
     ClearPage();
-    State_RF = OFF;//遥控关闭
+    Com_SetRFEnable(false);//遥控关闭
     ExitHandshake = false;
     ItemSelectUpdating = true;
     HaveButtonEvent = false;
@@ -158,8 +158,8 @@ static void Setup()
     /*配置基本信息*/
     Handshake::Pack_t* master = Handshake::GetMaster();
     master->ID = random(1, 255);
-    master->EnableFunction.Passback = State_PassBack;
-    master->EnableFunction.FHSS = State_FHSS;
+    master->EnableFunction.Passback = CTRL.State.PassBack;
+    master->EnableFunction.FHSS = CTRL.State.FHSS;
     master->Speed = NRF_Cfg.Speed;
 
     /*握手初始化*/

@@ -23,47 +23,13 @@ bool Init_Value()
 {
     DEBUG_FUNC();
     /*注册需要掉电储保存的变量*/
-    StorageDataReg(JS_L);                   //左摇杆信息
-    StorageDataReg(JS_R);                   //右摇杆信息
+    StorageDataReg(CTRL);                   //遥控器信息
     StorageDataReg(DR_ST_Value);            //转向限幅信息
     StorageDataReg(DR_TH_Value);            //油门限幅信息
     StorageDataReg(NRF_Cfg);                //NRF配置信息
-    StorageDataReg(Bluetooth_ConnectObject);//控制对象
     StorageDataReg(NRF_AddressConfig);      //NRF地址
-    StorageDataReg(JS_L_SlopeStart);
-    StorageDataReg(JS_L_SlopeEnd);
-    StorageDataReg(JS_R_SlopeStart);
-    StorageDataReg(JS_R_SlopeEnd);
-    StorageDataReg(State_BuzzSound);        //蜂鸣器使能控制
-    StorageDataReg(State_MotorVibrate);     //振动使能控制
-    StorageDataReg(State_PassBack);         //回传使能控制
-    StorageDataReg(State_Handshake);        //握手使能控制
-    StorageDataReg(State_Bluetooth);        //蓝牙使能控制
-    StorageDataReg(State_NoOperationMonitor);//长时间无操作监控使能控制
-    StorageDataReg(State_FHSS);              //跳频使能
-
-    if(EEPROM_Handle(EEPROM_Chs::ReadData) == false)//读取信息，如果失败，使用默认参数初始化
-    {
-        RCX::SetObjectType(RCX::X_COMMON);//通用对象  
-
-        JS_L.Xmin = 0;
-        JS_L.Xmid = ADC_MaxValue / 2;
-        JS_L.Xmax = ADC_MaxValue;
-
-        JS_L.Ymin = 1703;
-        JS_L.Ymid = 2020;
-        JS_L.Ymax = 2929;
-
-        JS_R.Xmin = 324;
-        JS_R.Xmid = 2017;
-        JS_R.Xmax = 3917;
-
-        JS_R.Ymin = 0;
-        JS_R.Ymid = ADC_MaxValue / 2;
-        JS_R.Ymax = ADC_MaxValue;
-        return false;
-    }
-    return true;
+    
+    return EEPROM_Handle(EEPROM_Chs::ReadData);
 }
 
 /**
@@ -75,7 +41,7 @@ void Init_HC05()
 {
     DEBUG_FUNC();
     hc05.Init(115200);          //波特率115200
-    hc05.Power(State_Bluetooth);//蓝牙使能
+    hc05.Power(CTRL.Bluetooth.Enable);//蓝牙使能
 }
 
 /**
@@ -88,17 +54,17 @@ void Init_X_CTRL()
     DEBUG_FUNC();
     cm_backtrace_init(_X_CTRL_NAME, _X_CTRL_VERSION , __DATE__);
     Init_Display();         //初始化显示器
-    Init_Value();           //初始化变量
     Init_Sensors();         //初始化传感器
     Init_HC05();            //初始化蓝牙
     Init_XBox360Sim();      //初始化XBox360模拟
+    Init_Value();           //初始化变量
 
-    IS_KEY_PRESSED(KEY_DOWN_Pin, State_BuzzSound = OFF);//按下按钮静音启动
+    IS_KEY_PRESSED(KEY_DOWN_Pin, CTRL.State.Sound = OFF);//按下按钮静音启动
 
-    IS_KEY_PRESSED(KEY_SEL_Pin, State_LuaScript = ON);
+    IS_KEY_PRESSED(KEY_SEL_Pin, CTRL.State.LuaScript = ON);
 
-    /*判断是否成功初始化NRF，并播放对应的提示音*/
-    Init_NRF() 
+    /*判断是否成功初始化通信，并播放对应的提示音*/
+    Com_Init() 
     ? BuzzMusic(MC_Type::MC_StartUp) 
     : BuzzMusic(MC_Type::MC_Error);
 }

@@ -13,7 +13,7 @@
 /*按键事件命名空间*/
 using namespace ButtonEvent_Type;
 /*屏幕类名*/
-#define SCREEN_CLASS TFT_SSD1283A
+typedef TFT_SSD1283A SCREEN_CLASS;
 extern SCREEN_CLASS screen;
 
 /*Page管理器*/

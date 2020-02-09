@@ -38,42 +38,6 @@ typedef enum
     CtrlObject_MAX
 } CtrlObject_Type;
 
-/*校准*/
-typedef struct
-{
-    int16_t Min;
-    int16_t Mid;
-    int16_t Max;
-} Calibrat_t;
-
-/*摇杆*/
-typedef struct
-{
-    int16_t X;
-    int16_t Xmin;
-    int16_t Xmid;
-    int16_t Xmax;
-
-    int16_t Y;
-    int16_t Ymin;
-    int16_t Ymid;
-    int16_t Ymax;
-} Joystick_t;
-
-/*坐标*/
-typedef struct
-{
-    int16_t X;
-    int16_t Y;
-} Axis_t;
-
-/*方向*/
-typedef struct
-{
-    int16_t L;
-    int16_t R;
-} Direction_t;
-
 /*通用通信格式 (32 Bytes)*/
 typedef struct
 {

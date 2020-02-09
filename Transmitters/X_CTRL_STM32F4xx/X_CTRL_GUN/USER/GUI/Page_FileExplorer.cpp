@@ -296,7 +296,7 @@ static bool LoadFileDir(const char *path)
 static void Setup()
 {
     FileMenuOpened = false;
-    if(!State_SD_Enable)
+    if(!SD_GetReady())
         return;
     
     TextSetDefault();

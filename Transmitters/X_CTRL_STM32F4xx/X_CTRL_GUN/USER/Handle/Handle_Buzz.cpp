@@ -59,9 +59,6 @@ typedef enum
 /*实例化音乐播放器*/
 static MusicPlayer player(Buzz_Pin);
 
-/*蜂鸣器使能控制*/
-bool State_BuzzSound = ON;
-
 /*音乐播放器状态指示*/
 static bool State_MusicPlayer = OFF;
 
@@ -270,7 +267,7 @@ void Task_SignalMonitor()
   */
 void BuzzMusic(uint8_t music)
 {
-    if(!State_BuzzSound) //是否使能蜂鸣器
+    if(!CTRL.State.Sound) //是否使能蜂鸣器
         return;
 
     if(music >= MC_Type::MC_MAX) //数组访问是否越界
@@ -288,7 +285,7 @@ void BuzzMusic(uint8_t music)
   */
 void BuzzTone(uint32_t freq, uint32_t time)
 {
-    if(!State_BuzzSound)
+    if(!CTRL.State.Sound)
         return;
 
     tone(Buzz_Pin, freq, time);

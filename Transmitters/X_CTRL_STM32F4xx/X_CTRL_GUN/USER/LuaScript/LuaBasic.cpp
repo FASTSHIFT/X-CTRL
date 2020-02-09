@@ -3,9 +3,6 @@
 #include "LuaGroup.h"
 #include "DisplayPrivate.h"
 
-/*Lua开启状态*/
-bool State_LuaScript = false;
-
 /*Lua运行标志位*/
 static bool Is_LuaExit = false;
 

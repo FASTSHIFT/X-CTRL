@@ -22,14 +22,14 @@ int16_t* GetPackChannel();
 void LoadPack(void* txbuff);
 
 /*Channel Manager*/
-void ChannelAttachValueSetEnable(bool en);
-bool ChannelAttachValueGetEnable();
-void ChannelAttachValue(uint8_t ch, int16_t* pValue);
+void ChannelSetAttachEnable(bool en);
+bool ChannelGetAttachEnable();
+void ChannelSetAttach(uint8_t ch, int16_t* pValue);
 bool ChannelGetAttached(uint8_t ch);
-int16_t ChannelCheckValue(int16_t* pValue);
-int16_t** ChannelGetValRegList();
-void ChannelWriteValue(uint8_t ch, int16_t value);
-int16_t ChannelReadValue(uint8_t ch);
+int16_t ChannelGetAttachedIndex(int16_t* pValue);
+int16_t** ChannelGetAttachList();
+void ChannelWrite(uint8_t ch, int16_t value);
+int16_t ChannelRead(uint8_t ch);
 void ChannelUpdate();
 void ChannelReset();
 

@@ -20,10 +20,10 @@ ChannelDisp_TypeDef ChannelDisp_Grp[] = {
     {&CTRL.KnobLimit.L, "CTRL.M.L", -1},
     {&CTRL.KnobLimit.R, "CTRL.M.R", -1},
     
-    {&CTRL.Left.X, "CTRL.L.X", -1},
-    {&CTRL.Left.Y, "CTRL.L.Y", -1},
-    {&CTRL.Right.X, "CTRL.R.X", -1},
-    {&CTRL.Right.Y, "CTRL.R.Y", -1},
+    {&CTRL.JS_L.X.Val, "CTRL.L.X", -1},
+    {&CTRL.JS_L.Y.Val, "CTRL.L.Y", -1},
+    {&CTRL.JS_R.X.Val, "CTRL.R.X", -1},
+    {&CTRL.JS_R.Y.Val, "CTRL.R.Y", -1},
 
     {&IMU_Channel.Pitch.Data, "IMU.Pit ", -1},
     {&IMU_Channel.Roll.Data,  "IMU.Rol ", -1},
@@ -61,7 +61,7 @@ static void AttachChannelUpdate()
 {
     for(int i = 0;i < __Sizeof(ChannelDisp_Grp); i++)
     {
-        ChannelDisp_Grp[i].AttachChannel = RCX::ChannelCheckValue(ChannelDisp_Grp[i].pVal);
+        ChannelDisp_Grp[i].AttachChannel = RCX::ChannelGetAttachedIndex(ChannelDisp_Grp[i].pVal);
     }
 }
 
@@ -148,17 +148,17 @@ static void Event(int event, void* param)
             {
                 if(ChannelDisp_Grp[ItemSelect].AttachChannel != -1)
                 {
-                    RCX::ChannelAttachValueSetEnable(true);
-                    RCX::ChannelAttachValue(
+                    RCX::ChannelSetAttachEnable(true);
+                    RCX::ChannelSetAttach(
                         ChannelDisp_Grp[ItemSelect].AttachChannel,
                         ChannelDisp_Grp[ItemSelect].pVal
                     );
                 }
                 else
                 {
-                    int16_t ch = RCX::ChannelCheckValue(ChannelDisp_Grp[ItemSelect].pVal);
+                    int16_t ch = RCX::ChannelGetAttachedIndex(ChannelDisp_Grp[ItemSelect].pVal);
                     if(ch >= 0)
-                        RCX::ChannelAttachValue(ch, NULL);
+                        RCX::ChannelSetAttach(ch, NULL);
                 }
                 
                 AttachChannelUpdate();
@@ -182,13 +182,13 @@ static void Event(int event, void* param)
         }
         if(event == EVENT_ButtonDoubleClick)
         {
-            if(!RCX::ChannelAttachValueGetEnable())
+            if(!RCX::ChannelGetAttachEnable())
             {
-                Init_DefaultChannel();
+                Com_SetDefaultChannel();
             }
             else
             {
-                RCX::ChannelAttachValueSetEnable(false);
+                RCX::ChannelSetAttachEnable(false);
             }
             AttachChannelUpdate();
         }

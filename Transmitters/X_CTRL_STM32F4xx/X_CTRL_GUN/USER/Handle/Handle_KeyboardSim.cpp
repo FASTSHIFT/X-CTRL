@@ -9,7 +9,7 @@ bool Keyboard_Print(char* str)
 {
     bool status = true;
     uint8_t NRF_TxBuff[32];
-    State_RF = 0;
+    Com_SetRFEnable(false);
     uint32_t timeOut;
     uint16_t strLength = strlen(str);
     uint16_t cnt = 0, sum = strLength / sizeof(NRF_TxBuff) + 1;

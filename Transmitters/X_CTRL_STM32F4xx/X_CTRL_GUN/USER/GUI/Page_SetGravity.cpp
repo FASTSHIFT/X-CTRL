@@ -25,7 +25,7 @@ static void Task_UpdateMPU_State()
 {
     screen.setCursor(5, StatusBar_Height + TEXT_HEIGHT_1);
     screen.setTextSize(1);
-    if(State_MPU)
+    if(CTRL.State.IMU)
     {
         screen.setTextColor(IsCalibrateStart ? screen.Yellow : screen.Green, screen.Black);
         screen.print(IsCalibrateStart ? "CAB" : "ON ");
@@ -104,7 +104,7 @@ static void Event(int event, void* param)
         }
         if(param == &btOK)
         {
-            State_MPU = !State_MPU;
+            CTRL.State.IMU = !CTRL.State.IMU;
         }
     }
     else if(event == EVENT_ButtonDoubleClick)

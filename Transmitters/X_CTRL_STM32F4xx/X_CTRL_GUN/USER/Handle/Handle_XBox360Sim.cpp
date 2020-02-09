@@ -21,7 +21,7 @@ static void XBox360Sim_PassBack_Handler(uint8_t *rxbuff)
     if(xbox.HeadCode != HeadCode_XBox)
         return;
     
-    if(!State_MotorVibrate)
+    if(!CTRL.State.Vibrate)
         return;
 
     int motorPwm = constrain(xbox.Motor[0] + xbox.Motor[1], 0, 100);

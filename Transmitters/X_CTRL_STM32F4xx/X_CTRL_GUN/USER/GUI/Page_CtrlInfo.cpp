@@ -13,7 +13,7 @@ typedef struct{
     int16_t h;
 }Area_t;
 
-const Area_t PB_AREA = {
+static const Area_t PB_AREA = {
     5, StatusBar_Height + Page_Height / 2 - 10,
     screen.width() - 10, Page_Height / 2 + 5
 };
@@ -25,7 +25,7 @@ const Area_t PB_AREA = {
 
 
 /*实例化滚动条控件对象*/
-LightGUI::ScrollBar<SCREEN_CLASS>* BarChannel_Grp[8];
+static LightGUI::ScrollBar<SCREEN_CLASS>* BarChannel_Grp[8];
 
 
 /**
@@ -40,7 +40,7 @@ static void Task_BarChannelUpdate()
     
     for(int i = 0; i < __Sizeof(BarChannel_Grp); i++)
     {
-        int16_t chVal = RCX::ChannelReadValue(i);
+        int16_t chVal = RCX::ChannelRead(i);
         float prg = __Map(chVal, -RCX_ChannelData_Max, RCX_ChannelData_Max, 0.0f, 1.0f);
         BarChannel_Grp[i]->setProgress(prg);
     }
@@ -79,7 +79,7 @@ static void DisplayCommonInfo()
   */
 void Task_PrintPassback()
 {
-    if(State_PassBack && Enable_CommonPassBack)
+    if(CTRL.State.PassBack)
     {
         DisplayCommonInfo();
     }
@@ -167,7 +167,7 @@ static void Setup()
     mtm_CtrlInfo.TaskRegister(2, Task_PrintPassback, 30);
     mtm_CtrlInfo.TaskRegister(3, Task_PrintUseTime, 1000);
 
-    State_RF = ON;
+    Com_SetRFEnable(true);
 }
 
 /**
@@ -188,7 +188,7 @@ static void Loop()
 static void Exit()
 {
     ClearPage();
-    State_RF = OFF;
+    Com_SetRFEnable(false);
     nrf.SetRF_Enable(false);
     XFS_Speak("控制界面关闭");
 }

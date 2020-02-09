@@ -2,7 +2,12 @@
 #include "DisplayPrivate.h"
 #include "FileSystem.h"
 
-bool State_BV_Enable = false;
+static bool Is_BVReady = false;
+
+bool BvPlayer_GetReady()
+{
+    return Is_BVReady;
+}
 
 #define BV_HEIGHT 36
 #define BV_WIDTH 64
@@ -38,11 +43,11 @@ bool Init_BvPlayer()
     player2.DrawPic_8bit = Screen_FastDrawBitmap;
     BvPlayer.DrawPic_8bit = Screen_FastDrawBitmap;
 
-    State_BV_Enable = (player1.OpenVideo("ICON_1.bv") && player2.OpenVideo("ICON_2.bv"));
+    Is_BVReady = (player1.OpenVideo("ICON_1.bv") && player2.OpenVideo("ICON_2.bv"));
 
     player1.SetPlayerState(player1.Always);
     player2.SetPlayerState(player2.Always);
     BvPlayer.SetPlayerState(BvPlayer.Always);
 
-    return State_BV_Enable;
+    return Is_BVReady;
 }

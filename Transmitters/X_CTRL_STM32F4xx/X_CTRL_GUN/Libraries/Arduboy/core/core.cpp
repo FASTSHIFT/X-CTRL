@@ -126,7 +126,7 @@ uint8_t ArduboyCore::buttonsState()
         buttons &= ~B_BUTTON;
     }
 
-    if(JS_L.Y < -200)
+    if(CTRL.JS_L.Y.Val < -200)
     {
         buttons |= UP_BUTTON;
     }
@@ -135,7 +135,7 @@ uint8_t ArduboyCore::buttonsState()
         buttons &= ~UP_BUTTON;
     }
 
-    if(JS_L.Y > 200)
+    if(CTRL.JS_L.Y.Val > 200)
     {
         buttons |= DOWN_BUTTON;
     }
@@ -144,7 +144,7 @@ uint8_t ArduboyCore::buttonsState()
         buttons &= ~DOWN_BUTTON;
     }
 
-    if(JS_R.X < - 200)
+    if(CTRL.JS_R.X.Val < - 200)
     {
         buttons |= LEFT_BUTTON;
     }
@@ -153,7 +153,7 @@ uint8_t ArduboyCore::buttonsState()
         buttons &= ~LEFT_BUTTON;
     }
 
-    if(JS_R.X > 200)
+    if(CTRL.JS_R.X.Val > 200)
     {
         buttons |= RIGHT_BUTTON;
     }

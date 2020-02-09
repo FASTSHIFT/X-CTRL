@@ -651,6 +651,11 @@
               <FileType>8</FileType>
               <FilePath>.\Handle\Handle_IMU.cpp</FilePath>
             </File>
+            <File>
+              <FileName>Handle_CPUInfo.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Handle\Handle_CPUInfo.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

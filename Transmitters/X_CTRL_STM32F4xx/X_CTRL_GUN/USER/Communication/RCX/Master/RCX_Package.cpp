@@ -1,7 +1,7 @@
 #include "RCX.h"
 #include "../crc.h"
 
-static RCX::PackCommon_t PackCommon;
+RCX::PackCommon_t PackCommon;
 
 void RCX::SetObjectType(uint8_t objType)
 {

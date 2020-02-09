@@ -1,6 +1,5 @@
 #include "FileGroup.h"
 
-bool State_MotorVibrate = true;
 static uint32_t MotorStop_TimePoint = 0;
 static bool IsMotorRunning = false;
 
@@ -21,7 +20,7 @@ void Task_MotorRunning()
 
 void MotorVibrate(float strength, uint32_t time)
 {
-   if(!State_MotorVibrate)
+   if(!CTRL.State.Vibrate)
        return;
    
    __ExecuteOnce(Init_Motor());

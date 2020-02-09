@@ -8,9 +8,6 @@ static MillisTaskManager mtm_StatusBar(3, true);
 /*电池电量显示控件*/
 static LightGUI::ProgressBar<SCREEN_CLASS> PB_Batt(&screen, 0);
 
-/*CPU占用率显示使能*/
-bool State_DisplayCPU_Usage = false;
-
 static bool State_StatusBarEnable = true;
 
 /*文本Y轴基坐标*/
@@ -26,8 +23,8 @@ static void Task_DrawBattUsage()
     static uint8_t usage;//显示的电池电量
     bool IsBattCharging = IS_BattCharge();
 
-    __ValueCloseTo(usage, (int)BattUsage, 1);//将显示的电量靠近实际的电量，达到动画的效果
-    if(IsBattCharging && usage == (uint8_t)BattUsage)
+    __ValueCloseTo(usage, (int)CTRL.Battery.Usage, 1);//将显示的电量靠近实际的电量，达到动画的效果
+    if(IsBattCharging && usage == (uint8_t)CTRL.Battery.Usage)
     {
         usage = 0;
     }
@@ -88,19 +85,19 @@ static void Task_DrawNrfTxRxState()
   */
 static void Task_1000msUpdate()
 {
-    if(State_DisplayCPU_Usage)
+    if(CTRL.CPU.Enable)
     {
-        if(CPU_Usage > 90.0f)
+        if(CTRL.CPU.Usage > 90.0f)
             screen.setTextColor(screen.Red, screen.Black);
-        else if(CPU_Usage > 50.0f)
+        else if(CTRL.CPU.Usage > 50.0f)
             screen.setTextColor(screen.Yellow, screen.Black);
-        else if(CPU_Usage > 10.0f)
+        else if(CTRL.CPU.Usage > 10.0f)
             screen.setTextColor(screen.White, screen.Black);
         else
             screen.setTextColor(screen.Green, screen.Black);
 
         screen.setCursor(10, StatusBar_Height + 2);
-        screen.printfX("CPU:%0.2f%% %0.1fC", CPU_Usage, CPU_Temperature);
+        screen.printfX("CPU:%0.2f%% %0.1fC", CTRL.CPU.Usage, CTRL.CPU.Temperature);
     }
 
     /* NRF 信号强度(0~100%) */
@@ -120,14 +117,15 @@ static void Task_1000msUpdate()
 
     /* 显示蓝牙连接状态 */
     screen.setCursor(33, TextPosBase_Y);
-    if(State_Bluetooth)
+    if(CTRL.Bluetooth.Enable)
     {
         if(hc05.GetState())
             screen.setTextColor(screen.Green, screen.Black);
         else
             screen.setTextColor(screen.Yellow, screen.Black);
 
-        screen.printfX(StrBtc[Bluetooth_ConnectObject]);
+        extern const char* StrBtc[];
+        screen.printfX(StrBtc[CTRL.Bluetooth.ConnectObject]);
     }
     else
         screen.fillRect(33, StatusBar_Height - 16, 22, 16, screen.Black);
@@ -149,9 +147,9 @@ static void Task_1000msUpdate()
 
     /* 显示电池电压 */
     screen.setCursor(PB_Batt.X - 27, TextPosBase_Y);
-    screen.setTextSize(0);
+    screen.setTextSize(1);
     screen.setTextColor(screen.White, screen.Black);
-    screen.printfX("%1.1fV", BattVoltage);
+    screen.printfX("%1.1fV", CTRL.Battery.Voltage);
 }
 
 /**
