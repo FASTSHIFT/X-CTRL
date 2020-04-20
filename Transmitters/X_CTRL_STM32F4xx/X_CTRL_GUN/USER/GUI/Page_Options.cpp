@@ -39,7 +39,6 @@ namespace ItemNum
 enum
 {
     /*Value*/
-    Model,
     Btc,
     Addr,
     Freq,
@@ -54,6 +53,7 @@ enum
     Bluetooth,
     CPU_Usage,
     IdleWarn,
+    SignWarn,
     
     /*Config*/
     SetJoystick,
@@ -245,11 +245,6 @@ static void When_ItemSelect_IncDec(int8_t step)
     String str_temp;
     switch(menu.ItemSelect)
     {
-    case ItemNum::Model:
-        RCX::SetObjectType(RCX::GetObjectType() + step);
-        menu.UpdateItem(ItemNum::Model, ".Model:" + String(RCX::GetObjectType()));
-        break;
-
     case ItemNum::Btc:
         __ValueStep(CTRL.Bluetooth.ConnectObject, step, BC_Type::BC_END);
         menu.UpdateItem(ItemNum::Btc, ".Btc:" + String(StrBtc[CTRL.Bluetooth.ConnectObject]));
@@ -286,10 +281,6 @@ static void When_ItemSelect()
 {
     switch(menu.ItemSelect)
     {
-    case ItemNum::Model:
-        ItemFlashUpdating = true;//进入闪烁状态
-        break;
-
     case ItemNum::Btc:
         ItemFlashUpdating = true;
         break;
@@ -410,7 +401,6 @@ static void Setup()
     menu.CallbackFunc_ItemSelectEvent = When_ItemSelect;
     /*菜单选项注册*/
     /*Value*/
-    menu.UpdateItem(ItemNum::Model,   ".Model:"   + String(RCX::GetObjectType()));
     menu.UpdateItem(ItemNum::Btc,     ".Btc:"     + String(StrBtc[CTRL.Bluetooth.ConnectObject]));
     menu.UpdateItem(ItemNum::Addr,    ".Address:" + String(NRF_Cfg.Address));
     menu.UpdateItem(ItemNum::Freq,    ".Freq:"    + String(2400 + nrf.GetFreqency()) + "MHz");
@@ -425,6 +415,7 @@ static void Setup()
     menu.UpdateItem(ItemNum::Bluetooth,  ".Bluetooth",  menu.TYPE_Bool, (int)&CTRL.Bluetooth.Enable);
     menu.UpdateItem(ItemNum::CPU_Usage,  ".CPU Load",   menu.TYPE_Bool, (int)&CTRL.CPU.Enable);
     menu.UpdateItem(ItemNum::IdleWarn,   ".IdleWarn",   menu.TYPE_Bool, (int)&CTRL.State.IdleWarn);
+    menu.UpdateItem(ItemNum::SignWarn,   ".SignWarn",   menu.TYPE_Bool, (int)&CTRL.State.SignWarn);
     
     /*Config*/
     menu.UpdateItem(ItemNum::SetJoystick,  ".Joystick",  menu.TYPE_PageJump, PAGE_SetJoystick);

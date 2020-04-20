@@ -1,7 +1,7 @@
 #ifndef __COMPRIVATE_H
 #define __COMPRIVATE_H
 
-#include "RCX/Master/RCX.h"
+#include "RCX/RCX.h"
 #include "NRF.h"
 
 typedef struct {
@@ -25,5 +25,8 @@ void Com_SetRFEnable(bool en);
 bool Com_GetRFEnable();
 void Com_SetDefaultChannel();
 bool Com_Init();
+
+void Com_PassbackProcess();
+void Passback_XBox360Sim_Handler();
 
 #endif

@@ -1,35 +1,32 @@
 #include "FileGroup.h"
 #include "ComPrivate.h"
 
-#define HeadCode_XBox (uint16_t)0x0036
 
-#pragma pack (1)
-typedef struct
+
+void Passback_XBox360Sim_Handler()
 {
-    uint16_t HeadCode;
-    uint8_t LED_Pattern[4];
-    uint8_t Motor[2];
-} Protocol_XBox360_Passback_t;
-#pragma pack ()
-
-static Protocol_XBox360_Passback_t xbox;
-
-static void XBox360Sim_PassBack_Handler(uint8_t *rxbuff)
-{
-    xbox = *((Protocol_XBox360_Passback_t*)rxbuff);
-
-    if(xbox.HeadCode != HeadCode_XBox)
-        return;
+    static int16_t motorMaxVal = 100;
     
-    if(!CTRL.State.Vibrate)
-        return;
-
-    int motorPwm = constrain(xbox.Motor[0] + xbox.Motor[1], 0, 100);
-    analogWrite(Motor_Pin, map(motorPwm, 0, 100, 0, 1000));
-}
-
-void Init_XBox360Sim()
-{
-    DEBUG_FUNC();
-    RCX::PassBackAddCustom(XBox360Sim_PassBack_Handler);
+    __IntervalExecute(motorMaxVal = 100, 20 * 1000);
+    
+    /*BIG*/
+    int16_t motorLeft = RCX::GetRxPackChannel(2);
+    
+    /*small*/
+    int16_t motorRight = RCX::GetRxPackChannel(3);
+    
+    int16_t motorPwm = motorLeft + motorRight * 0.7f;
+    
+    if(motorPwm > motorMaxVal)
+    {
+        motorMaxVal = motorPwm;
+    }
+    
+    MotorVibrate(
+        fmap(
+            motorPwm, 
+            0, motorMaxVal, 
+            motorPwm == 0 ? 0 : 0.15f, 1.0f),
+        1000
+    );
 }

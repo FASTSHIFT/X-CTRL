@@ -114,13 +114,13 @@ static void DrawCurve(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t linec
 static void Task_UpdateJsPos()
 {
     JSPos_L.setJsPos(
-        __Map(CTRL.JS_L.X.Val, -RCX_ChannelData_Max, RCX_ChannelData_Max, -1.0, 1.0),
-        __Map(CTRL.JS_L.Y.Val, -RCX_ChannelData_Max, RCX_ChannelData_Max, -1.0, 1.0)
+        __Map(CTRL.JS_L.X.Val, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX, -1.0, 1.0),
+        __Map(CTRL.JS_L.Y.Val, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX, -1.0, 1.0)
     );
 
     JSPos_R.setJsPos(
-        __Map(CTRL.JS_R.X.Val, -RCX_ChannelData_Max, RCX_ChannelData_Max, -1.0, 1.0),
-        __Map(CTRL.JS_R.Y.Val, -RCX_ChannelData_Max, RCX_ChannelData_Max, -1.0, 1.0)
+        __Map(CTRL.JS_R.X.Val, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX, -1.0, 1.0),
+        __Map(CTRL.JS_R.Y.Val, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX, -1.0, 1.0)
     );
 }
 

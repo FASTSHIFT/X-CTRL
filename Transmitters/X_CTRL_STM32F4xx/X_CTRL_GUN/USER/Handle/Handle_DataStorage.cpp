@@ -1,8 +1,10 @@
 #include "FileGroup.h"
-#include "EEPROM.h"
+#include "EEPROM_File.h"
+
+static EEPROM_File eeprom_file;
 
 /*起始储存地址*/
-#define STARTADDR 0x30
+#define STARTADDR 0
 
 /*最大注册变量数量*/
 #define RegDataList_MAX 30
@@ -38,7 +40,25 @@ typedef struct {
 EEPROM_RegList_t DataRegList[RegDataList_MAX] = {0};
 
 /*注册变量地址偏移量*/
-uint16_t RegListOffset = 0;
+static uint16_t RegListOffset = 0;
+
+static uint16_t EEPROM_Read16(uint16_t addr)
+{
+    uint8_t high = eeprom_file.read(addr * 2);
+    uint8_t low = eeprom_file.read(addr * 2 + 1);
+    
+//    Serial.printf("R %d high=0x%x\r\n",addr * 2, high);
+//    Serial.printf("R %d low=0x%x\r\n",addr * 2 + 1, low);
+    
+    return (high << 8 | low);
+}
+
+static void EEPROM_Update16(uint16_t addr, uint16_t data)
+{
+//    Serial.printf("W %d = 0x%x\r\n",addr * 2, data);
+    eeprom_file.update(addr * 2 + 1, lowByte(data));
+    eeprom_file.update(addr * 2, highByte(data));
+}
 
 /**
   * @brief  读取下一个地址的数据
@@ -52,7 +72,7 @@ static uint16_t EEPROM_ReadNext(bool reset = false, uint16_t start = STARTADDR)
     if(reset)
         OffsetAddr = start;
 
-    uint16_t ret = EEPROM.read(OffsetAddr);
+    uint16_t ret = EEPROM_Read16(OffsetAddr);
     OffsetAddr++;
     return ret;
 }
@@ -70,8 +90,7 @@ static void EEPROM_WriteNext(uint16_t data, bool reset = false, uint16_t start =
     if(reset)
         OffsetAddr = start;
 
-    //Flash_WriteHalfWord(OffsetAddr, data);
-    EEPROM.update(OffsetAddr, data);
+    EEPROM_Update16(OffsetAddr, data);
     OffsetAddr++;
 }
 
@@ -101,6 +120,8 @@ bool EEPROM_Handle(EEPROM_Chs_t chs)
 {
     bool retval = false;
     EEPROM_DataHead_t head = {0};
+    
+    eeprom_file.begin("/"_X_CTRL_NAME"/system", "save.bin", 2048);
     if(chs == ReadData)
     {
         /*获取帧头信息*/
@@ -116,14 +137,14 @@ bool EEPROM_Handle(EEPROM_Chs_t chs)
         for(uint16_t i = 0; i < head.DataLength; i++)
         {
             if(millis() - StartReadTime > FlashReadTimeOut)//读取是否超时
-                return false;
+                goto failed;
             
             UserDataSum += EEPROM_ReadNext();
         }
 
         /*校验用户数据是否与注册列表匹配*/
         if(UserDataSum != head.CheckSum || head.DataCntSum != RegListOffset)
-            return false;
+            goto failed;
 
         /*在帧头信息末地址的基础上往前移动一个地址，将下一次读取首地址指向用户数据首地址*/
         EEPROM_ReadNext(true, STARTADDR + sizeof(head) / 2 - 1);
@@ -135,7 +156,7 @@ bool EEPROM_Handle(EEPROM_Chs_t chs)
 
             /*/校验是否与用户注册列表匹配*/
             if(UserSize != DataRegList[cnt].Size)
-                return false;
+                goto failed;
 
             /*将读取的数据写入注册列表中pData指针指向的数据*/
             for(uint16_t offset = 0; offset < UserSize; offset++)
@@ -174,9 +195,12 @@ bool EEPROM_Handle(EEPROM_Chs_t chs)
             for(uint16_t offset = 0; offset < DataRegList[cnt].Size; offset++)
                 EEPROM_WriteNext((DataRegList[cnt].pData)[offset]);
         }
-
+        eeprom_file.end();
+        
         /*判断是否写入成功*/
         retval = EEPROM_Handle(ReadData);
     }
+failed:
+    eeprom_file.end();
     return retval;
 }

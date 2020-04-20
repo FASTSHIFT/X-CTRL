@@ -253,7 +253,7 @@ void Task_SignalMonitor()
     else if(NRF_SignalStrength > 90 && millis() - UntableSignalStrength_TimePoint > 5000)
         ConnectState = 2;
 
-    if(!State_MusicPlayer)
+    if(!State_MusicPlayer && CTRL.State.SignWarn)
     {
         /*监控ConnectState变量，当其改变时触发SignalChangeEvent事件*/
         __ValueMonitor(ConnectState, SignalChangeEvent(ConnectState));

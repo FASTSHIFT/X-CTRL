@@ -21,8 +21,8 @@ static ButtonEvent btTRIM_TH_DOWN;
 
 static ButtonEvent swSPDT;
 
-int16_t DR_ST_Value = RCX_ChannelData_Max;
-int16_t DR_TH_Value = RCX_ChannelData_Max;
+int16_t DR_ST_Value = RCX_CHANNEL_DATA_MAX;
+int16_t DR_TH_Value = RCX_CHANNEL_DATA_MAX;
 
 static void BuzzRing_DR(bool isST)
 {
@@ -39,7 +39,7 @@ static void DR_EventHandler(ButtonEvent* btn, int event)
     {
         if (*btn == btDR_ST_UP)
         {
-            if(DR_ST_Value < RCX_ChannelData_Max)
+            if(DR_ST_Value < RCX_CHANNEL_DATA_MAX)
             {
                 DR_ST_Value += ChangeStep;
                 BuzzRing_DR(true);
@@ -60,7 +60,7 @@ static void DR_EventHandler(ButtonEvent* btn, int event)
 
         else if (*btn == btDR_TH_UP)
         {
-            if(DR_TH_Value < RCX_ChannelData_Max)
+            if(DR_TH_Value < RCX_CHANNEL_DATA_MAX)
             {
                 DR_TH_Value += ChangeStep;
                 BuzzRing_DR(false);

@@ -2,19 +2,12 @@
 #include "DisplayPrivate.h"
 #include "ComPrivate.h"
 #include "IMU_Private.h"
+#include "Modle/ModlePrivate.h"
 
 static MillisTaskManager mtmChannelCfg(2);
 
 static uint8_t ItemSelect = 0;
 static bool ItemSelectLock = false;
-    
-
-typedef struct{
-    int16_t* pVal;
-    const char* Name;
-    int8_t AttachChannel;
-}ChannelDisp_TypeDef;
-#define ChannelDispDef(val) {&(val), #val}
 
 ChannelDisp_TypeDef ChannelDisp_Grp[] = {
     {&CTRL.KnobLimit.L, "CTRL.M.L", -1},
@@ -42,18 +35,29 @@ static void Task_UpdateChannelDisp()
         TextSetDefault();
         
         int16_t disp_y = StatusBar_Height + 5 + TEXT_HEIGHT_1 * i;
+        int16_t ch = ChannelDisp_Grp[i].AttachChannel;
         
-        screen.setTextColor(ItemSelect == i ? screen.Yellow : screen.White, screen.Black);
+        uint16_t textColor = ItemSelect == i ? screen.Black : screen.White;
+        uint16_t bgColor = ItemSelect == i ? screen.Yellow : screen.Black;
+        
+        screen.setTextColor(textColor, bgColor);
         screen.setCursor(2, disp_y);
-        screen.printf("%s:% 5d->", ChannelDisp_Grp[i].Name, *ChannelDisp_Grp[i].pVal);
+        screen.printf("%s:% 5d", ChannelDisp_Grp[i].Name, *ChannelDisp_Grp[i].pVal);
+        
+        if(ch != -1)
+        {
+            screen.print(RCX::ChannelGetReverse(ch) ? "~> " : "-> ");
+        }
+        else
+        {
+            screen.print("   ");
+        }
         
         if(ItemSelect == i && ItemSelectLock)
-            screen.setTextColor(screen.Red, screen.Black);
-        
-        screen.setCursor(screen.width() - 4 - TEXT_WIDTH_1 * 4, disp_y);
-        ChannelDisp_Grp[i].AttachChannel != -1 
-        ? screen.printf("CH%d",ChannelDisp_Grp[i].AttachChannel)
-        : screen.print("---");
+            bgColor = screen.Red;
+            
+        screen.setTextColor(textColor, bgColor);
+        (ch != -1) ? screen.printf("CH%d", ch) : screen.print("---");
     }
 }
 
@@ -140,7 +144,7 @@ static void Event(int event, void* param)
     
     if(param == &btOK)
     {
-        if(event == EVENT_ButtonPress)
+        if(event == EVENT_ButtonLongPressed)
         {
             ItemSelectLock = !ItemSelectLock;
             
@@ -164,6 +168,17 @@ static void Event(int event, void* param)
                 AttachChannelUpdate();
             }
         }
+        if(event == EVENT_ButtonClick)
+        {
+            if(ItemSelectLock)
+            {
+                int16_t ch = ChannelDisp_Grp[ItemSelect].AttachChannel;
+                if(ch != -1)
+                {
+                    RCX::ChannelSetReverse(ch, !RCX::ChannelGetReverse(ch));
+                }
+            }
+        }
     }
     
     
@@ -173,7 +188,7 @@ static void Event(int event, void* param)
         {
             if(ItemSelectLock)
             {
-                page.PageEventTransmit(EVENT_ButtonPress, &btOK);
+                page.PageEventTransmit(EVENT_ButtonLongPressed, &btOK);
             }
         }
         if(event == EVENT_ButtonLongPressed)

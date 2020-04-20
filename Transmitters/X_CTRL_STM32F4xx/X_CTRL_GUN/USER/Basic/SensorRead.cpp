@@ -67,17 +67,17 @@ static void JoystickMap(Joystick_TypeDef* js, int16_t adc_x, int16_t adc_y)
 
     js->X.Val = constrain(
                     ((adc_x - js->X.Mid) >= 0) ?
-                    NonlinearMap(adc_x, js->X.Mid, js->X.Max, 0, RCX_ChannelData_Max, js->X.Curve.Start, js->X.Curve.End) :
-                    NonlinearMap(adc_x, js->X.Mid, js->X.Min, 0, -RCX_ChannelData_Max, js->X.Curve.Start, js->X.Curve.End),
-                    -RCX_ChannelData_Max,
-                    RCX_ChannelData_Max
+                    NonlinearMap(adc_x, js->X.Mid, js->X.Max, 0, RCX_CHANNEL_DATA_MAX, js->X.Curve.Start, js->X.Curve.End) :
+                    NonlinearMap(adc_x, js->X.Mid, js->X.Min, 0, -RCX_CHANNEL_DATA_MAX, js->X.Curve.Start, js->X.Curve.End),
+                    -RCX_CHANNEL_DATA_MAX,
+                    RCX_CHANNEL_DATA_MAX
                 );
     js->Y.Val = constrain(
                     ((adc_y - js->Y.Mid) >= 0) ?
-                    NonlinearMap(adc_y, js->Y.Mid, js->Y.Max, 0, RCX_ChannelData_Max, js->Y.Curve.Start, js->Y.Curve.End) :
-                    NonlinearMap(adc_y, js->Y.Mid, js->Y.Min, 0, -RCX_ChannelData_Max, js->Y.Curve.Start, js->Y.Curve.End),
-                    -RCX_ChannelData_Max,
-                    RCX_ChannelData_Max
+                    NonlinearMap(adc_y, js->Y.Mid, js->Y.Max, 0, RCX_CHANNEL_DATA_MAX, js->Y.Curve.Start, js->Y.Curve.End) :
+                    NonlinearMap(adc_y, js->Y.Mid, js->Y.Min, 0, -RCX_CHANNEL_DATA_MAX, js->Y.Curve.Start, js->Y.Curve.End),
+                    -RCX_CHANNEL_DATA_MAX,
+                    RCX_CHANNEL_DATA_MAX
                 );
 }
 
@@ -93,8 +93,8 @@ static void JoystickUpdate()
 
     if(IS_EnableCtrl())//是否开启解锁开关
     {
-        CTRL.KnobLimit.L = DR_TH_Value;//map(ADL_ADC(), 0, ADC_MaxValue, 0, RCX_ChannelData_Max);//左限幅旋钮读取
-        CTRL.KnobLimit.R = DR_ST_Value;//map(ADR_ADC(), 0, ADC_MaxValue, 0, RCX_ChannelData_Max);//右限幅旋钮读取
+        CTRL.KnobLimit.L = DR_TH_Value;//map(ADL_ADC(), 0, ADC_MaxValue, 0, RCX_CHANNEL_DATA_MAX);//左限幅旋钮读取
+        CTRL.KnobLimit.R = DR_ST_Value;//map(ADR_ADC(), 0, ADC_MaxValue, 0, RCX_CHANNEL_DATA_MAX);//右限幅旋钮读取
     }
     else
     {

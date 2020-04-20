@@ -131,7 +131,8 @@ static void Com_TxRxProcess()
 
     if(CTRL.State.PassBack)
     {
-        RCX::PassbackProcess(NRF_RxBuff);
+        RCX::LoadRxPack(NRF_RxBuff);
+        Com_PassbackProcess();
     }
 }
 
@@ -146,9 +147,9 @@ void Task_TransferData()
         return;
     
     /*写入按键状态*/
-    RCX::SetPackKey(CTRL.Key.Value);
+    RCX::SetTxPackKey(CTRL.Key.Value);
     /*载入数据包到发送缓冲区*/
-    RCX::LoadPack(NRF_TxBuff);
+    RCX::LoadTxPack(NRF_TxBuff);
 
     if(CTRL.State.FHSS || CTRL.State.PassBack)
     {

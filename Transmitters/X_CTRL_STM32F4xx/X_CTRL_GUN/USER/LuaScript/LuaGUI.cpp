@@ -157,9 +157,27 @@ static int Lua_FillScreen(lua_State *L)
 
 void LuaReg_GUI()
 {
+    for(int i = 0; i < ScrollCnt ; i++)
+    {
+        if(Scroll[i])
+        {
+            delete Scroll[i];
+            Scroll[i] = NULL;
+        }
+    }
+    ScrollCnt = 0;
     luaScript.registerFunc("crtScroll", Lua_CreatScrollBar);
     luaScript.registerFunc("setScroll", Lua_SetScrollBar);
     
+    for(int i = 0; i < BoxCnt ; i++)
+    {
+        if(Box[i])
+        {
+            delete Box[i];
+            Box[i] = NULL;
+        }
+    }
+    BoxCnt = 0;
     luaScript.registerFunc("crtBox", Lua_CreatBox);
     luaScript.registerFunc("setBox", Lua_SetBox);
     

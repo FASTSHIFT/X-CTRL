@@ -31,9 +31,6 @@ static void SystemSetup()
 
     Init_GUI(0); //LOGO
 
-    if(Init_SD())
-        Init_BvPlayer();
-
     if(CTRL.State.LuaScript)
         Init_LuaScript();
     

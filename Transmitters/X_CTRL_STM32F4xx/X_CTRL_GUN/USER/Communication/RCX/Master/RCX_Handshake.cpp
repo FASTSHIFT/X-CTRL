@@ -1,13 +1,10 @@
-#include "RCX.h"
-#include "WMath.h"
+#include "../RCX.h"
+#include "SysConfig.h"
+
+#define RCX_TIM_Handshake TIM_Handshake
 
 using namespace RCX;
 using namespace Handshake;
-
-/*广播配置*/
-#define RCX_BroadcastAddr  18,54,98,66,23
-#define RCX_BroadcastFreq  43//2443MHz
-#define RCX_BroadcastSpeed 0 //SPEED_250Kbps
 
 static NRF_TRM*  nrfTRM  = NULL;
 static NRF_FHSS* nrfFHSS = NULL;
@@ -19,22 +16,32 @@ static Pack_t Master;//主机握手数据包
 
 #define SLAVE_MAX 5 //从机列表长度
 static Pack_t Slave_Grp[SLAVE_MAX] = {0};//从机握手列表
-
+static uint8_t SlaveSelectIndex = 0;
 
 void Handshake::Init(
     NRF_TRM*  trm,
     NRF_FHSS* fhss, 
-    const char* masterName
+    const char* name
 )
 {
     nrfTRM = trm;
     nrfFHSS = fhss;
-    strncpy(Master.Description, masterName, sizeof(Master.Description));
+    strncpy(Master.Description, name, sizeof(Master.Description));
 }
 
 const Pack_t* Handshake::GetSlave(uint8_t index)
 {
     return &(Slave_Grp[index % SLAVE_MAX]);
+}
+
+uint8_t Handshake::GetSlaveSelectIndex()
+{
+    return SlaveSelectIndex;
+}
+
+uint8_t Handshake::GetSlaveID()
+{
+    return Master.ID;
 }
 
 Pack_t* Handshake::GetMaster()
@@ -133,9 +140,9 @@ uint8_t Handshake::Process(uint8_t state, uint8_t slaveSelect, CMD_Type cmd)
 
         /*配置NRF为广播*/
         nrfTRM->Basic->SetRF_Enable(false);
-        nrfTRM->Basic->SetAddress(RCX_BroadcastAddr);//设置广播地址
-        nrfTRM->Basic->SetFreqency(RCX_BroadcastFreq);//设置广播频段
-        nrfTRM->Basic->SetSpeed(RCX_BroadcastSpeed);//设置广播通信速度
+        nrfTRM->Basic->SetAddress(RCX_BROADCAST_ADDR);//设置广播地址
+        nrfTRM->Basic->SetFreqency(RCX_BROADCAST_FREQ);//设置广播频段
+        nrfTRM->Basic->SetSpeed(RCX_BROADCAST_SPEED);//设置广播通信速度
         nrfTRM->Basic->SetAutoRetryTimeout(NRF_ComProcess_TimeMs);
         nrfTRM->Basic->TX_Mode();
         nrfTRM->Basic->SetRF_Enable(true);
@@ -163,10 +170,11 @@ uint8_t Handshake::Process(uint8_t state, uint8_t slaveSelect, CMD_Type cmd)
         break;
 
     case State_ReqConnect://申请连接状态
+        SlaveSelectIndex = slaveSelect % SLAVE_MAX;
         ComToSlave(&Slave_temp);//在广播地址交换数据
         Master.BroadcastHead = BroadcastHead_MasterAttach;//设置帧头识别码为主机绑定状态
-        Master.ID = Slave_Grp[slaveSelect % SLAVE_MAX].ID;//设置主机ID与从机一致
-        Master.Type = Slave_Grp[slaveSelect % SLAVE_MAX].Type;//设置主机类型与从机一致
+        Master.ID = Slave_Grp[SlaveSelectIndex].ID;//设置主机ID与从机一致
+        Master.Type = Slave_Grp[SlaveSelectIndex].Type;//设置主机类型与从机一致
         Master.CMD = cmd;//向从机发送命令
         
         if(Slave_temp.BroadcastHead == BroadcastHead_SlaveAttach)//如果从机的帧头识别码为从机绑定状态
@@ -185,9 +193,9 @@ uint8_t Handshake::Process(uint8_t state, uint8_t slaveSelect, CMD_Type cmd)
 #endif
         
         /*设置数据包类型*/
-        SetObjectType(Master.Type);
+        SetTxObjectType(Master.Type);
         /*设置数据包ID*/
-        SetObjectID(Master.ID);
+        SetTxObjectID(Master.ID);
 
         nrfTRM->Basic->SetRF_Enable(false);
         nrfTRM->Basic->SetAddress(Master.Address);//应用新地址

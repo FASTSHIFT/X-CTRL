@@ -122,7 +122,7 @@ static float Animation_ProgressSlide(float from, float to, uint32_t ms, uint16_t
     return value;
 }
 
-void SearchingAnimation(uint32_t ms)
+static void SearchingAnimation(uint32_t ms)
 {
     uint16_t bgtime = 200;
     float pos1 = Animation_ProgressSlide(0, screen.width(), ms, 2000, 2000);
@@ -157,7 +157,6 @@ static void Setup()
     
     /*配置基本信息*/
     Handshake::Pack_t* master = Handshake::GetMaster();
-    master->ID = random(1, 255);
     master->EnableFunction.Passback = CTRL.State.PassBack;
     master->EnableFunction.FHSS = CTRL.State.FHSS;
     master->Speed = NRF_Cfg.Speed;

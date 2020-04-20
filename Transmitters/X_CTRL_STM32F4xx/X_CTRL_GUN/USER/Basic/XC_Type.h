@@ -45,7 +45,6 @@ typedef struct
 /*Ò£¿ØÆ÷×´Ì¬*/
 typedef struct
 {
-
     /*Ò¡¸Ë*/
     Joystick_TypeDef JS_L;
     Joystick_TypeDef JS_R;
@@ -82,6 +81,7 @@ typedef struct
         bool LuaScript;
         bool CPUInfo;
         bool IdleWarn;
+        bool SignWarn;
     } State;
 
     /*µç³ØÐÅÏ¢*/

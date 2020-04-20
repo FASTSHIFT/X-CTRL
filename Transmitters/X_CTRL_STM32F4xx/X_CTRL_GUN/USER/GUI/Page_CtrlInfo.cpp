@@ -41,7 +41,7 @@ static void Task_BarChannelUpdate()
     for(int i = 0; i < __Sizeof(BarChannel_Grp); i++)
     {
         int16_t chVal = RCX::ChannelRead(i);
-        float prg = __Map(chVal, -RCX_ChannelData_Max, RCX_ChannelData_Max, 0.0f, 1.0f);
+        float prg = __Map(chVal, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX, 0.0f, 1.0f);
         BarChannel_Grp[i]->setProgress(prg);
     }
 }
@@ -62,14 +62,19 @@ static void Task_PrintUseTime()
     screen.printfX("%02d:%02d:%02d", hh, mm, ss);
 }
 
-/**
-  * @brief  显示通用回传数据
-  * @param  无
-  * @retval 无
-  */
-static void DisplayCommonInfo()
+#define PASSBACK_TEXT_X 8
+#define PASSBACK_TEXT_Y 3
+
+static void DrawCtrlObjInfo()
 {
+    TextSetDefault();
+    screen.setCursor(PASSBACK_TEXT_X, StatusBar_Height + PASSBACK_TEXT_Y);
+    int index = RCX::Handshake::GetSlaveSelectIndex();
+    screen.printfX(RCX::Handshake::GetSlave(index)->Description);
+    screen.setCursor(PASSBACK_TEXT_X, StatusBar_Height + PASSBACK_TEXT_Y + TEXT_HEIGHT_2);
+    screen.printfX("T%x ID:0x%x", RCX::GetTxObjectType(), RCX::GetTxObjectID());
     
+    RCX::SetRxTimeUpdate();
 }
 
 /**
@@ -79,17 +84,27 @@ static void DisplayCommonInfo()
   */
 void Task_PrintPassback()
 {
-    if(CTRL.State.PassBack)
+    if(!CTRL.State.PassBack)
+        return;
+
+    screen.setCursor(PASSBACK_TEXT_X, StatusBar_Height + PASSBACK_TEXT_Y + TEXT_HEIGHT_2*2);
+    if(RCX::GetRxConnected())
     {
-        DisplayCommonInfo();
+        float battVoltage = RCX::GetRxPackChannel(0) / 1000.0f;
+        uint8_t battlevel = map(RCX::GetRxPackChannel(1), 0, RCX_CHANNEL_DATA_MAX, 0, 100);
+        TextSetDefault();
+        screen.printfX("BAT:%0.1fV %d%%    ", battVoltage, battlevel);
+    }
+    else if(RCX::GetRxSignalLost())
+    {
+        screen.setTextSize(1);
+        screen.setTextColor(screen.Red, screen.Black);
+        screen.printfX("ERROR:0x%x         ", RCX::GetRxPackErrorCode());
     }
 }
 
 /*初始化页面时间戳*/
 static uint32_t SetupTimePoint;
-
-/*外部函数:信号强度监视任务*/
-extern void Task_SignalMonitor();
 
 /**
   * @brief  检测信号强度任务
@@ -98,24 +113,12 @@ extern void Task_SignalMonitor();
   */
 static void Task_CheckSignal()
 {
+    /*外部函数:信号强度监视任务*/
+    extern void Task_SignalMonitor();
+    
     /*在进入该页面5000ms后启动信号强度监视任务*/
     if(millis() - SetupTimePoint > 5000)
         Task_SignalMonitor();
-}
-
-static void DrawCtrlObjImg()
-{
-    uint16_t *gImage_Bitmap_x;
-
-    uint8_t objType = RCX::GetObjectType();
-    if(objType == RCX::CAR_ServoSteering)
-        gImage_Bitmap_x = (uint16_t*)gImage_Bitmap_RC;
-    else if(objType == RCX::CAR_DifferentalSteering)
-        gImage_Bitmap_x = (uint16_t*)gImage_Bitmap_DS;
-    else
-        gImage_Bitmap_x = (uint16_t*)gImage_Bitmap_Common;
-
-    screen.drawRGBBitmap(15, StatusBar_Height + 3, gImage_Bitmap_x, 30, 30);
 }
 
 static void DrawBarChannel()
@@ -154,7 +157,7 @@ static void Setup()
     ClearPage();
     SetupTimePoint = millis();//记录时间戳
 
-    DrawCtrlObjImg();
+    DrawCtrlObjInfo();
     
     screen.drawRoundRect(PB_AREA.x, PB_AREA.y, PB_AREA.w, PB_AREA.h, 5, screen.Blue);
 //    TextSetDefault();

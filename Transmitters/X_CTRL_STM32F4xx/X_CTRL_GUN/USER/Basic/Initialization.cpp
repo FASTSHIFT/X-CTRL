@@ -2,7 +2,11 @@
 #include "ComPrivate.h"
 #include "cm_backtrace.h"
 
-#define StorageDataReg(data) EEPROM_Register(&(data), sizeof(data))//注册储存变量
+#define StorageDataReg(data)\
+do{\
+    Debug_SERIAL.printf("Reg value: %s (addr=0x%x size=%d)\r\n", #data, &data, sizeof(data));\
+    EEPROM_Register(&(data), sizeof(data));\
+}while(0)
 
 #define IS_KEY_PRESSED(key,func) \
 do{\
@@ -56,7 +60,10 @@ void Init_X_CTRL()
     Init_Display();         //初始化显示器
     Init_Sensors();         //初始化传感器
     Init_HC05();            //初始化蓝牙
-    Init_XBox360Sim();      //初始化XBox360模拟
+    
+    if(Init_SD())
+        Init_BvPlayer();
+    
     Init_Value();           //初始化变量
 
     IS_KEY_PRESSED(KEY_DOWN_Pin, CTRL.State.Sound = OFF);//按下按钮静音启动

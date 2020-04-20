@@ -1,7 +1,7 @@
 #ifndef __FILEGROUP_H
 #define __FILEGROUP_H
 
-#define _X_CTRL_VERSION "v9.4"
+#define _X_CTRL_VERSION "v9.5"
 #define _X_CTRL_NAME    "X-CTRL_GUN"
 
 //*************** STM32 Core *****************//
@@ -108,7 +108,6 @@ bool Init_SD();
 void Init_Sensors();
 bool Init_BvPlayer();
 void Init_LuaScript();
-void Init_XBox360Sim();
 
 bool Keyboard_Print(char* str);
 

@@ -57,7 +57,6 @@ static void Setup()
     screen.setCursor(TextMid(0.5f, 20), TEXT_BASE_Y + TEXT_HEIGHT_1 * 3);
     screen.print("By ceptimus. Nov '16");
     PageDelay(1000);
-    ClearPage();
 
     nrf.SetRF_Enable(false);
 

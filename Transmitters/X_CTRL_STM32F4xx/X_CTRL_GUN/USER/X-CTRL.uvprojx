@@ -337,7 +337,7 @@
               <MiscControls>--gnu</MiscControls>
               <Define>USE_STDPERIPH_DRIVER,ARDUINO=111,HSE_VALUE=8000000,PLL_M=8</Define>
               <Undefine></Undefine>
-              <IncludePath>..\USER;..\ArduinoAPI;..\Core;..\Libraries\I2Cdev;..\Libraries\MPU6050;..\Libraries\NRF;..\Libraries\Adafruit_GFX_Library;..\Libraries\MillisTaskManager;..\Libraries\DigitalFilter;..\Libraries\EncoderEvent;..\Libraries\Bluetooth_HC05;..\Libraries\ButtonEvent;..\Libraries\EEPROM;..\Libraries\Adafruit_GFX_Library\Fonts;..\Libraries\XFS;..\Libraries\FifoQueue;..\Libraries\LightGUI;..\Libraries\LightGUI\MenuManager;..\Libraries\LightGUI\PageManager;..\Libraries\MusicPlayer;..\Libraries\TFT_SSD1283A;..\Libraries\BV_Player;..\Libraries\SoftwareSPI;..\Libraries\lua-5.3.2\src;..\Libraries\StrPrinter;..\Libraries\Arduboy;..\Libraries\WavDecoder;..\Libraries\cm_backtrace;..\Libraries\SdFat\src;..\Libraries\SdFat\src\FatLib;..\Libraries\SdFat\src\SdCard;..\Libraries\SdFat\src\SpiDriver;.\Game\hopper;.\Game\doom-nano;.\GUI;.\GUI\Bitmap;.\Handler;.\Basic;.\Handle;.\LuaScript;.\Communication</IncludePath>
+              <IncludePath>..\USER;..\ArduinoAPI;..\Core;..\Libraries\I2Cdev;..\Libraries\MPU6050;..\Libraries\NRF;..\Libraries\Adafruit_GFX_Library;..\Libraries\MillisTaskManager;..\Libraries\DigitalFilter;..\Libraries\EncoderEvent;..\Libraries\Bluetooth_HC05;..\Libraries\ButtonEvent;..\Libraries\EEPROM;..\Libraries\EEPROM_File;..\Libraries\Adafruit_GFX_Library\Fonts;..\Libraries\XFS;..\Libraries\FifoQueue;..\Libraries\LightGUI;..\Libraries\LightGUI\MenuManager;..\Libraries\LightGUI\PageManager;..\Libraries\MusicPlayer;..\Libraries\TFT_SSD1283A;..\Libraries\BV_Player;..\Libraries\SoftwareSPI;..\Libraries\lua-5.3.2\src;..\Libraries\StrPrinter;..\Libraries\Arduboy;..\Libraries\WavDecoder;..\Libraries\cm_backtrace;..\Libraries\SdFat\src;.\Game\hopper;.\Game\doom-nano;.\GUI;.\GUI\Bitmap;.\Handler;.\Basic;.\Handle;.\LuaScript;.\Communication</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -417,14 +417,19 @@
           <GroupName>Communication</GroupName>
           <Files>
             <File>
+              <FileName>ComPrivate.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Communication\ComPrivate.h</FilePath>
+            </File>
+            <File>
               <FileName>ComBasic.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>.\Communication\ComBasic.cpp</FilePath>
             </File>
             <File>
-              <FileName>ComPrivate.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Communication\ComPrivate.h</FilePath>
+              <FileName>ComPassback.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Communication\ComPassback.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -432,9 +437,14 @@
           <GroupName>Communication/RCX</GroupName>
           <Files>
             <File>
-              <FileName>RCX_Channel.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\Communication\RCX\Master\RCX_Channel.cpp</FilePath>
+              <FileName>RCX_Config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Communication\RCX\RCX_Config.h</FilePath>
+            </File>
+            <File>
+              <FileName>RCX.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Communication\RCX\RCX.h</FilePath>
             </File>
             <File>
               <FileName>RCX_Handshake.cpp</FileName>
@@ -442,19 +452,9 @@
               <FilePath>.\Communication\RCX\Master\RCX_Handshake.cpp</FilePath>
             </File>
             <File>
-              <FileName>RCX_Package.cpp</FileName>
+              <FileName>RCX_Channel.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\Communication\RCX\Master\RCX_Package.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>RCX_Passback.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\Communication\RCX\Master\RCX_Passback.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>crc.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\Communication\RCX\crc.cpp</FilePath>
+              <FilePath>.\Communication\RCX\RCX_Channel.cpp</FilePath>
             </File>
             <File>
               <FileName>RCX_Handshake.h</FileName>
@@ -462,14 +462,19 @@
               <FilePath>.\Communication\RCX\RCX_Handshake.h</FilePath>
             </File>
             <File>
-              <FileName>RCX_Type.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Communication\RCX\RCX_Type.h</FilePath>
+              <FileName>RCX_TxPackage.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Communication\RCX\RCX_TxPackage.cpp</FilePath>
             </File>
             <File>
-              <FileName>RCX.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Communication\RCX\Master\RCX.h</FilePath>
+              <FileName>RCX_RxPackage.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Communication\RCX\RCX_RxPackage.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>crc.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Communication\RCX\crc.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -655,6 +660,21 @@
               <FileName>Handle_CPUInfo.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>.\Handle\Handle_CPUInfo.cpp</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Modle</GroupName>
+          <Files>
+            <File>
+              <FileName>ModleManager.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Modle\ModleManager.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>ModlePrivate.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Modle\ModlePrivate.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1126,6 +1146,16 @@
               <FilePath>..\Libraries\EncoderEvent\EncoderEvent.cpp</FilePath>
             </File>
             <File>
+              <FileName>EEPROM.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Libraries\EEPROM\EEPROM.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>EEPROM_File.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Libraries\EEPROM_File\EEPROM_File.cpp</FilePath>
+            </File>
+            <File>
               <FileName>I2Cdev.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Libraries\I2Cdev\I2Cdev.cpp</FilePath>
@@ -1186,11 +1216,6 @@
               <FilePath>..\Libraries\XFS\XFS.cpp</FilePath>
             </File>
             <File>
-              <FileName>EEPROM.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\Libraries\EEPROM\EEPROM.cpp</FilePath>
-            </File>
-            <File>
               <FileName>wav_decoder.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Libraries\WavDecoder\wav_decoder.cpp</FilePath>
@@ -1199,49 +1224,6 @@
               <FileName>cm_backtrace.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\cm_backtrace\cm_backtrace.c</FilePath>
-            </File>
-            <File>
-              <FileName>cmb_fault.S</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\Libraries\cm_backtrace\fault_handler\keil\cmb_fault.S</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <uClangAs>2</uClangAs>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Aads>
-                </FileArmAds>
-              </FileOption>
             </File>
           </Files>
         </Group>

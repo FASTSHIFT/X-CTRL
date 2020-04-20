@@ -123,7 +123,7 @@ static int Lua_ConnectSlave(lua_State *L)
     Handshake::Process(Handshake::State_Connected);
 
     /*对应从机类型*/
-    SetObjectType(Handshake::GetSlave(ItemSelect)->Type);
+    SetTxObjectType(Handshake::GetSlave(ItemSelect)->Type);
 
     /*如果未超时表示握手成功*/
     if(!IsTimeout)
@@ -174,16 +174,16 @@ static int Lua_SetChannle(lua_State *L)
     switch(channle)
     {
     case 0:
-        CTRL.JS_L.X.Val = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
+        CTRL.JS_L.X.Val = constrain(value, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX);
         break;
     case 1:
-        CTRL.JS_L.Y.Val = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
+        CTRL.JS_L.Y.Val = constrain(value, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX);
         break;
     case 2:
-        CTRL.JS_R.X.Val = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
+        CTRL.JS_R.X.Val = constrain(value, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX);
         break;
     case 3:
-        CTRL.JS_R.Y.Val = constrain(value, -RCX_ChannelData_Max, RCX_ChannelData_Max);
+        CTRL.JS_R.Y.Val = constrain(value, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX);
         break;
     default:
         lua_pushstring(L, "Error Channle num");

@@ -12,6 +12,7 @@ static MPU6050 mpu;
 /*MPU½Ç¶ÈÊý¾Ý*/
 IMU_Axis_TypeDef    IMU_Axis;
 IMU_Channel_TypeDef IMU_Channel;
+static bool IsAxisChannelReset;
 static float q0 = 1, q1 = 0, q2 = 0, q3 = 0;
 static float exInt = 0, eyInt = 0, ezInt = 0;
 
@@ -120,7 +121,7 @@ static void IMU_Calibrate(int16_t* gx,int16_t* gy,int16_t* gz)
 static void IMU_AngleToChannel(IMU_Angle_TypeDef angle, IMU_ChBasic_TypeDef* ch)
 {
     float agl = constrain(angle.Angle, -angle.Limit, angle.Limit);
-    ch->Data = (ch->Reverse ? -1 : 1) * __Map(agl, -angle.Limit, angle.Limit, -RCX_ChannelData_Max, RCX_ChannelData_Max);
+    ch->Data = (ch->Reverse ? -1 : 1) * __Map(agl, -angle.Limit, angle.Limit, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX);
     ch->delta = ch->Data - ch->Last;
     ch->Last = ch->Data;
 }
@@ -130,6 +131,16 @@ static void IMU_ChannelUpdate()
     IMU_AngleToChannel(IMU_Axis.Pitch, &IMU_Channel.Pitch);
     IMU_AngleToChannel(IMU_Axis.Roll,  &IMU_Channel.Roll);
     IMU_AngleToChannel(IMU_Axis.Yaw,   &IMU_Channel.Yaw);
+}
+
+static void IMU_AxisChannelReset()
+{
+    IMU_Axis.Pitch.Angle = 0;
+    IMU_Axis.Roll.Angle = 0;
+    IMU_Axis.Yaw.Angle = 0;
+    IMU_ChannelUpdate();
+    IMU_ChannelUpdate();
+    IsAxisChannelReset = true;
 }
 
 /**
@@ -160,8 +171,14 @@ static void Init_IMU()
 void Task_IMU_Process()
 {
     if(!CTRL.State.IMU)
+    {
+        if(!IsAxisChannelReset)
+        {
+            IMU_AxisChannelReset();
+        }
         return;
-
+    }
+    IsAxisChannelReset = false;
     __ExecuteOnce(Init_IMU());
 
     int16_t ax, ay, az, gx, gy, gz;
