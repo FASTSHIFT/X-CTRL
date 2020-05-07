@@ -10,10 +10,17 @@ do{\
 
 void Page_Init()
 {
-    PAGE_REG(HandshakeAuto);
+    PAGE_REG(Home);
     PAGE_REG(CtrlPage);
+    PAGE_REG(HandshakeAuto);
+    PAGE_REG(Handshake);
+    PAGE_REG(Scanner);
+    PAGE_REG(RadioCfg);
+    PAGE_REG(ChannelCfg);
+    PAGE_REG(ChannelRevCfg);
+    PAGE_REG(GyroscopeCfg);
     
-    page.PagePush(PAGE_HandshakeAuto);
+    page.PagePush(PAGE_Home);
 }
 
 void Page_Delay(uint32_t ms)
@@ -23,4 +30,10 @@ void Page_Delay(uint32_t ms)
     {
         lv_task_handler();
     }
+}
+
+void Page_ReturnHome()
+{
+    page.PageStackClear();
+    page.PagePush(PAGE_Home);
 }

@@ -18,9 +18,8 @@ void Power_GetInfo(float* battCurrent,float* battVoltage,float* battVoltageOc)
 
 float Power_GetBattUsage()
 {
-    float batUsage = __Map(charger.voltageOc, 2600, 4200, 0.0f, 100.0f);
-    if(batUsage > 100)
-        batUsage = 100;
+    float batUsage = __Map(charger.voltageOc, XC_BATTERY_VOLTAGE_MIN, XC_BATTERY_VOLTAGE_MAX, 0.0f, 100.0f);
+    __LimitValue(batUsage, 0, 100);
     return batUsage;
 }
 
@@ -29,7 +28,7 @@ void Power_Init()
     DEBUG_FUNC_LOG();
     charger.begin();
     pinMode(CHG_KEY_Pin, INPUT);
-    pinMode(LED_Pin, OUTPUT);
+    PWM_Init(LED_Pin, 1000, 100);
     Power_SetLedState(true);
 }
 
@@ -42,12 +41,17 @@ void Power_Update()
 
 void Power_Shutdown()
 {
-    Brightness_SetGradual(0, 200);
+    Backlight_SetGradual(0, 200);
     pinMode(CHG_KEY_Pin, OUTPUT_OPEN_DRAIN);
     digitalWrite(CHG_KEY_Pin, LOW);
 }
 
 void Power_SetLedState(bool state)
 {
-    digitalWrite(LED_Pin, state);
+    analogWrite(LED_Pin, state ? 1000 : 0);
+}
+
+void Power_SetLedValue(uint16_t val)
+{
+    analogWrite(LED_Pin, val);
 }

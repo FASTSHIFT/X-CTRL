@@ -8,7 +8,7 @@ extern "C"{void demo_create();};
 void Display_Init()
 {
     DEBUG_FUNC_LOG();
-    Brightness_SetValue(0);
+    Backlight_SetValue(0);
 
     screen.begin();
     screen.setRotation(3);
@@ -23,7 +23,7 @@ void Display_Init()
     Page_Init();
     StatusBar_Init();
     
-    Brightness_SetGradual(1000, 1000);
+    Backlight_SetGradual(1000, 1000);
 }
 
 void Display_Update()

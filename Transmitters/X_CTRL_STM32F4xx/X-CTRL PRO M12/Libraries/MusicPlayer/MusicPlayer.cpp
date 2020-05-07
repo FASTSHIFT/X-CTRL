@@ -39,23 +39,23 @@ void MusicPlayer::Stop()
 
 bool MusicPlayer::Running(uint32_t MillisSeed)
 {
+    if(!MusicPlay_Callback)
+        return false;
+    
     if(NowPos < Length)
     {
         if(MillisSeed > NextTimePoint)
         {
-            if(MusicPlay_Callback)
-                MusicPlay_Callback(MusicCode[NowPos].Freq, MusicCode[NowPos].Volume);
+            MusicPlay_Callback(MusicCode[NowPos].Freq, MusicCode[NowPos].Volume);
 
             NextTimePoint = MillisSeed + MusicCode[NowPos].Time * (1.0f / Speed);
             NowPos++;
         }
         return true;
     }
-    else if(NowPos == Length)
+    else if(NowPos == Length && MillisSeed > NextTimePoint)
     {
-        if(MusicPlay_Callback)
-            MusicPlay_Callback(0, 0);
-
+        MusicPlay_Callback(0, 0);
         NowPos++;
     }
     return false;

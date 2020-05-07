@@ -1,7 +1,4 @@
 #include "../RCX.h"
-#include "Basic/SysConfig.h"
-
-//#define RCX_TIM_Handshake TIM_Handshake
 
 using namespace RCX;
 using namespace Handshake;
@@ -75,13 +72,13 @@ static bool CheckNewSlave(Pack_t* slave)
 static void GenerateAddrFreqList(Pack_t* hs)
 {
     randomSeed(micros());//选择随机数种子
-    for(uint8_t i = 0; i < 5; i++)
+    for(uint8_t i = 0; i < sizeof(hs->Address); i++)
     {
-        hs->Address[i] = random(0, 255);//生成随机地址
+        hs->Address[i] = random(0, 256);//生成随机地址
     }
     for(uint8_t i = 0; i < sizeof(hs->FerqList); i++)
     {
-        hs->FerqList[i] = random(0, 125);//生成随机跳频表 2400~2525MHz
+        hs->FerqList[i] = random(0, 126);//生成随机跳频表 2400~2525MHz
     }
 }
 
@@ -102,14 +99,12 @@ static void NRF_ComProcess_Handler()
   */
 static void ComToSlave(Pack_t* slave)
 {
-#ifndef RCX_TIM_Handshake
     static uint32_t lastTime;
     if(millis() - lastTime >= NRF_ComProcess_TimeMs)
     {
         lastTime = millis();
         NRF_ComProcess_Handler();
     }
-#endif
     *(Pack_t*)&NRF_TxBuff = Master;
     *slave = *(Pack_t*)&NRF_RxBuff;
 }
@@ -149,11 +144,6 @@ uint8_t Handshake::Process(uint8_t state, uint8_t slaveSelect, CMD_Type cmd)
 
         Master.BroadcastHead = BroadcastHead_MasterWait;//设置帧头识别码为主机等待连接
         GenerateAddrFreqList(&Master);//生成随机地址和随机跳频表
-
-#ifdef RCX_TIM_Handshake
-        Timer_SetInterrupt(RCX_TIM_Handshake, NRF_ComProcess_TimeMs * 1000, NRF_ComProcess_Handler); //设置10ms定时中断运行NRF_ComProcess_Handler
-        TIM_Cmd(RCX_TIM_Handshake, ENABLE);//开启定时器
-#endif
         ret = true;//返回 成功
         break;
 
@@ -188,10 +178,6 @@ uint8_t Handshake::Process(uint8_t state, uint8_t slaveSelect, CMD_Type cmd)
         break;
 
     case State_Connected://连接之后状态
-#ifdef RCX_TIM_Handshake
-        TIM_Cmd(RCX_TIM_Handshake, DISABLE);//关定时中断
-#endif
-        
         /*设置数据包类型*/
         SetTxObjectType(Master.Type);
         /*设置数据包ID*/
@@ -200,7 +186,8 @@ uint8_t Handshake::Process(uint8_t state, uint8_t slaveSelect, CMD_Type cmd)
         nrfTRM->Basic->SetRF_Enable(false);
         nrfTRM->Basic->SetAddress(Master.Address);//应用新地址
         nrfTRM->Basic->SetFreqency(Master.FerqList[0]);//应用新频道
-        nrfTRM->Basic->SetSpeed(Master.Speed);//应用新通信速率
+        nrfTRM->Basic->SetSpeed(Master.Speed);//应用新通信速
+        //nrfTRM->Basic->SetAutoRetry(0, 15);
         nrfTRM->Basic->SetAutoRetryTimeout(NRF_ComProcess_TimeMs - 3);
         nrfTRM->Basic->TX_Mode();
         nrfTRM->Basic->SetRF_Enable(true);

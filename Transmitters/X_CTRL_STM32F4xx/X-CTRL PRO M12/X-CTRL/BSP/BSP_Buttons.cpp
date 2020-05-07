@@ -1,10 +1,8 @@
 #include "Basic/FileGroup.h"
-#include "BSP.h"
 #include "GUI/DisplayPrivate.h"
+#include "BSP.h"
 
 ButtonEvent btGrp[BTN_IDX_MAX];
-
-SwitchEvent swGrp[SW_IDX_MAX];
 
 static void ButtonEvent_Handler(ButtonEvent* btn, int event)
 {
@@ -19,18 +17,23 @@ static void ButtonEvent_Handler(ButtonEvent* btn, int event)
             Motor_Vibrate(1, 200);    
             Power_Shutdown();
         }
+        if(event == ButtonEvent_Type::EVENT_ButtonDoubleClick)
+        {
+            if(btUPL && btDOWNL)
+            {
+                Buzz_PlayMusic(MC_Type::MC_Astronomia);
+            }
+        }
     }
     
     uint8_t keyVal;
     if(event == ButtonEvent_Type::EVENT_ButtonPress)
     {
-        //Motor_SetState(true);
         Buzz_Tone(500, 20);//播放操作音(500Hz, 持续20ms)
         keyVal = 1;
     }
     else if(event == ButtonEvent_Type::EVENT_ButtonRelease)
     {
-        //Motor_SetState(false);
         Buzz_Tone(700, 20);//播放操作音(700Hz, 持续20ms)
         keyVal = 0;
     }
@@ -57,21 +60,6 @@ PageEvent:
     page.PageEventTransmit(event, btn);
 }
 
-static void SwitchEvent_Handler(SwitchEvent* sw, int event)
-{
-    if(event == SwitchEvent_Type::EVENT_SwitchUp)
-    {
-        Buzz_Tone(500, 300);
-    }
-    else if(event == SwitchEvent_Type::EVENT_SwitchDown)
-    {
-        Buzz_Tone(200, 100);
-    }
-    
-    /*传递到页面事件*/
-    page.PageEventTransmit(event, sw);
-}
-
 void Button_Init()
 {
     DEBUG_FUNC_LOG();
@@ -82,19 +70,8 @@ void Button_Init()
     pinMode(HC165_PL_Pin, OUTPUT);
     
     __LoopExecute(btGrp[i].EventAttach(ButtonEvent_Handler), __Sizeof(btGrp));
-    __LoopExecute(swGrp[i].EventAttach(SwitchEvent_Handler), __Sizeof(swGrp));
+    Switch_Init();
 }
-
-typedef enum{
-    SW_E_UP   = 0x2000,
-    SW_E_DOWN = 0x1000,
-    SW_F_UP   = 0x0080,
-    SW_F_DOWN = 0x0040,
-    SW_G_UP   = 0x8000,
-    SW_G_DOWN = 0x4000,
-    SW_H_UP   = 0x0010,
-    SW_H_DOWN = 0x0020,
-}SwitchBit_Type;
 
 typedef enum{
     BTN_L_UP    = 0x0200,
@@ -132,8 +109,5 @@ void Button_Update()
     btDOWNL.EventMonitor(bool(ButtonVal & BTN_L_DOWN));
     btPOWER.EventMonitor(!digitalRead(CHG_KEY_Pin));
     
-    swE.EventMonitor(ButtonVal & SW_E_UP, ButtonVal & SW_E_DOWN); 
-    swF.EventMonitor(ButtonVal & SW_F_UP, ButtonVal & SW_F_DOWN); 
-    swG.EventMonitor(ButtonVal & SW_G_UP, ButtonVal & SW_G_DOWN); 
-    swH.EventMonitor(ButtonVal & SW_H_UP, ButtonVal & SW_H_DOWN); 
+    Switch_Update(ButtonVal);
 }

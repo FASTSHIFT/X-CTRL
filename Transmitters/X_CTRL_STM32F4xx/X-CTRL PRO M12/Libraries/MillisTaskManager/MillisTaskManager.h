@@ -13,6 +13,7 @@
 //Update   2019.4.24  v1.8 添加GetCPU_Useage()可获得CPU占用率
 //Update   2019.5.8   v1.9 为TaskRegister添加防冲突判断
 //Update   2019.9.3   v2.0 添加TimeCost任务时间开销计算
+//Update   2020.4.21  v2.1 CPU_Useage改为整形
 
 #ifndef __MILLISTASKMANAGER_H
 #define __MILLISTASKMANAGER_H
@@ -48,7 +49,8 @@ public:
     bool TaskSetIntervalTime(TaskNum_t ID, uint32_t TimeSetMs);
     uint32_t GetTaskTimeCost(TaskNum_t ID);
 #ifdef _SUPPORT_CPU_USAGE
-    float GetCPU_Usage();
+    uint8_t GetCPU_Usage();
+    uint8_t CPU_Usage;
 #endif
     void Running(uint32_t MillisSeed);
 

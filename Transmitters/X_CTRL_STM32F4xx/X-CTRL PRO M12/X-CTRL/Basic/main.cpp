@@ -4,14 +4,16 @@
 #include "MillisTaskManager/MillisTaskManager.h"
 
 static MillisTaskManager mtmMain(8, true);
-float CPU_Usage;
+
+uint32_t TimeCost[8];
 
 static void CPU_UsageUpdate()
 {
-    CPU_Usage = mtmMain.GetCPU_Usage();
+    mtmMain.GetCPU_Usage();
+    __LoopExecute(TimeCost[i] = mtmMain.GetTaskTimeCost(i), __Sizeof(TimeCost));
 }
 
-static void Timer_Callback()
+static void mtmMain_TimerCallback()
 {
     mtmMain.Running(millis());
 }
@@ -26,9 +28,10 @@ static void setup()
     mtmMain.TaskRegister(3, IMU_Update, 20);
     mtmMain.TaskRegister(4, Buzz_Update, 20);
     mtmMain.TaskRegister(5, Motor_Update, 20);
-    mtmMain.TaskRegister(7, CPU_UsageUpdate, 1000);
+    mtmMain.TaskRegister(7, CPU_UsageUpdate, 1000, false);
     
-    Timer_SetInterrupt(TIM_MTM_MAIN, 1000, Timer_Callback);
+    Timer_SetInterruptBase(TIM_MTM_MAIN, 0xFF, 0xFF, mtmMain_TimerCallback, 2, 1);
+    Timer_SetInterruptTimeUpdate(TIM_MTM_MAIN, 2000);
     TIM_Cmd(TIM_MTM_MAIN, ENABLE);
 }
 
@@ -46,6 +49,17 @@ int main(void)
 {
     NVIC_SetPriorityGrouping(NVIC_PriorityGroup_2);
     Delay_Init();
+    
+//    extern void Com_TestSetup();
+//    extern void Com_TestLoop();
+//    
+//    pinMode(LED_Pin, OUTPUT);
+//    Timer_SetInterrupt(TIM_MTM_MAIN, 2000, TimCb);
+//    TIM_Cmd(TIM_MTM_MAIN, ENABLE);
+//    
+//    Com_TestSetup();
+//    for(;;)Com_TestLoop();
+    
     setup();
     for(;;)loop();
 }

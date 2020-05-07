@@ -10,6 +10,7 @@ void NRF_FHSS::FH_Process()
     FH_List_Index++;
     FH_List_Index %= FH_List_Length;
     Basic->SetFreqency(FH_List[FH_List_Index]);
+//    delayMicroseconds(130);
 }
 
 /**

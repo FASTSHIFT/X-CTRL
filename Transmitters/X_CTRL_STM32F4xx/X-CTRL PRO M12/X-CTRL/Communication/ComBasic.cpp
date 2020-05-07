@@ -1,9 +1,6 @@
 #include "Basic/FileGroup.h"
 #include "ComPrivate.h"
-#include "BSP/IMU_Private.h"
-
-/*失联超时500ms*/
-#define ConnectLost_TimeOut 500
+#include "BSP/BSP.h"
 
 /*实例化NRF对象*/
 NRF_Basic nrf(
@@ -15,7 +12,10 @@ NRF_Basic nrf(
 //CSN   CE
 //VCC   GND
 
+/*定频收发管理器*/
 NRF_TRM  nrfTRM(&nrf);
+
+/*跳频收发管理器*/
 NRF_FHSS nrfFHSS(&nrf);
 
 /*NRF发送数据缓冲区*/
@@ -24,16 +24,16 @@ static uint8_t NRF_TxBuff[32];
 /*NRF接收数据缓冲区*/
 static uint8_t NRF_RxBuff[32];
 
-/*NRF地址分配表*/
-uint8_t NRF_AddressConfig[] =
-{
-    45, 23, 78, 19, 61, //ADDR:0
-    75, 75, 75, 75, 75, //ADDR:1
-    12, 34, 56, 78, 90, //ADDR:2
-    12, 90, 17, 44, 55, //ADDR:3
-    10, 93, 70, 72, 31, //ADDR:4
-    0,  0,   0,  0,  0 //ADDR: Handshake
-};
+///*NRF地址分配表*/
+//uint8_t NRF_AddressConfig[] =
+//{
+//    45, 23, 78, 19, 61, //ADDR:0
+//    75, 75, 75, 75, 75, //ADDR:1
+//    12, 34, 56, 78, 90, //ADDR:2
+//    12, 90, 17, 44, 55, //ADDR:3
+//    10, 93, 70, 72, 31, //ADDR:4
+//    0,  0,   0,  0,  0 //ADDR: Handshake
+//};
 
 /*NRF信号强度指示*/
 int16_t NRF_SignalStrength = 0;
@@ -53,25 +53,6 @@ bool Com_GetEnable()
 }
 
 /**
-  * @brief  初始化默认通道配置
-  * @param  无
-  * @retval 无
-  */
-void Com_SetDefaultChannel()
-{
-    RCX::ChannelSetAttachEnable(true);
-    
-    RCX::ChannelSetAttach(0, &CTRL.KnobLimit.L);
-    RCX::ChannelSetAttach(1, &CTRL.KnobLimit.R);
-    RCX::ChannelSetAttach(2, NULL);
-    RCX::ChannelSetAttach(3, NULL);
-    RCX::ChannelSetAttach(4, &CTRL.JS_L.X.Val);
-    RCX::ChannelSetAttach(5, &CTRL.JS_L.Y.Val);
-    RCX::ChannelSetAttach(6, &CTRL.JS_R.X.Val);
-    RCX::ChannelSetAttach(7, &CTRL.JS_R.Y.Val);
-}
-
-/**
   * @brief  通信初始化
   * @param  无
   * @retval true成功 false失败
@@ -86,15 +67,21 @@ bool Com_Init()
 
     /*数据包长度*/
     nrf.SetPayloadWidth(sizeof(NRF_TxBuff), sizeof(NRF_RxBuff));
+    
+    /*设置速率*/
+    nrf.SetSpeed(CTRL.RF_Config.Speed);
+    
+    /*设置频率*/
+    nrf.SetFreqency(CTRL.RF_Config.Freq);
+    
+    /*设置地址*/
+    nrf.SetAddress(CTRL.RF_Config.Addr);
 
     /*禁用射频*/
     nrf.SetRF_Enable(false);
 
     /*更新寄存器状态*/
     nrf.UpdateRegs();
-
-    /*初始化默认通道*/
-    Com_SetDefaultChannel();
 
     /*返回连接情况*/
     return isInit;

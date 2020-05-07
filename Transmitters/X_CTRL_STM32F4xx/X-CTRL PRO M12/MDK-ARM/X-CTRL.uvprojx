@@ -337,7 +337,7 @@
               <MiscControls>--gnu</MiscControls>
               <Define>USE_STDPERIPH_DRIVER,ARDUINO=111,STM32F411xE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\ArduinoAPI;..\Core;..\Libraries;..\Core\STM32F4xx_StdPeriph_Driver\inc;..\Core\CMSIS\Device\ST\STM32F4xx\Include;..\X-CTRL</IncludePath>
+              <IncludePath>..\ArduinoAPI;..\Core;..\Libraries;..\Core\STM32F4xx_StdPeriph_Driver\inc;..\Core\CMSIS\Device\ST\STM32F4xx\Include;..\X-CTRL;..\Libraries\FreeRTOS;..\Libraries\FreeRTOS\Source\include;..\Libraries\FreeRTOS\Source\portable\RVDS\ARM_CM4F</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -412,14 +412,9 @@
               <FilePath>..\X-CTRL\BSP\BSP.h</FilePath>
             </File>
             <File>
-              <FileName>BSP_Brightness.cpp</FileName>
+              <FileName>BSP_Backlight.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\X-CTRL\BSP\BSP_Brightness.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>BSP_Buttons.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\X-CTRL\BSP\BSP_Buttons.cpp</FilePath>
+              <FilePath>..\X-CTRL\BSP\BSP_Backlight.cpp</FilePath>
             </File>
             <File>
               <FileName>BSP_Buzz.cpp</FileName>
@@ -427,29 +422,9 @@
               <FilePath>..\X-CTRL\BSP\BSP_Buzz.cpp</FilePath>
             </File>
             <File>
-              <FileName>BSP_IMU.cpp</FileName>
+              <FileName>BSP_Buttons.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\X-CTRL\BSP\BSP_IMU.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>BSP_Joystick.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\X-CTRL\BSP\BSP_Joystick.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>BSP_DataStorage.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\X-CTRL\BSP\BSP_DataStorage.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>BSP_I2C_Scan.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\X-CTRL\BSP\BSP_I2C_Scan.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>BSP_Power.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\X-CTRL\BSP\BSP_Power.cpp</FilePath>
+              <FilePath>..\X-CTRL\BSP\BSP_Buttons.cpp</FilePath>
             </File>
             <File>
               <FileName>BSP_Bluetooth.cpp</FileName>
@@ -457,14 +432,44 @@
               <FilePath>..\X-CTRL\BSP\BSP_Bluetooth.cpp</FilePath>
             </File>
             <File>
+              <FileName>BSP_BigMotor.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\BSP\BSP_BigMotor.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>BSP_DataStorage.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\BSP\BSP_DataStorage.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>BSP_IMU.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\BSP\BSP_IMU.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>BSP_I2C_Scan.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\BSP\BSP_I2C_Scan.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>BSP_Joystick.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\BSP\BSP_Joystick.cpp</FilePath>
+            </File>
+            <File>
               <FileName>BSP_Motor.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\X-CTRL\BSP\BSP_Motor.cpp</FilePath>
             </File>
             <File>
-              <FileName>BSP_BigMotor.cpp</FileName>
+              <FileName>BSP_Power.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\X-CTRL\BSP\BSP_BigMotor.cpp</FilePath>
+              <FilePath>..\X-CTRL\BSP\BSP_Power.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>BSP_Switch.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\BSP\BSP_Switch.cpp</FilePath>
             </File>
             <File>
               <FileName>BSP_XBox360Sim.cpp</FileName>
@@ -477,6 +482,11 @@
           <GroupName>Communication</GroupName>
           <Files>
             <File>
+              <FileName>ComPrivate.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\X-CTRL\Communication\ComPrivate.h</FilePath>
+            </File>
+            <File>
               <FileName>ComBasic.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\X-CTRL\Communication\ComBasic.cpp</FilePath>
@@ -487,9 +497,14 @@
               <FilePath>..\X-CTRL\Communication\ComPassback.cpp</FilePath>
             </File>
             <File>
-              <FileName>ComPrivate.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\X-CTRL\Communication\ComPrivate.h</FilePath>
+              <FileName>ComTest.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\Communication\ComTest.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>ComDevChannel.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\Communication\ComDevChannel.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -510,11 +525,6 @@
               <FileName>RCX_Channel.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\X-CTRL\Communication\RCX\RCX_Channel.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>RCX_Handshake.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\X-CTRL\Communication\RCX\RCX_Handshake.h</FilePath>
             </File>
             <File>
               <FileName>RCX_RxPackage.cpp</FileName>
@@ -557,11 +567,6 @@
               <FilePath>..\X-CTRL\GUI\DisplayBar.cpp</FilePath>
             </File>
             <File>
-              <FileName>DisplayPage.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\X-CTRL\GUI\DisplayPage.cpp</FilePath>
-            </File>
-            <File>
               <FileName>DisplayAppWin.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\X-CTRL\GUI\DisplayAppWin.cpp</FilePath>
@@ -586,11 +591,21 @@
               <FileType>8</FileType>
               <FilePath>..\X-CTRL\GUI\lv_ext_func.cpp</FilePath>
             </File>
+            <File>
+              <FileName>lv_settings.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\GUI\lv_settings.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>GUI/Page</GroupName>
           <Files>
+            <File>
+              <FileName>DisplayPage.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\GUI\DisplayPage.cpp</FilePath>
+            </File>
             <File>
               <FileName>Page_EXAMPLE.cpp</FileName>
               <FileType>5</FileType>
@@ -616,14 +631,49 @@
               </FileOption>
             </File>
             <File>
-              <FileName>Page_HandshakeAuto.cpp</FileName>
+              <FileName>Page_Home.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\X-CTRL\GUI\Page\Page_HandshakeAuto.cpp</FilePath>
+              <FilePath>..\X-CTRL\GUI\Page\Page_Home.cpp</FilePath>
             </File>
             <File>
               <FileName>Page_CtrlPage.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\X-CTRL\GUI\Page\Page_CtrlPage.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_HandshakeAuto.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\GUI\Page\Page_HandshakeAuto.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_Handshake.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\GUI\Page\Page_Handshake.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_RadioCfg.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\GUI\Page\Page_RadioCfg.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_Scanner.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\GUI\Page\Page_Scanner.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_ChannelCfg.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\GUI\Page\Page_ChannelCfg.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_ChannelRevCfg.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\GUI\Page\Page_ChannelRevCfg.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Page_GyroscopeCfg.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\X-CTRL\GUI\Page\Page_GyroscopeCfg.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -694,6 +744,51 @@
               <FileName>IMG_Background.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\X-CTRL\GUI\IMG\IMG_Background.c</FilePath>
+            </File>
+            <File>
+              <FileName>IMG_Channel.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\X-CTRL\GUI\IMG\IMG_Channel.c</FilePath>
+            </File>
+            <File>
+              <FileName>IMG_Model.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\X-CTRL\GUI\IMG\IMG_Model.c</FilePath>
+            </File>
+            <File>
+              <FileName>IMG_RemoteCtrl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\X-CTRL\GUI\IMG\IMG_RemoteCtrl.c</FilePath>
+            </File>
+            <File>
+              <FileName>IMG_Settings.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\X-CTRL\GUI\IMG\IMG_Settings.c</FilePath>
+            </File>
+            <File>
+              <FileName>IMG_Scan.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\X-CTRL\GUI\IMG\IMG_Scan.c</FilePath>
+            </File>
+            <File>
+              <FileName>IMG_RadioCfg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\X-CTRL\GUI\IMG\IMG_RadioCfg.c</FilePath>
+            </File>
+            <File>
+              <FileName>IMG_Gyroscope.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\X-CTRL\GUI\IMG\IMG_Gyroscope.c</FilePath>
+            </File>
+            <File>
+              <FileName>IMG_Disnet.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\X-CTRL\GUI\IMG\IMG_Disnet.c</FilePath>
+            </File>
+            <File>
+              <FileName>IMG_Bluetooth2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\X-CTRL\GUI\IMG\IMG_Bluetooth2.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1687,482 +1782,9 @@
           <GroupName>Startup</GroupName>
           <Files>
             <File>
-              <FileName>startup_stm32f40_41xxx.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\Core\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f40_41xxx.s</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>1</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <uClangAs>2</uClangAs>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Aads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
-              <FileName>startup_stm32f40xx.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\Core\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f40xx.s</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <uClangAs>2</uClangAs>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Aads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
-              <FileName>startup_stm32f401xx.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\Core\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f401xx.s</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <uClangAs>2</uClangAs>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Aads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
-              <FileName>startup_stm32f410xx.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\Core\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f410xx.s</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <uClangAs>2</uClangAs>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Aads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>startup_stm32f411xe.s</FileName>
               <FileType>2</FileType>
               <FilePath>..\Core\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f411xe.s</FilePath>
-            </File>
-            <File>
-              <FileName>startup_stm32f412xg.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\Core\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f412xg.s</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <uClangAs>2</uClangAs>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Aads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
-              <FileName>startup_stm32f413_423xx.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\Core\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f413_423xx.s</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <uClangAs>2</uClangAs>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Aads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
-              <FileName>startup_stm32f427_437xx.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\Core\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f427_437xx.s</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <uClangAs>2</uClangAs>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Aads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
-              <FileName>startup_stm32f427x.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\Core\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f427x.s</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <uClangAs>2</uClangAs>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Aads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
-              <FileName>startup_stm32f429_439xx.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\Core\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f429_439xx.s</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <uClangAs>2</uClangAs>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Aads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
-              <FileName>startup_stm32f446xx.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\Core\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f446xx.s</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <uClangAs>2</uClangAs>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Aads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
-              <FileName>startup_stm32f469_479xx.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\Core\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f469_479xx.s</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <uClangAs>2</uClangAs>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Aads>
-                </FileArmAds>
-              </FileOption>
             </File>
           </Files>
         </Group>

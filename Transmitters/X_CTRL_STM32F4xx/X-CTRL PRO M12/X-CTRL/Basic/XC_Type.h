@@ -3,6 +3,7 @@
 
 #include "stdint.h"
 
+#pragma pack(1)
 /*曲线*/
 typedef struct
 {
@@ -65,9 +66,16 @@ typedef struct
         } Bit;
         uint8_t Value;
     } Key;
+    
+    /*三段式开关*/
+    int16_t Switch[4];
+    
+    /*通道配置信息*/
+    bool CH_Reverse[8];
+    uint8_t CH_AttachMap[8];
 
-    /*限幅*/
-    Direction_TypeDef KnobLimit;
+//    /*限幅*/
+//    Direction_TypeDef KnobLimit;
 
     /*功能使能*/
     struct
@@ -82,6 +90,13 @@ typedef struct
         bool IdleWarn;
         bool SignWarn;
     } State;
+    
+    struct
+    {
+        int32_t Speed;
+        int32_t Freq;
+        uint8_t Addr[5];
+    } RF_Config;
 
     /*电池信息*/
     struct
@@ -105,5 +120,7 @@ typedef struct
         bool Enable;
     } Bluetooth;
 } CTRL_TypeDef;
+
+#pragma pack()
 
 #endif

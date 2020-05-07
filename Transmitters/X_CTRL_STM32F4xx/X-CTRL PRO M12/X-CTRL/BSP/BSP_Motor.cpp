@@ -1,6 +1,6 @@
 #include "BSP.h"
 
-static bool State_MotorVibrate = true;
+static bool MotorVibrate_Enable = true;
 static uint32_t MotorStop_TimePoint = 0;
 static bool IsMotorRunning = false;
 
@@ -27,13 +27,13 @@ void Motor_Update()
 
 void Motor_SetEnable(bool en)
 {
-    State_MotorVibrate = en;
+    MotorVibrate_Enable = en;
     if(!en)Motor_NoTone();
 }
 
 void Motor_Vibrate(float strength, uint32_t time)
 {
-    if(!State_MotorVibrate)
+    if(!MotorVibrate_Enable)
         return;
 
     __LimitValue(strength, 0.0f, 1.0f);
@@ -57,7 +57,7 @@ static uint32_t Tone_SampleTick;
 static uint32_t Tone_StopTime;
 static bool Tone_AutoStop = false;
 static float Tone_SignalPeriod;
-static uint16_t Tone_Volume;
+static uint16_t Tone_Volume = MOTOR_TONE_MAX_VAL;
 
 void Motor_ToneSetVolume(uint16_t volume)
 {

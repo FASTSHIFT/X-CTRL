@@ -7,15 +7,13 @@
 
 #define DEBUG_FUNC_LOG() Serial.printf("%s (%0.3fms)\r\n", __FUNCTION__, micros()/1000.0f)
 
-/*Brightness*/
-uint16_t Brightness_GetValue();
-void Brightness_SetValue(int16_t val);
-void Brightness_SetGradual(uint16_t target, uint16_t time = 500);
+/*Backlight*/
+uint16_t Backlight_GetValue();
+void Backlight_SetValue(int16_t val);
+void Backlight_SetGradual(uint16_t target, uint16_t time = 500);
 
 /*Buttons*/
 #include "ButtonEvent/ButtonEvent.h"
-#include "SwitchEvent/SwitchEvent.h"
-
 enum{
     BTN_IDX_UP,
     BTN_IDX_DOWN,
@@ -34,7 +32,11 @@ extern ButtonEvent btGrp[BTN_IDX_MAX];
 #define btUPL   btGrp[BTN_IDX_UPL]
 #define btDOWNL btGrp[BTN_IDX_DOWNL]
 #define btPOWER btGrp[BTN_IDX_POWER]
+void Button_Init();
+void Button_Update();
 
+/*Switch*/
+#include "SwitchEvent/SwitchEvent.h"
 enum{
     SW_IDX_E,
     SW_IDX_F,
@@ -47,9 +49,9 @@ extern SwitchEvent swGrp[SW_IDX_MAX];
 #define swF swGrp[SW_IDX_F]
 #define swG swGrp[SW_IDX_G]
 #define swH swGrp[SW_IDX_H]
+void Switch_Init();
+void Switch_Update(uint16_t swVal);
 
-void Button_Init();
-void Button_Update();
 
 /*Buzzer*/
 namespace MC_Type {
@@ -64,6 +66,7 @@ typedef enum {
     MC_DeviceInsert,
     MC_DevicePullout,
     MC_NoOperationWarning,
+    MC_Astronomia,
     MC_MAX
 }MusicCode_ID_Type;
 }
@@ -75,6 +78,7 @@ void Buzz_Tone(uint32_t freq, uint32_t time);
 /*Joystick*/
 void Joystick_Init();
 void Joystick_Update();
+void Joystick_SetDefault();
 
 /*IMU*/
 void IMU_Init();
@@ -99,6 +103,7 @@ float Power_GetBattUsage();
 void Power_Update();
 void Power_Shutdown();
 void Power_SetLedState(bool state);
+void Power_SetLedValue(uint16_t val);
 
 /*Bluetooth*/
 void Bluetooth_Init();

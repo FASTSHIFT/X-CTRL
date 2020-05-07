@@ -55,11 +55,11 @@ static void SignalStatus_Update()
     {
         imgIndex = 3;
     }
-    else if(rssi > 60)
+    else if(rssi > 50)
     {
         imgIndex = 2;
     }
-    else if(rssi > 20)
+    else if(rssi > 0)
     {
         imgIndex = 1;
     }
@@ -116,9 +116,15 @@ static void Battery_Creat()
     
     /*电量百分比*/
     labelBatt = lv_label_create(barStatus, NULL);
+    LV_LABEL_SET_FONT(labelBatt, HandGotn_14, LV_COLOR_WHITE);
     lv_label_set_text(labelBatt, "--");
     lv_obj_align(labelBatt, NULL, LV_ALIGN_IN_RIGHT_MID, -5, 2);
     lv_obj_set_auto_realign(labelBatt, true);
+}
+
+static void PowerLedAnimCallback(lv_obj_t * obj, int16_t val)
+{
+    Power_SetLedValue(val);
 }
 
 static void Battery_Update()
@@ -130,7 +136,7 @@ static void Battery_Update()
     bool Is_BattCharging = (battCurrent > 0 && batUsage < 100) ? true : false;
     
     static bool Is_BattChargingAnimActive = false;
-    static lv_anim_t battAnim;
+    static lv_anim_t battAnim, ledAnim;
     
     if(Is_BattCharging)
     {
@@ -143,6 +149,16 @@ static void Battery_Update()
                 0, contBatt_Width,
                 1000
             );
+            
+            lv_anim_set_repeat(&ledAnim, 100);
+            lv_anim_set_playback(&ledAnim, 100);
+            lv_obj_add_anim(
+                contBatt, &ledAnim,
+                (lv_anim_exec_xcb_t)PowerLedAnimCallback,
+                1000, 0,
+                3000
+            );
+            
             Is_BattChargingAnimActive = true;
         }
     }
@@ -151,12 +167,16 @@ static void Battery_Update()
         if(Is_BattChargingAnimActive)
         {
             lv_anim_del(contBatt, (lv_anim_exec_xcb_t)lv_obj_set_width);
+            lv_anim_del(contBatt, (lv_anim_exec_xcb_t)PowerLedAnimCallback);
+            Power_SetLedState(true);
             Is_BattChargingAnimActive = false;
         }
         uint8_t width = map(batUsage, 0, 100, 0, contBatt_Width);
         lv_obj_set_width(contBatt, width);
     }
 
+    lv_style_t * style_label = (lv_style_t *)labelBatt->style_p;
+    style_label->text.color = batUsage < 10 ? LV_COLOR_RED : LV_COLOR_WHITE;
     lv_label_set_text_fmt(labelBatt, "%d", batUsage);
 }
 
@@ -173,13 +193,11 @@ lv_obj_t * StatusBar_GetObj()
 
 void StatusBar_SetOpen(bool open)
 {
-    LV_OBJ_ADD_ANIM(barStatus, y, open ? 0 : -StatusBar_Height, 500);
+    LV_OBJ_ADD_ANIM(barStatus, y, open ? 0 : -StatusBar_Height, LV_ANIM_TIME_DEFAULT);
 }
 
 static void StatusBar_Update(lv_task_t * task)
 {
-    __ExecuteOnce(StatusBar_SetOpen(true));
-    
     I2C_SetLock(true);
     Power_Update();
     I2C_SetLock(false);
@@ -206,5 +224,7 @@ void StatusBar_Init()
     BluetoothStatus_Creat();
     Battery_Creat();
     
-    lv_task_create(StatusBar_Update, 777, LV_TASK_PRIO_MID, 0);
+    lv_task_create(StatusBar_Update, 1050, LV_TASK_PRIO_LOW, 0);
+    StatusBar_Update(NULL);
+    StatusBar_SetOpen(true);
 }

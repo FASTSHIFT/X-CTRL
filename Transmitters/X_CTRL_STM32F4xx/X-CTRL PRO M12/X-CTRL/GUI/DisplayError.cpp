@@ -1,6 +1,7 @@
 #include "GUI/DisplayPrivate.h"
 #include "cm_backtrace/cm_backtrace.h"
 #include "Basic/FileGroup.h"
+#include "Basic/TasksManage.h"
 #include "BSP/BSP.h"
 
 static void SoftDelay(uint32_t ms)
@@ -9,10 +10,21 @@ static void SoftDelay(uint32_t ms)
     while(i--);
 }
 
+static void WaitUserReset()
+{
+    pinMode(LED_Pin, OUTPUT);
+    while(digitalRead(CHG_KEY_Pin) == HIGH)
+    {
+        SoftDelay(1000);
+        togglePin(LED_Pin);
+    }
+    NVIC_SystemReset();
+}
+
 #include "Adafruit_GFX_Library/Fonts\FreeMono12pt7b.h"
 static void System_CrashReports(const char* report)
 {
-    Brightness_SetValue(1000);
+    Backlight_SetValue(1000);
     Motor_SetEnable(false);
     BigMotor_SetEnable(false);
     screen.fillScreen(screen.Blue);
@@ -36,6 +48,8 @@ static void System_CrashReports(const char* report)
     screen.printf("CFSR  = 0x%08X\r\n", SCB->CFSR);
     screen.printf("HFSR  = 0x%08X\r\n", SCB->HFSR);
     screen.printf("DFSR  = 0x%08X\r\n", SCB->DFSR);
+    
+    WaitUserReset();
 }
 
 void DisplayError_Init()
@@ -64,15 +78,22 @@ void cmb_printf_hook(const char *__restrict __format, ...)
 /***************************** HardFault_Handler *******************************/
 extern "C"
 {
+    void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char *pcTaskName)
+    {
+        char str[configMAX_TASK_NAME_LEN + 1];
+        sprintf(str, "stack overflow\n < %s >", pcTaskName);
+        System_CrashReports(str);
+    }
+    
+    void vApplicationMallocFailedHook()
+    {
+        System_CrashReports("malloc failed");
+    }
+    
     void vApplicationHardFaultHook()
     {
         System_CrashReports("FXXK! hardfault!");
-        while(digitalRead(CHG_KEY_Pin) == HIGH)
-        {
-            SoftDelay(1000);
-            togglePin(LED_Pin);
-        }
-        NVIC_SystemReset();
+        
     }
     __asm void HardFault_Handler()
     {

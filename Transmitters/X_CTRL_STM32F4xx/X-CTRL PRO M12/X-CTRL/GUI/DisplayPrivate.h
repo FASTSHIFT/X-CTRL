@@ -28,8 +28,14 @@ typedef enum
     PAGE_NONE,
     /*用户页面*/
     PAGE_Home,
-    PAGE_HandshakeAuto,
     PAGE_CtrlPage,
+    PAGE_Handshake,
+    PAGE_HandshakeAuto,
+    PAGE_ChannelCfg,
+    PAGE_ChannelRevCfg,
+    PAGE_RadioCfg,
+    PAGE_Scanner,
+    PAGE_GyroscopeCfg,
     /*保留*/
     PAGE_MAX
 } Page_Type;
@@ -37,6 +43,7 @@ typedef enum
 extern PageManager page;
 void Page_Init();
 void Page_Delay(uint32_t ms);
+void Page_ReturnHome();
 #define PageDelay(ms) Page_Delay(ms)
 
 /*LittleVGL*/
@@ -44,6 +51,7 @@ void Page_Delay(uint32_t ms);
 
 #define LV_ANIM_TIME_DEFAULT    200
 #define LV_SYMBOL_DEGREE_SIGN   "\xC2\xB0"
+#define LV_COLOR_ARMY_GREEN     LV_COLOR_MAKE(2,94,33)
 
 void lv_port_disp_init();
 bool lv_obj_del_safe(lv_obj_t** obj);
@@ -53,6 +61,7 @@ lv_coord_t lv_obj_get_y_center(lv_obj_t * obj);
 void lv_obj_set_color(lv_obj_t * obj, lv_color_t color);
 void lv_table_set_align(lv_obj_t * table, lv_label_align_t align);
 lv_obj_t * lv_win_get_label(lv_obj_t * win);
+void lv_sw_set_state(lv_obj_t * sw, bool en);
 void lv_obj_add_anim(
     lv_obj_t * obj, lv_anim_t * a,
     lv_anim_exec_xcb_t exec_cb, 

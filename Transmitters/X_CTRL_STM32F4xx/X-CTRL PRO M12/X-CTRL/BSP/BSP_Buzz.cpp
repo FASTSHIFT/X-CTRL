@@ -3,9 +3,6 @@
 
 using namespace MusicPlayer_Type;
 
-#define PLAY_MUSIC(mc) player.Play(mc,__Sizeof(mc))
-#define ADD_MUSIC(mc) {mc,__Sizeof(mc)}
-
 /*音符频率对应表*/
 typedef enum
 {
@@ -56,13 +53,187 @@ static void MusicPlayer_Callback(uint32_t freq, uint16_t volume)
 /*实例化音乐播放器*/
 static MusicPlayer player(MusicPlayer_Callback);
 
+#define ASTR_T_TIME 180
+#define ASTR_S_TIME 20
+static const MusicCode_t MC_Astronomia[] = 
+{
+    /*1-1*/
+    {M4, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {M4, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {M4, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {M4, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {M6, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {M6, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {M6, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {M6, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    
+    /*1-2*/
+    {M5, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {M5, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {M5, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {M5, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {H1, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {H1, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {H1, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {H1, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    
+    /*1-3*/
+    {H2, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {H2, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {H2, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {H2, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {H2, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {H2, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {H2, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    {H2, ASTR_T_TIME},
+    {0, ASTR_S_TIME},
+    
+    /*1-4*/
+    {M5, ASTR_T_TIME},
+    {M4, ASTR_T_TIME},
+    {M3, ASTR_T_TIME},
+    {M1, ASTR_T_TIME},
+    {M2, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M2, ASTR_T_TIME},
+    {M6, ASTR_T_TIME},
+    
+    /*2-1*/
+    {M5, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M4, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M3, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M3, ASTR_T_TIME},
+    {M3, ASTR_T_TIME},
+    
+    /*2-2*/
+    {M5, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M4, ASTR_T_TIME},
+    {M3, ASTR_T_TIME},
+    {M2, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M2, ASTR_T_TIME},
+    {H4, ASTR_T_TIME},
+    
+    /*2-3*/
+    {H3, ASTR_T_TIME},
+    {H4, ASTR_T_TIME},
+    {H3, ASTR_T_TIME},
+    {H4, ASTR_T_TIME},
+    {M2, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M2, ASTR_T_TIME},
+    {H4, ASTR_T_TIME},
+    
+    /*2-4*/
+    {H3, ASTR_T_TIME},
+    {H4, ASTR_T_TIME},
+    {H3, ASTR_T_TIME},
+    {H4, ASTR_T_TIME},
+    {M2, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M2, ASTR_T_TIME},
+    {M6, ASTR_T_TIME},
+    
+    /*3-1*/
+    {M5, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M4, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M3, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M3, ASTR_T_TIME},
+    {M3, ASTR_T_TIME},
+    
+    /*3-2*/
+    {M5, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M4, ASTR_T_TIME},
+    {M3, ASTR_T_TIME},
+    {M2, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M2, ASTR_T_TIME},
+    {H4, ASTR_T_TIME},
+    
+    /*3-3*/
+    {H3, ASTR_T_TIME},
+    {H4, ASTR_T_TIME},
+    {H3, ASTR_T_TIME},
+    {H4, ASTR_T_TIME},
+    {M2, ASTR_T_TIME},
+    {0, ASTR_T_TIME},
+    {M2, ASTR_T_TIME},
+    {H4, ASTR_T_TIME},
+    
+    /*3-4*/
+    {H3, ASTR_T_TIME},
+    {H4, ASTR_T_TIME},
+    {H3, ASTR_T_TIME},
+    {H4, ASTR_T_TIME},
+    {M4, ASTR_T_TIME},
+    {M4, ASTR_T_TIME},
+    {M4, ASTR_T_TIME},
+    {M4, ASTR_T_TIME},
+    
+    /*4-1*/
+    {M6, ASTR_T_TIME},
+    {M6, ASTR_T_TIME},
+    {M6, ASTR_T_TIME},
+    {M6, ASTR_T_TIME},
+    {M5, ASTR_T_TIME},
+    {M5, ASTR_T_TIME},
+    {M5, ASTR_T_TIME},
+    {M5, ASTR_T_TIME},
+    
+    /*4-2*/
+    {H1, ASTR_T_TIME},
+    {H1, ASTR_T_TIME},
+    {H1, ASTR_T_TIME},
+    {H1, ASTR_T_TIME},
+    {H2, ASTR_T_TIME},
+    {H2, ASTR_T_TIME},
+    {H2, ASTR_T_TIME},
+    {H2, ASTR_T_TIME},
+    
+    /*4-3*/
+    {H2, ASTR_T_TIME},
+    {H2, ASTR_T_TIME},
+    {H2, ASTR_T_TIME},
+    {H2, ASTR_T_TIME},
+};
+
 /*开机音*/
 static const MusicCode_t MC_StartUp[] =
 {
     {M1, 80, 100},
     {M6, 80, 100},
     {M3, 80, 100},
-    0
 };
 
 /*错误提示音*/
@@ -71,7 +242,6 @@ static const MusicCode_t MC_Error[] =
     {100, 80, 100},
     {0,   80, 100},
     {100, 80, 100},
-    0
 };
 
 /*连接成功音*/
@@ -80,7 +250,6 @@ static const MusicCode_t MC_Connect[] =
     {H1, 80, 100},
     {H2, 80, 100},
     {H3, 80, 100},
-    0
 };
 
 /*断开连接音*/
@@ -89,7 +258,6 @@ static const MusicCode_t MC_Disconnect[] =
     {H3, 80, 100},
     {H2, 80, 100},
     {H1, 80, 100},
-    0
 };
 
 /*信号不稳定提示音*/
@@ -98,7 +266,6 @@ static const MusicCode_t MC_UnstableConnect[] =
     {H1, 80, 100},
     {0, 80, 100},
     {H1, 80, 100},
-    0
 };
 
 /*充电启动提示音*/
@@ -106,7 +273,6 @@ static const MusicCode_t MC_BattChargeStart[] =
 {
     {L1, 80, 100},
     {L3, 80, 100},
-    0
 };
 
 /*充电关闭提示音*/
@@ -114,7 +280,6 @@ static const MusicCode_t MC_BattChargeEnd[] =
 {
     {L3, 80, 100},
     {L1, 80, 100},
-    0
 };
 
 /*设备插入提示音*/
@@ -125,7 +290,6 @@ static const MusicCode_t MC_DeviceInsert[] =
     {L6, 80, 100},
     {L4, 80, 100},
     {M4, 160, 100},
-    0
 };
 
 /*设备拔出提示音*/
@@ -135,17 +299,15 @@ static const MusicCode_t MC_DevicePullout[] =
     {L6, 80, 100},
     {L4, 80, 100},
     {L3, 80, 100},
-    0
 };
 
 /*无操作提示音*/
-static const MusicPlayer_Type::MusicCode_t MC_NoOperationWarning[] = {
+static const MusicCode_t MC_NoOperationWarning[] = {
     {4000, 40, 100},
     {0, 80, 100},
     {4000, 40, 100},
     {0, 80, 100},
     {4000, 40, 100},
-    0
 };
 
 /*列表数据类型定义*/
@@ -154,6 +316,9 @@ typedef struct
     const MusicCode_t *mc;
     uint16_t length;
 } MC_List_t;
+
+#define PLAY_MUSIC(mc) player.Play(mc,__Sizeof(mc))
+#define ADD_MUSIC(mc) {mc,__Sizeof(mc)}
 
 /*提示音地址储存列表*/
 static const MC_List_t MC_List[MC_Type::MC_MAX] =
@@ -167,7 +332,8 @@ static const MC_List_t MC_List[MC_Type::MC_MAX] =
     ADD_MUSIC(MC_BattChargeEnd),
     ADD_MUSIC(MC_DeviceInsert),
     ADD_MUSIC(MC_DevicePullout),
-    ADD_MUSIC(MC_NoOperationWarning)
+    ADD_MUSIC(MC_NoOperationWarning),
+    ADD_MUSIC(MC_Astronomia)
 };
 
 /**
@@ -178,6 +344,7 @@ static const MC_List_t MC_List[MC_Type::MC_MAX] =
 void Buzz_Init()
 {
     DEBUG_FUNC_LOG();
+    Motor_ToneSetVolume(1000);
 }
 
 /**

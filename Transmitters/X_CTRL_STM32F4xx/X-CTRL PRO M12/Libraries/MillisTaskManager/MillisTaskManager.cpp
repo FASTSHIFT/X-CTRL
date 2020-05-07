@@ -186,16 +186,18 @@ bool MillisTaskManager::TaskSetIntervalTime(void_TaskFunction_t Function, uint32
 #ifdef _SUPPORT_CPU_USAGE
 #include "Arduino.h"
 static uint32_t UserFuncLoopUs;
-float MillisTaskManager::GetCPU_Usage()
+uint8_t MillisTaskManager::GetCPU_Usage()
 {
     static uint32_t MtmStartUs;
-    float usage = (float)UserFuncLoopUs / (micros() - MtmStartUs) * 100.0f;
+    uint32_t nowTimeUs = micros();
+    int usage = (UserFuncLoopUs * 100) / (nowTimeUs - MtmStartUs);
     
-    if(usage > 100.0f)
-        usage = 100.0f;
+    if(usage > 100)
+        usage = 100;
     
-    MtmStartUs = micros();
+    MtmStartUs = nowTimeUs;
     UserFuncLoopUs = 0;
+    CPU_Usage = usage;
     return usage;
 }
 #endif

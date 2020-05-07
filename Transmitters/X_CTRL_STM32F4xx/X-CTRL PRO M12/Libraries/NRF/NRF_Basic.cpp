@@ -265,16 +265,7 @@ void NRF_Basic::SetAddress(uint8_t addr0, uint8_t addr1, uint8_t addr2, uint8_t 
   */
 void NRF_Basic::SetAddress(uint8_t* addr)
 {
-    NRF_CE_LOW();
-    RF_Address[0] = addr[0];
-    RF_Address[1] = addr[1];
-    RF_Address[2] = addr[2];
-    RF_Address[3] = addr[3];
-    RF_Address[4] = addr[4];
-
-    SPI_Write_Buf(WRITE_REG + TX_ADDR, RF_Address, RF_AddressWidth);
-    SPI_Write_Buf(WRITE_REG + RX_ADDR_P0, RF_Address, RF_AddressWidth);
-    SetRF_Enable(RF_Enabled);
+    SetAddress(addr[0], addr[1], addr[2], addr[3], addr[4]);
 }
 
 /**
@@ -331,22 +322,76 @@ void NRF_Basic::SetFreqency(uint8_t freq)
   */
 void NRF_Basic::SetAutoRetryTimeout(uint16_t timeMs)
 {
-    /* 250Kbps: 1Byte 32us */
+    /* 250Kbps = 32us/Byte  */
     uint8_t byteTimeUs = 32;
-    /* 1Mbps: 1Byte 8us*/
+    /* 1Mbps = 8us/Byte */
     if(RF_Speed == SPEED_1Mbps)
     {
         byteTimeUs = 8;
     }
-    /* 2Mbps: 1 Byte 4us */
+    /* 2Mbps = 4us/Byte */
     else if(RF_Speed == SPEED_2Mbps)
     {
         byteTimeUs = 4;
     }
-    uint32_t packTimeUs = RF_TX_PloadWidth * byteTimeUs;
-    uint16_t retryCount = (timeMs * 1000) / (packTimeUs + (RF_AutoRetryDelay + 1) * 250);
+    
+    //Preamble 1 byte
+    //Address 3-5 byte
+    //Packet Control Field 9 bit
+    //Payload 0 - 32 byte
+    //CRC 1-2 byte
+    uint16_t packByte = 1 + RF_AddressWidth + (9 / 8) + RF_TX_PloadWidth + (REG_CONFIG.CRCO + 1);
+    uint32_t packTimeUs = packByte * byteTimeUs;
+    uint32_t retryCount = (timeMs * 1000) / (packTimeUs + (RF_AutoRetryDelay + 1) * 250);
     if(retryCount > 15) retryCount = 15;
     SetAutoRetry(RF_AutoRetryDelay, retryCount);
+}
+
+/**
+  * @brief  根据实际测试结果,设置自动重发总时间
+  * @param  timeMs:时间
+  * @retval 无
+  */
+void NRF_Basic::SetAutoRetryTimeoutWithTest(uint16_t timeMs)
+{
+    uint32_t timeUs = timeMs * 1000;
+    uint8_t retryCount = 15;
+    uint8_t addrBackup[5];
+    uint8_t RF_State_Backup = RF_State;
+    uint8_t tx_buff[32];
+    
+    NRF_CE_LOW();
+    GetAddress(addrBackup);
+    SetAddress(0xAA, 0xBB, 0xCC, 0xDD, 0xEE);
+    TX_Mode(true);
+    NRF_CE_HIGH();
+    while(1)
+    {
+        Tran(tx_buff);
+        uint32_t timeCost = 0;
+        noInterrupts();
+        uint32_t start = micros();
+        while(TranCheck() == 0){};
+        timeCost = micros() - start;
+        interrupts();
+        
+        if(timeCost <= timeUs || retryCount < 1)
+        {
+            break;
+        }
+        else
+        {
+            retryCount--;
+            SetAutoRetry(RF_AutoRetryDelay, retryCount);
+            NRF_CE_HIGH();
+        }
+    }
+    if(RF_State_Backup == State_RX)
+    {
+        RX_Mode();
+    }
+    SetAddress(addrBackup);
+    SetRF_Enable(RF_Enabled);
 }
 
 /**
@@ -363,21 +408,22 @@ void NRF_Basic::SetAutoRetry(uint8_t delay, uint8_t count)
     REG_SETUP_RETR.ARC = RF_AutoRetryCount = count;
     REGWRITE(SETUP_RETR);
     
-    /* 250Kbps: 1Byte 32us */
+    /* 250Kbps = 32us/Byte  */
     uint8_t byteTimeUs = 32;
-    /* 1Mbps: 1Byte 8us*/
+    /* 1Mbps = 8us/Byte */
     if(RF_Speed == SPEED_1Mbps)
     {
         byteTimeUs = 8;
     }
-    /* 2Mbps: 1 Byte 4us */
+    /* 2Mbps = 4us/Byte */
     else if(RF_Speed == SPEED_2Mbps)
     {
         byteTimeUs = 4;
     }
-    uint32_t packTimeUs = RF_TX_PloadWidth * byteTimeUs;
+    uint16_t packByte = 1 + RF_AddressWidth + (9 / 8) + RF_TX_PloadWidth + (REG_CONFIG.CRCO + 1);
+    uint32_t packTimeUs = packByte * byteTimeUs;
     
-    RF_TimeoutUs = (packTimeUs + 250 + delay * 250) * count;
+    RF_TimeoutUs = (packTimeUs + (delay + 1) * 250) * count;
     SetRF_Enable(RF_Enabled);
 }
 

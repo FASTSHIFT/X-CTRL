@@ -84,3 +84,8 @@ void lv_obj_add_anim(
     a->time = time;
     lv_anim_create(a);
 }
+
+void lv_sw_set_state(lv_obj_t * sw, bool en)
+{
+    en ? lv_sw_on(sw, LV_ANIM_ON) : lv_sw_off(sw, LV_ANIM_ON);
+}

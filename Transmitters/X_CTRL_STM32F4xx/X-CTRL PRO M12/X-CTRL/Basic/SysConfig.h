@@ -7,16 +7,15 @@
 
 #define XC_CPU_NAME                 "STM32F411CEU6"
 #define XC_CPU_RATE_MHZ             (100)
-#define XC_KB(b)                    ((b)*1024)
-#define XC_ROM_SIZE                 (XC_KB(512))
-#define XC_RAM_SIZE                 (XC_KB(128))
+#define XC_ROM_SIZE                 (512 * 1024)
+#define XC_RAM_SIZE                 (128 * 1024)
 
-#define XC_BATTERY_NAME             "Li-ion 3.7V"
+#define XC_BATTERY_NAME             "Li-ion"
 #define XC_BATTERY_VOLTAGE          3700
 #define XC_BATTERY_CAPACITY_MAH     4000
-#define XC_BATTERY_CURRENT_MAX      3000
+#define XC_BATTERY_CURRENT_MAX      2000
 #define XC_BATTERY_VOLTAGE_MAX      4200
-#define XC_BATTERY_VOLTAGE_MIN      2800
+#define XC_BATTERY_VOLTAGE_MIN      3000
 
 /*NULL*/
 #define NULL_PIN    PD0
@@ -53,7 +52,13 @@
 #define NRF_CE_Pin   PB3
 #define NRF_CSN_Pin  PB4
 #define NRF_IRQ_Pin  -1
-#define TIM_Handshake   TIM4
+
+//#define NRF_MOSI_Pin PA7
+//#define NRF_MISO_Pin PB2
+//#define NRF_SCK_Pin  PA6
+//#define NRF_CE_Pin   PA4
+//#define NRF_CSN_Pin  PA5
+//#define NRF_IRQ_Pin  PB10
 
 /*SOFT I2C*/
 #define SOFT_SCL_Pin PB8
@@ -81,5 +86,6 @@
 #define TIM_MTM_MAIN        TIM5
 #define TIM_MOTOR_TONE      TIM10
 #define TIM_BIG_MOTOR       TIM9
+//#define TIM_OS_RUNTIME      TIM5
 
 #endif

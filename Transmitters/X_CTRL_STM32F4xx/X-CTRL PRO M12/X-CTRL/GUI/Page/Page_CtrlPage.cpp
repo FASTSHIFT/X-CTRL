@@ -179,6 +179,14 @@ static void LED_Creat(lv_obj_t * par)
 
 #ifndef TAB_SLAVE_INFO
 static lv_obj_t * labelSlave;
+static uint8_t SlaveInfo_Mode = 0;
+
+static void SlaveInfo_SwitchMode()
+{
+    SlaveInfo_Mode++;
+    if(SlaveInfo_Mode > 1)
+        SlaveInfo_Mode = 0;
+}
 
 static void SlaveInfo_Creat(lv_obj_t * par)
 {
@@ -187,11 +195,13 @@ static void SlaveInfo_Creat(lv_obj_t * par)
     lv_obj_align(label, par, LV_ALIGN_IN_LEFT_MID, 20, 0);
     lv_obj_set_auto_realign(label, true);
     labelSlave = label;
+    
+    SlaveInfo_Mode = 0;
 }
 
-static void SlaveInfo_Update()
+static void SlaveInfo_NormalUpdate()
 {
-    if(RCX::GetRxConnected())
+    if(SlaveInfo_Mode == 0)
     {
         float battVoltage = RCX::GetRxPackChannel(0) / 1000.0f;
         uint8_t battlevel = map(RCX::GetRxPackChannel(1), 0, RCX_CHANNEL_DATA_MAX, 0, 100);
@@ -205,9 +215,42 @@ static void SlaveInfo_Update()
             battVoltage, battlevel
         );
     }
+    else if(SlaveInfo_Mode == 1)
+    {
+        lv_label_set_text_fmt(
+            labelSlave,
+            "Passback >>\n"
+            "CH0 : %04d CH1  : %04d\n"
+            "CH2 : %04d CH3 : %04d\n"
+            "CH4 : %04d CH5 : %04d\n"
+            "CH6 : %04d CH7 : %04d\n",
+            RCX::GetRxPackChannel(0), RCX::GetRxPackChannel(1),
+            RCX::GetRxPackChannel(2), RCX::GetRxPackChannel(3),
+            RCX::GetRxPackChannel(4), RCX::GetRxPackChannel(5),
+            RCX::GetRxPackChannel(6), RCX::GetRxPackChannel(7)
+        );
+    }
+}
+
+static void SlaveInfo_Update()
+{
+    if(RCX::GetRxConnected())
+    {
+        SlaveInfo_NormalUpdate();
+    }
     else if(RCX::GetRxSignalLost())
     {
-        lv_label_set_text_fmt(labelSlave, "ERROR: 0x%x", RCX::GetRxPackErrorCode());
+        #define ERROR_CODE_DEF(errcd) (errorCode & RCX::EC_##errcd ? #errcd"\n" : "")
+        uint8_t errorCode = RCX::GetRxPackErrorCode();
+        lv_label_set_text_fmt(
+            labelSlave, 
+            "ERROR: 0x%x\n%s%s%s%s",
+            errorCode,
+            ERROR_CODE_DEF(CONNECT_TIMEOUT),
+            ERROR_CODE_DEF(TYPE_ERROR),
+            ERROR_CODE_DEF(ID_ERROR),
+            ERROR_CODE_DEF(CRC_ERROR)
+        );
     }
 }
 
@@ -328,7 +371,7 @@ static void Loop()
         Joystick_Update();
         break;
     case 2:
-        __IntervalExecute(SlaveInfo_Update(), 500);
+        __IntervalExecute(SlaveInfo_Update(), 200);
         break;
     case 3:
         ChannelSlider_Update();
@@ -369,11 +412,11 @@ static void Event(int event, void* btn)
     {
         if(event == ButtonEvent_Type::EVENT_ButtonLongPressed)
         {
-            page.PagePop();
+            Page_ReturnHome();
         }
     }
 
-    if(event == ButtonEvent_Type::EVENT_ButtonPress || event == ButtonEvent_Type::EVENT_ButtonLongPressRepeat)
+    if(event == ButtonEvent_Type::EVENT_ButtonClick)
     {
         if(btn == &btUPL)
         {
@@ -382,6 +425,13 @@ static void Event(int event, void* btn)
         if(btn == &btDOWNL)
         {
             TabView_MoveTab(+1);
+        }
+    }
+    if(event == ButtonEvent_Type::EVENT_ButtonLongPressed)
+    {
+        if(btn == &btUPL)
+        {
+            SlaveInfo_SwitchMode();
         }
     }
 }

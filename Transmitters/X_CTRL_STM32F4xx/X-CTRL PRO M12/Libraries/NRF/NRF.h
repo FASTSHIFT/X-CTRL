@@ -23,13 +23,14 @@ Upgrade 2019.9.7   v2.8 修复NRF初始化失败，更新TranRecvSafe、IsDetect
 Upgrade 2019.9.16  v2.9 添加射频使能控制，调整SPI读写寄存器函数使用权限
 Upgrade 2020.1.3   v3.0 分离半双工通信功能，添加FHSS功能支持
 Upgrade 2020.1.20  v3.1 单/双向跳频协议完成
-Upgrade 2020.4.20  v3.2 改进RSSI统计函数 
+Upgrade 2020.4.20  v3.2 改进RSSI统计函数
+Upgrade 2020.5.4   v3.3 改进SetAutoRetryTimeout，添加SetAutoRetryTimeoutWithTest
 **************************************************************************************************/
 
 #ifndef __NRF_H
 #define __NRF_H
 
-#define __NRF_LIB_VERSION "v3.2"
+#define __NRF_LIB_VERSION "v3.3"
 
 #include "Arduino.h"
 #include "NRF_Reg.h"
@@ -38,7 +39,7 @@ Upgrade 2020.4.20  v3.2 改进RSSI统计函数
 //#define NRF_SPI_OBJECT SPI
 
 #ifdef NRF_SPI_OBJECT
-#include "SPI.h"
+#  include "SPI.h"
 #endif
 
 namespace NRF_Port
@@ -73,7 +74,6 @@ typedef uint16_t PortMask_t;
 class NRF_Basic
 {
 public:
-
     bool hwSPI;
     uint8_t MOSI_Pin, MISO_Pin, SCK_Pin, CE_Pin, CSN_Pin;
     NRF_Basic(uint8_t mosi, uint8_t miso, uint8_t sck, uint8_t ce, uint8_t csn);
@@ -132,6 +132,7 @@ public:
     void SetPayloadWidth(uint8_t tx_payload, uint8_t rx_payload);
     void SetAutoRetry(uint8_t delay, uint8_t count);
     void SetAutoRetryTimeout(uint16_t timeMs);
+    void SetAutoRetryTimeoutWithTest(uint16_t timeMs);
     void SetAutoAck(bool en);
     void SetRF_Enable(bool enable);
     void SetPowerUp(bool en = true);

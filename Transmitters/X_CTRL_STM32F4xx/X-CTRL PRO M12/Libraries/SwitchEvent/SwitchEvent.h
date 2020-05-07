@@ -23,6 +23,11 @@ public:
     bool Is_UP;
     bool Is_DOWN;
     bool Is_OFF;
+
+    operator int8_t()
+    {
+        return NowState;
+    };
 private:
     SwitchEvent_FuncCallBack_t EventCallFunc;
     int8_t NowState, LastState;

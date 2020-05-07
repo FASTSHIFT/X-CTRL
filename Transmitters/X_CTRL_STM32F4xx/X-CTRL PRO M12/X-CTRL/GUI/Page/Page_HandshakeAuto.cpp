@@ -6,7 +6,7 @@
 static int16_t ItemSelect = 0;
 
 /*可选选项最大个数*/
-static uint8_t ItemSelect_MAX = 0, ItemSelect_MAX_Last;
+static uint8_t ItemSelect_MAX = 0;
 
 /**
   * @brief  页面初始化事件
@@ -17,17 +17,16 @@ static void Setup()
 {
     Com_SetEnable(false);//遥控关闭
     ItemSelect_MAX = 0;
-    ItemSelect_MAX_Last = 0;
     ItemSelect = 0;
     
     /*配置基本信息*/
     RCX::Handshake::Pack_t* master = RCX::Handshake::GetMaster();
     master->EnableFunction.Passback = CTRL.State.PassBack;
     master->EnableFunction.FHSS = CTRL.State.FHSS;
-    master->Speed = 0;
+    master->Speed = nrf.GetSpeed();
 
     /*握手初始化*/
-    RCX::Handshake::Init(&nrfTRM, &nrfFHSS, RCX_NAME);
+    RCX::Handshake::Init(&nrfTRM, &nrfFHSS, XC_NAME);
     
     /*主机准备握手*/
     RCX::Handshake::Process(RCX::Handshake::State_Prepare);
@@ -35,6 +34,7 @@ static void Setup()
     Serial.println("Searching...");
     /*超时设置*/
     uint32_t time = millis();
+    uint8_t ItemSelect_MAX_Last = 0;
     while(millis() - time < 5000)
     {
         /*获取从机列表数量*/

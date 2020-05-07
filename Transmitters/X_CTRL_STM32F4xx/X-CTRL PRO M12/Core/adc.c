@@ -21,18 +21,17 @@
  * SOFTWARE.
  */
 #include "adc.h"
-#include "Arduino.h"
 
 #define ADC_DMA_REGMAX 18
 
 /*ADC通道注册个数*/
-static uint8_t ADC_DMA_RegCnt = 0;
+static volatile uint8_t ADC_DMA_RegCnt = 0;
 
 /*ADC通道注册列表*/
-static uint16_t ADC_DMA_RegChannelList[ADC_DMA_REGMAX] = {0};
+static volatile uint16_t ADC_DMA_RegChannelList[ADC_DMA_REGMAX] = {0};
 
 /*ADC DMA缓存数组*/
-static uint16_t ADC_DMA_ConvertedValue[ADC_DMA_REGMAX] = {0};
+static volatile uint16_t ADC_DMA_ConvertedValue[ADC_DMA_REGMAX] = {0};
 
 /**
   * @brief  搜索注册列表，找出ADC通道对应的索引号

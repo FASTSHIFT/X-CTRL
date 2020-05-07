@@ -62,7 +62,7 @@
 #ifdef FULL_SPEED_I2C
 #define I2C_DELAY(x) {}
 #else
-#define I2C_DELAY(x) delayMicroseconds(x)
+#define I2C_DELAY(x) for(int i = 0; i < x; i++)__NOP();//delayMicroseconds(x)
 #endif
 
 #define BUFFER_LENGTH 32

@@ -161,14 +161,14 @@ uint32_t shiftIn(uint8_t dataPin, uint8_t clockPin, uint32_t bitOrder)
     
     for ( i = 0 ; i < 8 ; ++i )
     {
-        digitalWrite_HIGH(clockPin) ;
+        digitalWrite(clockPin, HIGH) ;
         if (bitOrder == LSBFIRST )
         {
-            value |= digitalRead_FAST(dataPin) << i ;
+            value |= digitalRead(dataPin) << i ;
         }
         else
         {
-            value |= digitalRead_FAST(dataPin) << (7 - i) ;
+            value |= digitalRead(dataPin) << (7 - i) ;
         }
         digitalWrite(clockPin, LOW);
     }

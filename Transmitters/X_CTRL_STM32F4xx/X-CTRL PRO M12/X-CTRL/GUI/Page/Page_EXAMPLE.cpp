@@ -32,9 +32,9 @@ static void Exit()
   */
 static void Event(int event, void* btn)
 {
-    if(btn == &btOK)
+    if(btn == &btBACK)
     {
-        if(event == ButtonEvent_Type::EVENT_ButtonLongPressed)
+        if(event == ButtonEvent_Type::EVENT_ButtonPress)
         {
             page.PagePop();
         }
