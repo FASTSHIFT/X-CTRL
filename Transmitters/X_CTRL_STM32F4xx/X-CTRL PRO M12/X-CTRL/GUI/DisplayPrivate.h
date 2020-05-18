@@ -36,6 +36,8 @@ typedef enum
     PAGE_RadioCfg,
     PAGE_Scanner,
     PAGE_GyroscopeCfg,
+    PAGE_BluetoothCfg,
+    PAGE_MiscCfg,
     /*±£¡Ù*/
     PAGE_MAX
 } Page_Type;
@@ -97,7 +99,7 @@ lv_coord_t StatusBar_GetHeight();
 lv_obj_t * StatusBar_GetObj();
 
 /*AppWindow*/
-void AppWindow_Init();
+void AppWindow_Init(lv_obj_t * par = lv_scr_act());
 lv_obj_t * AppWindow_GetCont(uint8_t pageID);
 lv_coord_t AppWindow_GetHeight();
 lv_coord_t AppWindow_GetWidth();

@@ -19,6 +19,8 @@ void Page_Init()
     PAGE_REG(ChannelCfg);
     PAGE_REG(ChannelRevCfg);
     PAGE_REG(GyroscopeCfg);
+    PAGE_REG(BluetoothCfg);
+    PAGE_REG(MiscCfg);
     
     page.PagePush(PAGE_Home);
 }

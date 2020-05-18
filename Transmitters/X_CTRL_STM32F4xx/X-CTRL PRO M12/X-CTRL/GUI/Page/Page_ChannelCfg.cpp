@@ -25,8 +25,8 @@ enum item_index{
     IIDX_IMU_dPitch,
     IIDX_IMU_dRoll,
     IIDX_IMU_dYaw,
-    
     IIDX_CH_REV,
+    IIDX_SW_Filter,
     IIDX_MAX
 };
 
@@ -64,7 +64,9 @@ static lv_settings::item_t item_grp[IIDX_MAX] =
     {.type = menu.TYPE_DDLIST,},
     {.type = menu.TYPE_DDLIST,},
     
-    {.type = menu.TYPE_BTN, .name = "Channel reverse",.value = "Config", .user_data.int32 = PAGE_ChannelRevCfg}
+    {.type = menu.TYPE_BTN, .name = "Channel reverse",.value = "Config",             .user_data.int32 = PAGE_ChannelRevCfg},
+    
+    {.type = menu.TYPE_SW,  .name = "Filter",         .value = "Joystick lowpass filter",  .user_data.ptr = &CTRL.State.JostickFilter},
 };
 
 static void Menu_UpdateChannel()
@@ -89,6 +91,9 @@ static void Menu_EventHnadler(lv_obj_t * obj, lv_event_t event)
     
     if(event == LV_EVENT_VALUE_CHANGED)
     {
+        if(IS_ITEM("Filter"))
+            return;
+        
         int new_ch = act_item->state - 1;
         if(new_ch >= 0)
         {
@@ -160,7 +165,7 @@ static void Exit()
     lv_obj_clean(appWindow);
     if(!EEPROM_SaveAll())
     {
-        Buzz_PlayMusic(MC_Type::MC_UnstableConnect);
+        Audio_PlayMusic(MC_Type::MC_UnstableConnect);
     }
 }
 

@@ -1,48 +1,26 @@
 #include "Basic/FileGroup.h"
 #include "GUI/DisplayPrivate.h"
 #include "GUI/lv_settings.h"
-#include "Communication/ComPrivate.h"
 
 static lv_obj_t * appWindow;
 
 static lv_settings menu;
 
 enum item_index{
-    IIDX_SW_CH0,
-    IIDX_SW_CH1,
-    IIDX_SW_CH2,
-    IIDX_SW_CH3,
-    IIDX_SW_CH4,
-    IIDX_SW_CH5,
-    IIDX_SW_CH6,
-    IIDX_SW_CH7,
+    IIDX_SW_Sound,
+    IIDX_SW_Vibrate,
+    IIDX_SW_BigVibrate,
+    IIDX_SW_IdleWarn,
     IIDX_MAX
 };
 
 static lv_settings::item_t item_grp[IIDX_MAX] =
 {
-    {.type = menu.TYPE_SW,    .name = "Channel 0",},
-    {.type = menu.TYPE_SW,    .name = "Channel 1",},
-    {.type = menu.TYPE_SW,    .name = "Channel 2",},
-    {.type = menu.TYPE_SW,    .name = "Channel 3",},
-    {.type = menu.TYPE_SW,    .name = "Channel 4",},
-    {.type = menu.TYPE_SW,    .name = "Channel 5",},
-    {.type = menu.TYPE_SW,    .name = "Channel 6",},
-    {.type = menu.TYPE_SW,    .name = "Channel 7",}
+    {.type = menu.TYPE_SW,     .name = "Sound",        .value = "Beep with motor",  .user_data.ptr = &CTRL.State.Sound},
+    {.type = menu.TYPE_SW,     .name = "Vibrate",      .value = "linear motor",     .user_data.ptr = &CTRL.State.Vibrate},
+    {.type = menu.TYPE_SW,     .name = "Big vibrate",  .value = "rotate motor",     .user_data.ptr = &CTRL.State.BigVibrate},
+    {.type = menu.TYPE_SW,     .name = "Idle warn",    .value = "no-operation warn",.user_data.ptr = &CTRL.State.SignWarn},
 };
-
-static char ChannelDataStr[RCX_CHANNEL_NUM][10];
-static lv_task_t * taskCh;
-
-static void Task_ChannelDataUpdate(lv_task_t * task)
-{
-    for(int i = 0; i < __Sizeof(item_grp); i++)
-    {
-        RCX::ChannelUpdate();
-        snprintf(ChannelDataStr[i], sizeof(ChannelDataStr[i]), "% 4d", RCX::ChannelRead(i));
-        menu.refr(&item_grp[i]);
-    }
-}
 
 static void Menu_EventHnadler(lv_obj_t * obj, lv_event_t event)
 {
@@ -52,8 +30,9 @@ static void Menu_EventHnadler(lv_obj_t * obj, lv_event_t event)
     
     if(event == LV_EVENT_VALUE_CHANGED)
     {
-        int ch = act_item->name[8] - '0';
-        RCX::ChannelSetReverse(ch, act_item->state);
+    }
+    else if(event == LV_EVENT_CLICKED)
+    {
     }
 }
 
@@ -63,9 +42,7 @@ static void Menu_Init()
     for(int i = 0; i < __Sizeof(item_grp); i++)
     {
         lv_settings::item_t * item = &item_grp[i];
-        item->user_data.ptr = &CTRL.CH_Reverse[i];
-        item->state = RCX::ChannelGetReverse(i);
-        item->value = ChannelDataStr[i];
+
         menu.add(item);
     }
 }
@@ -81,8 +58,6 @@ static void Setup()
     lv_obj_move_foreground(appWindow);
     Menu_Init();
     Menu_AnimOpen(&menu, true);
-    
-    taskCh = lv_task_create(Task_ChannelDataUpdate, 100, LV_TASK_PRIO_MID, 0);
 }
 
 /**
@@ -93,9 +68,12 @@ static void Setup()
 static void Exit()
 {
     Menu_AnimOpen(&menu, false);
-    lv_task_del(taskCh);
     menu.del();
     lv_obj_clean(appWindow);
+    if(!EEPROM_SaveAll())
+    {
+        Audio_PlayMusic(MC_Type::MC_UnstableConnect);
+    }
 }
 
 /**
@@ -119,7 +97,7 @@ static void Event(int event, void* btn)
 
     if(btn == &btOK)
     {
-        if(event == ButtonEvent_Type::EVENT_ButtonPress)
+        if(event == ButtonEvent_Type::EVENT_ButtonPress || event == ButtonEvent_Type::EVENT_ButtonLongPressRepeat)
         {
             menu.click();
         }
@@ -152,7 +130,7 @@ static void Event(int event, void* btn)
   * @param  pageID:为此页面分配的ID号
   * @retval 无
   */
-void PageRegister_ChannelRevCfg(uint8_t pageID)
+void PageRegister_MiscCfg(uint8_t pageID)
 {
     appWindow = AppWindow_GetCont(pageID);
     page.PageRegister(pageID, Setup, NULL, Exit, Event);

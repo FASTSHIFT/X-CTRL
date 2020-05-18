@@ -163,7 +163,7 @@ static void Setup()
     
     /*配置基本信息*/
     RCX::Handshake::Pack_t* master = RCX::Handshake::GetMaster();
-    master->EnableFunction.Passback = CTRL.State.PassBack;
+    master->EnableFunction.Passback = CTRL.State.Passback;
     master->EnableFunction.FHSS = CTRL.State.FHSS;
     master->Speed = CTRL.RF_Config.Speed;
 
@@ -275,12 +275,12 @@ static void Exit()
     if(!IsTimeout)
     {
         lv_label_set_text(labelState, "success");
-        Buzz_PlayMusic(MC_Type::MC_Connect);
+        Audio_PlayMusic(MC_Type::MC_Connect);
     }
     else
     {
         lv_label_set_text(labelState, "timeout");
-        Buzz_PlayMusic(MC_Type::MC_UnstableConnect);
+        Audio_PlayMusic(MC_Type::MC_UnstableConnect);
     }
 
     ExitHandshakeProcess();

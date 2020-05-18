@@ -19,6 +19,8 @@ LV_IMG_DECLARE(IMG_Disnet);
 LV_IMG_DECLARE(IMG_Bluetooth2);
 LV_IMG_DECLARE(IMG_StopWatch);
 LV_IMG_DECLARE(IMG_Gyroscope);
+LV_IMG_DECLARE(IMG_Stopwatch2);
+LV_IMG_DECLARE(IMG_Game1);
 LV_IMG_DECLARE(IMG_Settings);
 
 typedef struct{
@@ -28,7 +30,7 @@ typedef struct{
     uint8_t pageID;
 }ICON_TypeDef;
 
-ICON_TypeDef ICON_Grp[] = 
+static ICON_TypeDef ICON_Grp[] = 
 {
     {.src_img = &IMG_RemoteCtrl, .text = "Remote",  .pageID = PAGE_Handshake},
     {.src_img = &IMG_Channel,    .text = "Channel", .pageID = PAGE_ChannelCfg},
@@ -36,10 +38,11 @@ ICON_TypeDef ICON_Grp[] =
     {.src_img = &IMG_RadioCfg,   .text = "Radio",   .pageID = PAGE_RadioCfg},
     {.src_img = &IMG_Scan,       .text = "Scanner", .pageID = PAGE_Scanner},
     {.src_img = &IMG_Disnet,     .text = "Radio Attack",},
-    {.src_img = &IMG_Bluetooth2, .text = "Bluetooth",},
-  //{.src_img = &IMG_StopWatch,  .text = "StopWatch",},
+    {.src_img = &IMG_Bluetooth2, .text = "Bluetooth",.pageID = PAGE_BluetoothCfg},
     {.src_img = &IMG_Gyroscope,  .text = "Gyroscope",.pageID = PAGE_GyroscopeCfg},
-    {.src_img = &IMG_Settings,   .text = "Settings",},
+    {.src_img = &IMG_Stopwatch2, .text = "Stopwatch",},
+    {.src_img = &IMG_Game1,      .text = "Game",},
+    {.src_img = &IMG_Settings,   .text = "Settings", .pageID = PAGE_MiscCfg},
 };
 
 static const uint8_t ICON_IntervalPixel = 20;

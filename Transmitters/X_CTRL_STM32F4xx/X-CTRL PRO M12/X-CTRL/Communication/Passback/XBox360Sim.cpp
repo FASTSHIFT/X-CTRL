@@ -1,7 +1,7 @@
-#include "BSP.h"
+#include "BSP/BSP.h"
 #include "Communication/ComPrivate.h"
 
-#define BigVibrateThreshold 180
+static const int16_t BigVibrateThreshold = 180;
 
 void Passback_XBox360Sim(uint8_t state)
 {
@@ -15,10 +15,22 @@ void Passback_XBox360Sim(uint8_t state)
     else if(state == PBS_Loop)
     {
         /*BIG*/
-        int16_t motorLeft = RCX::GetRxPackChannel(2);
+        int16_t motorLeft = map(
+            RCX::GetRxPackChannel(2),
+            0,
+            RCX_CHANNEL_DATA_MAX,
+            0,
+            255
+        );
 
         /*small*/
-        int16_t motorRight = RCX::GetRxPackChannel(3);
+        int16_t motorRight = map(
+            RCX::GetRxPackChannel(3),
+            0,
+            RCX_CHANNEL_DATA_MAX,
+            0,
+            255
+        );
 
         int16_t motorPWM = motorLeft + motorRight * 0.7f;
 

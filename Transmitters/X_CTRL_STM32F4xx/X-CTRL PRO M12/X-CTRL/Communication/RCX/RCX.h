@@ -57,6 +57,7 @@ void    PassbaskSetBatteryInfo(int16_t voltage, int16_t level);
 void    PassbaskSetUserData(void* buffer, uint16_t size);
 void    LoadTxPack(void* txbuff);
 
+/*Handshake*/
 namespace Handshake
 {
 

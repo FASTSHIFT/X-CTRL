@@ -15,7 +15,7 @@ static void ConnectSetup()
     
     /*配置基本信息*/
     RCX::Handshake::Pack_t* master = RCX::Handshake::GetMaster();
-    master->EnableFunction.Passback = CTRL.State.PassBack;
+    master->EnableFunction.Passback = CTRL.State.Passback;
     master->EnableFunction.FHSS = CTRL.State.FHSS;
     master->Speed = nrf.GetSpeed();
 
@@ -94,7 +94,7 @@ void Com_TestSetup()
     Serial.begin(115200);
     CTRL.State.Handshake = true;
     CTRL.State.FHSS = true;
-    CTRL.State.PassBack = false;
+    CTRL.State.Passback = false;
     
     if(Com_Init())
     {

@@ -13,10 +13,13 @@ bool I2C_GetLocked()
     return I2C_Locked;
 }
 
-void I2C_Scan()
+void I2C_Scan(bool startScan)
 {
     DEBUG_FUNC_LOG();
     Wire.begin();
+    
+    if(!startScan)
+        return;
     
     uint8_t error, address;
     int nDevices;

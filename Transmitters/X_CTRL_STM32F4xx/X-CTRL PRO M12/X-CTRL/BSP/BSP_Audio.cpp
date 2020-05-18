@@ -46,7 +46,7 @@ typedef enum
 
 static void MusicPlayer_Callback(uint32_t freq, uint16_t volume)
 {
-//    tone(Buzz_Pin, freq);
+//    tone(Audio_Pin, freq);
     Motor_Tone(freq);
 }
 
@@ -341,7 +341,7 @@ static const MC_List_t MC_List[MC_Type::MC_MAX] =
   * @param  无
   * @retval 无
   */
-void Buzz_Init()
+void Audio_Init()
 {
     DEBUG_FUNC_LOG();
     Motor_ToneSetVolume(1000);
@@ -352,7 +352,7 @@ void Buzz_Init()
   * @param  无
   * @retval 无
   */
-void Buzz_Update()
+void Audio_Update()
 {
     player.Running(millis());
 }
@@ -362,7 +362,7 @@ void Buzz_Update()
   * @param  music:音乐编号
   * @retval 无
   */
-void Buzz_PlayMusic(uint8_t music)
+void Audio_PlayMusic(uint8_t music)
 {
     if(!CTRL.State.Sound) //是否使能蜂鸣器
         return;
@@ -380,7 +380,7 @@ void Buzz_PlayMusic(uint8_t music)
   * @param  time:持续时间(ms)
   * @retval 无
   */
-void Buzz_Tone(uint32_t freq, uint32_t time)
+void Audio_Tone(uint32_t freq, uint32_t time)
 {
     if(!CTRL.State.Sound)
         return;

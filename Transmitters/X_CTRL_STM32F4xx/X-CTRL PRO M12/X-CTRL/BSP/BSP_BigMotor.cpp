@@ -1,8 +1,6 @@
 #include "Basic/FileGroup.h"
 #include "BSP.h"
 
-static bool BM_Enable = false;
-
 static const uint16_t BM_TIM_OverFlow = 99;
 static const uint16_t BM_TIM_FreqHz = 500;
 
@@ -31,8 +29,7 @@ void BigMotor_Init()
 
 void BigMotor_SetEnable(bool en)
 {
-    BM_Enable = en;
-    if(en)
+    if(en && CTRL.State.BigVibrate)
     {
         TIM_Cmd(TIM_BIG_MOTOR, ENABLE);
         BM_TIM_CNT = 0;
@@ -44,14 +41,9 @@ void BigMotor_SetEnable(bool en)
     }
 }
 
-bool BigMotor_GetEnable()
-{
-    return BM_Enable;
-}
-
 void BigMotor_SetValue(uint16_t value)
 {
-    if(!CTRL.State.Vibrate && !BM_Enable)
+    if(!CTRL.State.BigVibrate)
         return;
     
     if(value > BM_TIM_OverFlow + 1)

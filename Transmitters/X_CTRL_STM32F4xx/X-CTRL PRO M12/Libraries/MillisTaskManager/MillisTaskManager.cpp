@@ -183,7 +183,7 @@ bool MillisTaskManager::TaskSetIntervalTime(void_TaskFunction_t Function, uint32
         return false;
 }
 
-#ifdef _SUPPORT_CPU_USAGE
+#if (MTM_USE_CPU_USAGE == 1)
 #include "Arduino.h"
 static uint32_t UserFuncLoopUs;
 uint8_t MillisTaskManager::GetCPU_Usage()
@@ -249,12 +249,12 @@ void MillisTaskManager::Running(uint32_t MillisSeed)
             {
                 TaskList[i].TimePoint = MillisSeed;//标记下一个时间点
                 
-#ifdef _SUPPORT_CPU_USAGE                
+#if (MTM_USE_CPU_USAGE == 1)               
                 uint32_t start = micros();
 #endif
                 TaskList[i].Function();//执行任务
                 
-#ifdef _SUPPORT_CPU_USAGE
+#if (MTM_USE_CPU_USAGE == 1)
                 TaskList[i].TimeCost = micros() - start;
                 UserFuncLoopUs += TaskList[i].TimeCost;
 #endif

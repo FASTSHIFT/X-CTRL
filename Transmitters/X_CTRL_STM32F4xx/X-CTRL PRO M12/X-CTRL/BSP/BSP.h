@@ -53,7 +53,7 @@ void Switch_Init();
 void Switch_Update(uint16_t swVal);
 
 
-/*Buzzer*/
+/*Audio*/
 namespace MC_Type {
 typedef enum {
     MC_StartUp,
@@ -70,10 +70,10 @@ typedef enum {
     MC_MAX
 }MusicCode_ID_Type;
 }
-void Buzz_Init();
-void Buzz_Update();
-void Buzz_PlayMusic(uint8_t music);
-void Buzz_Tone(uint32_t freq, uint32_t time);
+void Audio_Init();
+void Audio_Update();
+void Audio_PlayMusic(uint8_t music);
+void Audio_Tone(uint32_t freq, uint32_t time);
 
 /*Joystick*/
 void Joystick_Init();
@@ -92,7 +92,7 @@ bool EEPROM_ReadAll();
 bool EEPROM_SaveAll();
 
 /*I2C*/
-void I2C_Scan();
+void I2C_Scan(bool startScan = true);
 void I2C_SetLock(bool lock);
 bool I2C_GetLocked();
 
@@ -107,6 +107,7 @@ void Power_SetLedValue(uint16_t val);
 
 /*Bluetooth*/
 void Bluetooth_Init();
+void Bluetooth_UpdatePowerState();
 
 /*Motor*/
 void Motor_Init();
@@ -123,7 +124,6 @@ void Motor_NoTone();
 /*BigMotor*/
 void BigMotor_Init();
 void BigMotor_SetEnable(bool en);
-bool BigMotor_GetEnable();
 void BigMotor_SetValue(uint16_t value);
 
 #endif

@@ -30,12 +30,12 @@ static void AppWindow_CreatBg(void)
     lv_obj_align(imgBg, NULL, LV_ALIGN_CENTER, 0, 0);
 }
 
-void AppWindow_Init()
+void AppWindow_Init(lv_obj_t * par)
 {
     AppWindow_CreatBg();
     for(int i = 0; i < PAGE_MAX; i++)
     {
-        lv_obj_t * cont = lv_cont_create(lv_scr_act(), NULL);
+        lv_obj_t * cont = lv_cont_create(par, NULL);
 
         lv_obj_set_size(cont, AppWindow_GetWidth(), AppWindow_GetHeight());
         lv_obj_align(cont, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);

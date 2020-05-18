@@ -21,7 +21,7 @@ static void Setup()
     
     /*配置基本信息*/
     RCX::Handshake::Pack_t* master = RCX::Handshake::GetMaster();
-    master->EnableFunction.Passback = CTRL.State.PassBack;
+    master->EnableFunction.Passback = CTRL.State.Passback;
     master->EnableFunction.FHSS = CTRL.State.FHSS;
     master->Speed = nrf.GetSpeed();
 
@@ -105,11 +105,11 @@ static void Exit()
     if(!IsTimeout)
     {
         Serial.println("Connect successfully");
-        Buzz_PlayMusic(MC_Type::MC_Connect);
+        Audio_PlayMusic(MC_Type::MC_Connect);
     }
     else
     {
-        Buzz_PlayMusic(MC_Type::MC_UnstableConnect);
+        Audio_PlayMusic(MC_Type::MC_UnstableConnect);
     }
 
     nrf.SetRF_Enable(false);

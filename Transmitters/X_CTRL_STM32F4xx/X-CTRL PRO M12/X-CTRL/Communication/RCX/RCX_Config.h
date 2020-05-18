@@ -1,5 +1,5 @@
-/** @Author: _VIFEXTech
-  * @Describe: X-CTRL专用协议框架
+/** @Describe: X-CTRL专用协议框架
+  * @Author: _VIFEXTech
   * @Finished: UNKNOWTIME - v1.0 协议框架基本完成
   * @Upgrade:  UNKNOWTIME - v1.1 修改部分结构体
   * @Upgrade:  2018.12.25 - v1.2 去除TimePoint_Tran, 添加握手协议与时钟基准

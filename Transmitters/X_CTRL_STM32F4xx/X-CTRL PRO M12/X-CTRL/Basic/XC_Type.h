@@ -80,21 +80,22 @@ typedef struct
     /*功能使能*/
     struct
     {
-        bool PassBack;
+        bool Passback;
         bool Handshake;
         bool FHSS;
         bool Sound;
         bool Vibrate;
         bool IMU;
-        bool CPUInfo;
+        bool BigVibrate;
         bool IdleWarn;
         bool SignWarn;
+        bool JostickFilter;
     } State;
     
     struct
     {
-        int32_t Speed;
-        int32_t Freq;
+        uint8_t Speed;
+        uint8_t Freq;
         uint8_t Addr[5];
     } RF_Config;
 

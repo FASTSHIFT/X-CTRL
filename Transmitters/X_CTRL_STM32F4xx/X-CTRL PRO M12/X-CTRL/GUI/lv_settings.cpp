@@ -500,14 +500,10 @@ void lv_settings::slider_event_cb(lv_obj_t * slider, lv_event_t e)
     }
     else if(e == LV_EVENT_INSERT)
     {
-        int16_t new_val = *(lv_coord_t*)lv_event_get_data();
-        int32_t value = lv_slider_get_value(slider) - new_val;
+        int16_t new_val = *(int16_t*)lv_event_get_data();
+        int16_t value = lv_slider_get_value(slider) - new_val;
         lv_slider_set_value(slider, value, LV_ANIM_ON);
         item->state = lv_slider_get_value(slider);
-        if(item->user_data.ptr)
-        {
-            *(int32_t*)item->user_data.ptr = item->state;
-        }
         lv_event_send(slider, LV_EVENT_VALUE_CHANGED, NULL);
         item_ext->lv_settings_p->refr(item);
     }

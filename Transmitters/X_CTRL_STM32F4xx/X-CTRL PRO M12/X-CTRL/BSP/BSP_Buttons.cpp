@@ -21,7 +21,7 @@ static void ButtonEvent_Handler(ButtonEvent* btn, int event)
         {
             if(btUPL && btDOWNL)
             {
-                Buzz_PlayMusic(MC_Type::MC_Astronomia);
+                Audio_PlayMusic(MC_Type::MC_Astronomia);
             }
         }
     }
@@ -29,12 +29,12 @@ static void ButtonEvent_Handler(ButtonEvent* btn, int event)
     uint8_t keyVal;
     if(event == ButtonEvent_Type::EVENT_ButtonPress)
     {
-        Buzz_Tone(500, 20);//播放操作音(500Hz, 持续20ms)
+        Audio_Tone(500, 20);//播放操作音(500Hz, 持续20ms)
         keyVal = 1;
     }
     else if(event == ButtonEvent_Type::EVENT_ButtonRelease)
     {
-        Buzz_Tone(700, 20);//播放操作音(700Hz, 持续20ms)
+        Audio_Tone(700, 20);//播放操作音(700Hz, 持续20ms)
         keyVal = 0;
     }
     else

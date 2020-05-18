@@ -35,11 +35,8 @@ static uint8_t NRF_RxBuff[32];
 //    0,  0,   0,  0,  0 //ADDR: Handshake
 //};
 
-/*NRF信号强度指示*/
-int16_t NRF_SignalStrength = 0;
-
 /*通信使能*/
-static bool Com_Enable = OFF;
+static bool Com_Enable = false;
 
 void Com_SetEnable(bool en)
 {
@@ -93,7 +90,7 @@ static void Com_TxRxProcess()
     {
         nrfFHSS.TxProcess(
             NRF_TxBuff,
-            CTRL.State.PassBack ? NRF_RxBuff : NULL
+            CTRL.State.Passback ? NRF_RxBuff : NULL
         );
     }
     else
@@ -101,7 +98,7 @@ static void Com_TxRxProcess()
         nrfTRM.TranRecv(NRF_TxBuff, NRF_RxBuff);
     }
 
-    if(CTRL.State.PassBack)
+    if(CTRL.State.Passback)
     {
         RCX::LoadRxPack(NRF_RxBuff);
         Com_PassbackProcess(RCX::GetRxSignalLost() ? PBS_Error : PBS_Loop);
@@ -123,7 +120,7 @@ void Com_Update()
     /*载入数据包到发送缓冲区*/
     RCX::LoadTxPack(NRF_TxBuff);
 
-    if(CTRL.State.FHSS || CTRL.State.PassBack)
+    if(CTRL.State.FHSS || CTRL.State.Passback)
     {
         Com_TxRxProcess();
     }

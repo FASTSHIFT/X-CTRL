@@ -12,7 +12,7 @@ static MPU6050 mpu;
 /*MPU½Ç¶ÈÊý¾Ý*/
 IMU_Axis_TypeDef    IMU_Axis;
 IMU_Channel_TypeDef IMU_Channel;
-static bool IsAxisChannelReset;
+static bool IsAxisChannelReset = false;
 static float q0 = 1, q1 = 0, q2 = 0, q3 = 0;
 static float exInt = 0, eyInt = 0, ezInt = 0;
 
@@ -20,6 +20,18 @@ void IMU_NormReset()
 {
     q0 = 1, q1 = 0, q2 = 0, q3 = 0;
     exInt = 0, eyInt = 0, ezInt = 0;
+}
+
+void IMU_LimitSetDefault()
+{
+    /*¸©Ñö*/
+    IMU_Axis.Pitch.Limit = 90;
+    
+    /*ºá¹ö*/
+    IMU_Axis.Roll.Limit = 90;
+    
+    /*º½Ïò*/
+    IMU_Axis.Yaw.Limit = 180;
 }
 
 /**
@@ -32,7 +44,7 @@ static void IMU_NormUpdate(float ax, float ay, float az, float gx, float gy, flo
     /*×ËÌ¬½âËãÊý¾Ý*/
     const double Kp = 1.0f;
     const double Ki = 0.01f;
-    const double halfT = 0.01f;
+    const double halfT = 0.01f;/*20ms*/
     
     float norm;
     float vx, vy, vz;
@@ -70,12 +82,12 @@ static void IMU_NormUpdate(float ax, float ay, float az, float gx, float gy, flo
     q2 = q2 / norm;
     q3 = q3 / norm;
 
-    IMU_Axis.Pitch.Angle = asin(-2 * q1 * q3 + 2 * q0 * q2) * 57.3f;
-    IMU_Axis.Roll.Angle  = atan2(2 * q2 * q3 + 2 * q0 * q1, -2 * q1 * q1 - 2 * q2 * q2 + 1) * 57.3f;
-    IMU_Axis.Yaw.Angle   = -atan2(2 * (q1 * q2 + q0 * q3), q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3) * 57.3f;
+    IMU_Axis.Pitch.AngleReal = asin(-2 * q1 * q3 + 2 * q0 * q2) * 57.3f;
+    IMU_Axis.Roll.AngleReal  = atan2(2 * q2 * q3 + 2 * q0 * q1, -2 * q1 * q1 - 2 * q2 * q2 + 1) * 57.3f;
+    IMU_Axis.Yaw.AngleReal   = -atan2(2 * (q1 * q2 + q0 * q3), q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3) * 57.3f;
 }
 
-bool IsCalibrateStart = false;
+static bool IsCalibrateStart = false;
 static uint32_t CalibrateStartTime = 0;
 static uint16_t CalibrateCnt;
 static int32_t gx_sum = 0,gy_sum = 0,gz_sum = 0;
@@ -118,19 +130,19 @@ static void IMU_Calibrate(int16_t* gx,int16_t* gy,int16_t* gz)
     }
 }
 
-static void IMU_AngleToChannel(IMU_Angle_TypeDef angle, IMU_ChBasic_TypeDef* ch)
+static void IMU_AngleToChannel(IMU_Angle_TypeDef* angle, IMU_ChBasic_TypeDef* ch)
 {
-    float agl = constrain(angle.Angle, -angle.Limit, angle.Limit);
-    ch->Data = (ch->Reverse ? -1 : 1) * __Map(agl, -angle.Limit, angle.Limit, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX);
+    angle->Angle = constrain(angle->AngleReal, -angle->Limit, angle->Limit);
+    ch->Data = (ch->Reverse ? -1 : 1) * __Map(angle->Angle, -angle->Limit, angle->Limit, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX);
     ch->delta = ch->Data - ch->Last;
     ch->Last = ch->Data;
 }
 
 static void IMU_ChannelUpdate()
 {
-    IMU_AngleToChannel(IMU_Axis.Pitch, &IMU_Channel.Pitch);
-    IMU_AngleToChannel(IMU_Axis.Roll,  &IMU_Channel.Roll);
-    IMU_AngleToChannel(IMU_Axis.Yaw,   &IMU_Channel.Yaw);
+    IMU_AngleToChannel(&IMU_Axis.Pitch, &IMU_Channel.Pitch);
+    IMU_AngleToChannel(&IMU_Axis.Roll,  &IMU_Channel.Roll);
+    IMU_AngleToChannel(&IMU_Axis.Yaw,   &IMU_Channel.Yaw);
 }
 
 static void IMU_AxisChannelReset()
@@ -152,15 +164,6 @@ void IMU_Init()
 {
     DEBUG_FUNC_LOG();
     mpu.initialize();
-    
-    /*¸©Ñö*/
-    IMU_Axis.Pitch.Limit = 90;
-    
-    /*ºá¹ö*/
-    IMU_Axis.Roll.Limit = 90;
-    
-    /*º½Ïò*/
-    IMU_Axis.Yaw.Limit = 180;
 }
 
 /**

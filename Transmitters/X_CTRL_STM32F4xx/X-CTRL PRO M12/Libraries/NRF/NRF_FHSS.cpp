@@ -10,7 +10,6 @@ void NRF_FHSS::FH_Process()
     FH_List_Index++;
     FH_List_Index %= FH_List_Length;
     Basic->SetFreqency(FH_List[FH_List_Index]);
-//    delayMicroseconds(130);
 }
 
 /**
@@ -20,10 +19,10 @@ void NRF_FHSS::FH_Process()
   */
 void NRF_FHSS::TxProcess(void* txbuff)
 {
-    /*发射端先跳频*/
-    FH_Process();
     /*检查上一次的发送情况*/
     Basic->TranCheck();
+    /*发射端跳频*/
+    FH_Process();
     /*再发送*/
     Basic->Tran(txbuff);
     /*不管接收端状态*/

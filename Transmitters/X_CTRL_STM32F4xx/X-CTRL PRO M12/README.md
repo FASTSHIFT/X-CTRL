@@ -37,3 +37,19 @@ https://github.com/FASTSHIFT/X-CTRL/tree/master/Transmitters/X_CTRL_STM32F4xx/X-
 * 3.Channel配置页面完成
 * 4.添加陀螺仪配置页面
 * 5.添加通道绑定保存
+
+## [v0.9] - 2020-05-14
+* 1.在通道反向配置页面加入通道值显示
+* 2.在陀螺仪配置页面添加限幅设置，以及显示
+* 3.Misc设置页面完成
+* 4.添加蓝牙配置页面
+* 5.振动回传通道使用RCX_CHANNEL_DATA_MAX作为参考
+
+## [v1.0] - 2020-05-18
+* 1.为摇杆ADC读取的值添加可选的一阶低通滤波器
+* 2.Buzz更名为Audio
+* 3.手柄振动回传添加到Passback组
+* 4.添加JoystickMap摇杆映射管理器
+* 5.更新MTM的CPU占用统计使能开关
+* 6.可越过I2C设备扫描检查
+* 7.添加秒表图标和游戏图标

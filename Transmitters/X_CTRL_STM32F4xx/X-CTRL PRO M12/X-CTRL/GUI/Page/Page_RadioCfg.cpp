@@ -28,7 +28,7 @@ enum item_index{
 
 static lv_settings::item_t item_grp[IIDX_MAX] =
 {
-    {.type = menu.TYPE_SW,     .name = "Passback",    .value = "Check passback data",   .user_data.ptr = &CTRL.State.PassBack},
+    {.type = menu.TYPE_SW,     .name = "Passback",    .value = "Check passback data",   .user_data.ptr = &CTRL.State.Passback},
     {.type = menu.TYPE_SW,     .name = "FHSS",        .value = "Use FHSS mode",         .user_data.ptr = &CTRL.State.FHSS},
     {.type = menu.TYPE_SW,     .name = "Handshake",   .value = "Handshake to slave",    .user_data.ptr = &CTRL.State.Handshake},
     {.type = menu.TYPE_SW,     .name = "Signal warn", .value = "Signal low warn",       .user_data.ptr = &CTRL.State.SignWarn},
@@ -58,6 +58,7 @@ static void Menu_EventHnadler(lv_obj_t * obj, lv_event_t event)
         }
         else if(IS_ITEM("Frequency"))
         {
+            CTRL.RF_Config.Freq = act_item->state;
             snprintf(FrequencyStr, sizeof(FrequencyStr), "%04dMHz", CTRL.RF_Config.Freq + 2400);
             nrf.SetFreqency(CTRL.RF_Config.Freq);
         }
@@ -153,7 +154,7 @@ static void Exit()
     lv_obj_clean(appWindow);
     if(!EEPROM_SaveAll())
     {
-        Buzz_PlayMusic(MC_Type::MC_UnstableConnect);
+        Audio_PlayMusic(MC_Type::MC_UnstableConnect);
     }
 }
 

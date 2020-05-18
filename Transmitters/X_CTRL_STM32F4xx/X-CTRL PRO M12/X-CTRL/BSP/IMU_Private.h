@@ -4,8 +4,9 @@
 #include <stdint.h>
 
 typedef struct{
+    float AngleReal;
     float Angle;
-    float Limit;
+    int16_t Limit;
 }IMU_Angle_TypeDef;
 
 typedef struct{
@@ -33,5 +34,6 @@ extern bool IsCalibrateStart;
 
 void IMU_NormReset();
 void IMU_CalibrateStart();
+void IMU_LimitSetDefault();
 
 #endif

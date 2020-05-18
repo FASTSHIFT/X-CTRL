@@ -18,7 +18,8 @@
 #ifndef __MILLISTASKMANAGER_H
 #define __MILLISTASKMANAGER_H
 
-#define _SUPPORT_CPU_USAGE
+/*是否启用CPU占用率统计*/
+#define MTM_USE_CPU_USAGE 0
 
 #include "stdint.h"
 
@@ -48,7 +49,7 @@ public:
     bool TaskSetIntervalTime(void_TaskFunction_t Function, uint32_t TimeSetMs);
     bool TaskSetIntervalTime(TaskNum_t ID, uint32_t TimeSetMs);
     uint32_t GetTaskTimeCost(TaskNum_t ID);
-#ifdef _SUPPORT_CPU_USAGE
+#if (MTM_USE_CPU_USAGE == 1)
     uint8_t GetCPU_Usage();
     uint8_t CPU_Usage;
 #endif

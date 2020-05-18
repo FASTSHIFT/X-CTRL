@@ -9,11 +9,11 @@ static void SwitchEvent_Handler(SwitchEvent* sw, int event)
 {
     if(event == SwitchEvent_Type::EVENT_SwitchUp)
     {
-        Buzz_Tone(500, 300);
+        Audio_Tone(500, 300);
     }
     else if(event == SwitchEvent_Type::EVENT_SwitchDown)
     {
-        Buzz_Tone(200, 100);
+        Audio_Tone(200, 100);
     }
     
     /*传递到页面事件*/

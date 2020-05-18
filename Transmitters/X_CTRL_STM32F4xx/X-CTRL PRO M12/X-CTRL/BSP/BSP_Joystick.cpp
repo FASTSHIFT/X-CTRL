@@ -1,74 +1,59 @@
 #include "Basic/FileGroup.h"
 #include "Communication/ComPrivate.h"
+#include "Filters/Filters.h"
 #include "math.h"
+#include "JoystickMap/JoystickMap.h"
 
-/**
-  * @brief  将一个值的变化区间非线性映射到另一个区间
-  * @param  x:被映射的值
-  * @param  in_min:被映射的值的最小值
-  * @param  in_min:被映射的值的最大值
-  * @param  out_min:被映射的值的最小值
-  * @param  out_min:被映射的值的最大值
-  * @param  startK:起点斜率
-  * @param  endK:终点斜率
-  * @retval 映射值输出
-  */
-float NonlinearMap(float value, float in_min, float in_max, float out_min, float out_max, float startK, float endK)
+/*摇杆曲线表*/
+#define JS_CURVE_POINT_SIZE 101
+int16_t JoystickLeft_CurveMap[JS_CURVE_POINT_SIZE];
+int16_t JoystickRight_CurveMap[JS_CURVE_POINT_SIZE];
+
+/*摇杆映射管理器*/
+static JoystickMap JoystickMap_LX(JoystickLeft_CurveMap, JS_CURVE_POINT_SIZE);
+static JoystickMap JoystickMap_LY(JoystickLeft_CurveMap, JS_CURVE_POINT_SIZE);
+static JoystickMap JoystickMap_RX(JoystickRight_CurveMap, JS_CURVE_POINT_SIZE);
+static JoystickMap JoystickMap_RY(JoystickRight_CurveMap, JS_CURVE_POINT_SIZE);
+
+/*摇杆一阶低通滤波器*/
+static PT1Filter Filter_LX(0.01f, 10);
+static PT1Filter Filter_LY(0.01f, 10);
+static PT1Filter Filter_RX(0.01f, 10);
+static PT1Filter Filter_RY(0.01f, 10);
+
+static void Joystick_UpdateConfig(JoystickMap* jm, Channel_TypeDef* config)
 {
-    if(ABS(startK - endK) < 0.001f)
-        return __Map(value, in_min, in_max, out_min, out_max);
-
-    float stY = exp(startK);
-    float edY = exp(endK);
-    float x = __Map(value, in_min, in_max, startK, endK);
-
-    return __Map(exp(x), stY, edY, out_min, out_max);
+    jm->SetInputReference(
+        config->Min,
+        config->Mid,
+        config->Max
+    );
+    jm->SetOutputMax(RCX_CHANNEL_DATA_MAX);
+    jm->SetCurve(config->Curve.Start, config->Curve.End);
 }
 
-/**
-  * @brief  摇杆值映射
-  * @param  *js: 摇杆对象地址
-  * @param  adc_x: X轴ADC值
-  * @param  adc_y: Y轴ADC值
-  * @retval 无
-  */
-static void Joystick_Map(Joystick_TypeDef* js, int16_t adc_x, int16_t adc_y)
+static void Joystick_StructInit(Channel_TypeDef* config)
 {
-    __LimitValue(adc_x, js->X.Min, js->X.Max);
-    __LimitValue(adc_y, js->Y.Min, js->Y.Max);
-
-    int16_t x_val = ((adc_x - js->X.Mid) >= 0) ?
-                    NonlinearMap(adc_x, js->X.Mid, js->X.Max, 0, RCX_CHANNEL_DATA_MAX, js->X.Curve.Start, js->X.Curve.End) :
-                    NonlinearMap(adc_x, js->X.Mid, js->X.Min, 0, -RCX_CHANNEL_DATA_MAX, js->X.Curve.Start, js->X.Curve.End);
-    js->X.Val = constrain(x_val, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX);
-    
-    int16_t y_val = ((adc_y - js->Y.Mid) >= 0) ?
-                    NonlinearMap(adc_y, js->Y.Mid, js->Y.Max, 0, RCX_CHANNEL_DATA_MAX, js->Y.Curve.Start, js->Y.Curve.End) :
-                    NonlinearMap(adc_y, js->Y.Mid, js->Y.Min, 0, -RCX_CHANNEL_DATA_MAX, js->Y.Curve.Start, js->Y.Curve.End);
-    js->Y.Val = constrain(y_val, -RCX_CHANNEL_DATA_MAX, RCX_CHANNEL_DATA_MAX);
+    config->Min = 0;
+    config->Mid = JS_ADC_MAX / 2;
+    config->Max = JS_ADC_MAX;
+    config->Curve.Start = 5.0f;
+    config->Curve.End = 5.0f;
 }
 
 void Joystick_SetDefault()
 {
-    CTRL.JS_L.X.Min = 0;
-    CTRL.JS_L.X.Mid = JS_ADC_MAX / 2;
-    CTRL.JS_L.X.Max = JS_ADC_MAX;
-    CTRL.JS_L.X.Curve.Start = CTRL.JS_L.X.Curve.End = 5.0f;
-
-    CTRL.JS_L.Y.Min = 0;
-    CTRL.JS_L.Y.Mid = JS_ADC_MAX / 2;
-    CTRL.JS_L.Y.Max = JS_ADC_MAX;
-    CTRL.JS_L.Y.Curve.Start = CTRL.JS_L.Y.Curve.End = 5.0f;
-
-    CTRL.JS_R.X.Min = 0;
-    CTRL.JS_R.X.Mid = JS_ADC_MAX / 2;
-    CTRL.JS_R.X.Max = JS_ADC_MAX;
-    CTRL.JS_R.X.Curve.Start = CTRL.JS_R.X.Curve.End = 5.0f;
-
-    CTRL.JS_R.Y.Min = 0;
-    CTRL.JS_R.Y.Mid = JS_ADC_MAX / 2;
-    CTRL.JS_R.Y.Max = JS_ADC_MAX;
-    CTRL.JS_R.Y.Curve.Start = CTRL.JS_R.Y.Curve.End = 5.0f;
+    Joystick_StructInit(&CTRL.JS_L.X);
+    Joystick_UpdateConfig(&JoystickMap_LX, &CTRL.JS_L.X);
+    
+    Joystick_StructInit(&CTRL.JS_L.Y);
+    Joystick_UpdateConfig(&JoystickMap_LY, &CTRL.JS_L.Y);
+    
+    Joystick_StructInit(&CTRL.JS_R.X);
+    Joystick_UpdateConfig(&JoystickMap_RX, &CTRL.JS_R.X);
+    
+    Joystick_StructInit(&CTRL.JS_R.Y);
+    Joystick_UpdateConfig(&JoystickMap_RY, &CTRL.JS_R.Y);
 }
 
 void Joystick_Init()
@@ -89,6 +74,22 @@ void Joystick_Init()
   */
 void Joystick_Update()
 {
-    Joystick_Map(&CTRL.JS_L, JSL_X_ADC(), JSL_Y_ADC());
-    Joystick_Map(&CTRL.JS_R, JSR_X_ADC(), JSR_Y_ADC());
+    uint16_t adc_lx = JSL_X_ADC();
+    uint16_t adc_ly = JSL_Y_ADC();
+    uint16_t adc_rx = JSR_X_ADC();
+    uint16_t adc_ry = JSR_Y_ADC();
+    
+    /*如果使能滤波器*/
+    if(CTRL.State.JostickFilter)
+    {
+        adc_lx = Filter_LX.Next(adc_lx);
+        adc_ly = Filter_LY.Next(adc_ly);
+        adc_rx = Filter_RX.Next(adc_rx);
+        adc_ry = Filter_RY.Next(adc_ry);
+    }
+    
+    CTRL.JS_L.X.Val = JoystickMap_LX.GetNext(adc_lx);
+    CTRL.JS_L.Y.Val = JoystickMap_LY.GetNext(adc_ly);
+    CTRL.JS_R.X.Val = JoystickMap_RX.GetNext(adc_rx);
+    CTRL.JS_R.Y.Val = JoystickMap_RY.GetNext(adc_ry);
 }

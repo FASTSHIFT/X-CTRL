@@ -5,14 +5,6 @@
 
 static MillisTaskManager mtmMain(8, true);
 
-uint32_t TimeCost[8];
-
-static void CPU_UsageUpdate()
-{
-    mtmMain.GetCPU_Usage();
-    __LoopExecute(TimeCost[i] = mtmMain.GetTaskTimeCost(i), __Sizeof(TimeCost));
-}
-
 static void mtmMain_TimerCallback()
 {
     mtmMain.Running(millis());
@@ -26,9 +18,8 @@ static void setup()
     mtmMain.TaskRegister(1, Button_Update, 10);
     mtmMain.TaskRegister(2, Joystick_Update, 10);
     mtmMain.TaskRegister(3, IMU_Update, 20);
-    mtmMain.TaskRegister(4, Buzz_Update, 20);
+    mtmMain.TaskRegister(4, Audio_Update, 20);
     mtmMain.TaskRegister(5, Motor_Update, 20);
-    mtmMain.TaskRegister(7, CPU_UsageUpdate, 1000, false);
     
     Timer_SetInterruptBase(TIM_MTM_MAIN, 0xFF, 0xFF, mtmMain_TimerCallback, 2, 1);
     Timer_SetInterruptTimeUpdate(TIM_MTM_MAIN, 2000);
