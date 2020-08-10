@@ -44,7 +44,7 @@ static void Task_ChannelDataUpdate(lv_task_t * task)
     }
 }
 
-static void Menu_EventHnadler(lv_obj_t * obj, lv_event_t event)
+static void Menu_EventHandler(lv_obj_t * obj, lv_event_t event)
 {
     /*Get the caller item*/
     lv_settings::item_t * act_item = (lv_settings::item_t *)lv_event_get_data();
@@ -59,7 +59,7 @@ static void Menu_EventHnadler(lv_obj_t * obj, lv_event_t event)
 
 static void Menu_Init()
 {
-    menu.create(appWindow, Menu_EventHnadler);
+    menu.create(appWindow, Menu_EventHandler);
     for(int i = 0; i < __Sizeof(item_grp); i++)
     {
         lv_settings::item_t * item = &item_grp[i];
@@ -100,11 +100,11 @@ static void Exit()
 
 /**
   * @brief  页面事件
+  * @param  btn:发出事件的按键
   * @param  event:事件编号
-  * @param  param:事件参数
   * @retval 无
   */
-static void Event(int event, void* btn)
+static void Event(void* btn, int event)
 {
     if(btn == &btBACK)
     {

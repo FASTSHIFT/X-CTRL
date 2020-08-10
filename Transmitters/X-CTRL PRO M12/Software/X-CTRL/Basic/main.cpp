@@ -3,7 +3,7 @@
 #include "Communication/ComPrivate.h"
 #include "MillisTaskManager/MillisTaskManager.h"
 
-static MillisTaskManager mtmMain(8, true);
+static MillisTaskManager mtmMain(true);
 
 static void mtmMain_TimerCallback()
 {
@@ -14,12 +14,12 @@ static void setup()
 {
     X_CTRL_Init();
     
-    mtmMain.TaskRegister(0, Com_Update, 10);
-    mtmMain.TaskRegister(1, Joystick_Update, 10);
-    mtmMain.TaskRegister(2, Button_Update, 20);
-    mtmMain.TaskRegister(3, IMU_Update, 20);
-    mtmMain.TaskRegister(4, Audio_Update, 20);
-    mtmMain.TaskRegister(5, MotorLRA_Update, 20);
+    mtmMain.Register(Com_Update, 10);
+    mtmMain.Register(Joystick_Update, 10);
+    mtmMain.Register(Button_Update, 20);
+    mtmMain.Register(IMU_Update, 20);
+    mtmMain.Register(Audio_Update, 20);
+    mtmMain.Register(MotorLRA_Update, 20);
     
     Timer_SetInterruptBase(TIM_MTM_MAIN, 0xFF, 0xFF, mtmMain_TimerCallback, 2, 1);
     Timer_SetInterruptTimeUpdate(TIM_MTM_MAIN, 2000);

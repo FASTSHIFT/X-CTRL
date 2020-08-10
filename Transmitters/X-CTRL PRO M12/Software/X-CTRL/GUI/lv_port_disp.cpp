@@ -11,7 +11,6 @@ static lv_color_t lv_disp_buf2[LV_HOR_RES_MAX * 20];
 static void log_print(lv_log_level_t level, const char * file, uint32_t line, const char * dsc)
 {
     Serial.printf("%s@%d->%s\r\n", file, line, dsc);
-    delay(100);
 }
 #endif
 

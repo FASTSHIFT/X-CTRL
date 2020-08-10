@@ -1,5 +1,5 @@
 # X-CTRL PRO M12
-https://github.com/FASTSHIFT/X-CTRL
+https://github.com/FASTSHIFT/X-CTRL/tree/master/Transmitters/X_CTRL_STM32F4xx/X-CTRL%20PRO%20M12
 
 # 更新日志
 
@@ -74,3 +74,8 @@ https://github.com/FASTSHIFT/X-CTRL
 * 1.更新ButtonEvent
 * 2.更新SwitchEvent
 * 3.添加旋转编码器事件库
+
+## [v1.5] - 2020-08-09
+* 1.修改btn控件的border颜色为灰色
+* 2.更新MillisTaskManager库，无需手动指定ID
+* 3.更新PageManager v1.4

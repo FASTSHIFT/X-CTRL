@@ -17,7 +17,7 @@ static void SwitchEvent_Handler(SwitchEvent* sw, int event)
     }
     
     /*传递到页面事件*/
-    page.PageEventTransmit(event, sw);
+    page.PageEventTransmit(sw, event);
 }
 
 void Switch_Init()

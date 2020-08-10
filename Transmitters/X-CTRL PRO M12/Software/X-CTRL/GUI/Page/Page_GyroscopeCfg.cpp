@@ -41,7 +41,7 @@ static void Task_IMU_Update(lv_task_t * task)
     menu.refr(&item_grp[IIDX_Yaw]);
 }
 
-static void Menu_EventHnadler(lv_obj_t * obj, lv_event_t event)
+static void Menu_EventHandler(lv_obj_t * obj, lv_event_t event)
 {
     /*Get the caller item*/
     lv_settings::item_t * act_item = (lv_settings::item_t *)lv_event_get_data();
@@ -74,7 +74,7 @@ static void Menu_EventHnadler(lv_obj_t * obj, lv_event_t event)
 
 static void Menu_Init()
 {
-    menu.create(appWindow, Menu_EventHnadler);
+    menu.create(appWindow, Menu_EventHandler);
     
 #define SW_ATTACH_PTR(name) item_grp[IIDX_SW_##name].user_data.ptr=&CTRL.State->name
     
@@ -122,11 +122,11 @@ static void Exit()
 
 /**
   * @brief  页面事件
+  * @param  btn:发出事件的按键
   * @param  event:事件编号
-  * @param  param:事件参数
   * @retval 无
   */
-static void Event(int event, void* btn)
+static void Event(void* btn, int event)
 {
     if(btn == &btBACK)
     {

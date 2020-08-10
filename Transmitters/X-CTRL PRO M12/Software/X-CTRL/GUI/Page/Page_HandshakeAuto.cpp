@@ -117,10 +117,11 @@ static void Exit()
 
 /**
   * @brief  页面事件
-  * @param  无
+  * @param  btn:发出事件的按键
+  * @param  event:事件编号
   * @retval 无
   */
-static void Event(int event, void* param)
+static void Event(void* btn, int event)
 {
     if(event == ButtonEvent::EVENT_ButtonPress)
     {

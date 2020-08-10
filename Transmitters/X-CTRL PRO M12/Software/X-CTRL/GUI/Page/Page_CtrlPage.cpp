@@ -380,11 +380,11 @@ static void Exit()
 
 /**
   * @brief  页面事件
+  * @param  btn:发出事件的按键
   * @param  event:事件编号
-  * @param  param:事件参数
   * @retval 无
   */
-static void Event(int event, void* btn)
+static void Event(void* btn, int event)
 {
     if(event > SwitchEvent::EVENT_SwitchNone)
     {

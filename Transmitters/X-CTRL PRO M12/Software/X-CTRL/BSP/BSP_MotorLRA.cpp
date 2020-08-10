@@ -2,7 +2,7 @@
 
 static bool MotorLRA_Vibrate_Enable = true;
 static uint32_t MotorLRA_StopTimePoint = 0;
-static bool IsMotorLRA_Running = false;
+static bool MotorLRA_IsRunning = false;
 
 void MotorLRA_Init()
 {
@@ -18,10 +18,10 @@ void MotorLRA_WriteData(int16_t data)
 
 void MotorLRA_Update()
 {
-    if(IsMotorLRA_Running && millis() >= MotorLRA_StopTimePoint)
+    if(MotorLRA_IsRunning && millis() >= MotorLRA_StopTimePoint)
     {
         MotorLRA_NoTone();
-        IsMotorLRA_Running = false;
+        MotorLRA_IsRunning = false;
     }
 }
 
@@ -41,7 +41,7 @@ void MotorLRA_Vibrate(float strength, uint32_t time)
     MotorLRA_ToneSetVolume(strength * 800);
     MotorLRA_Tone(100);
     
-    IsMotorLRA_Running = true;
+    MotorLRA_IsRunning = true;
     MotorLRA_StopTimePoint = millis() + time;
 }
 

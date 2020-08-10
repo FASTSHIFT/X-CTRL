@@ -3,7 +3,7 @@
 
 #define XC_NAME             "X-CTRL"
 #define XC_HARDWARE_VERSION "v1.0"
-#define XC_SOFTWARE_VERSION "v1.4"
+#define XC_SOFTWARE_VERSION "v1.5"
 
 #define XC_CPU_NAME                 "STM32F411CEU6"
 #define XC_CPU_RATE_MHZ             (100)

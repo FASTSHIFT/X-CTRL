@@ -25,14 +25,14 @@ enum{
     BTN_IDX_POWER,
     BTN_IDX_MAX
 };
-extern ButtonEvent btGrp[BTN_IDX_MAX];
-#define btUP    btGrp[BTN_IDX_UP]
-#define btDOWN  btGrp[BTN_IDX_DOWN]
-#define btOK    btGrp[BTN_IDX_OK]
-#define btBACK  btGrp[BTN_IDX_BACK]
-#define btUPL   btGrp[BTN_IDX_UPL]
-#define btDOWNL btGrp[BTN_IDX_DOWNL]
-#define btPOWER btGrp[BTN_IDX_POWER]
+extern ButtonEvent  btGrp[BTN_IDX_MAX];
+#define btUP       (btGrp[BTN_IDX_UP])
+#define btDOWN     (btGrp[BTN_IDX_DOWN])
+#define btOK       (btGrp[BTN_IDX_OK])
+#define btBACK     (btGrp[BTN_IDX_BACK])
+#define btUPL      (btGrp[BTN_IDX_UPL])
+#define btDOWNL    (btGrp[BTN_IDX_DOWNL])
+#define btPOWER    (btGrp[BTN_IDX_POWER])
 void Button_Init();
 void Button_Update();
 

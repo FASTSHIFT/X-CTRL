@@ -24,17 +24,6 @@ static uint8_t NRF_TxBuff[32];
 /*NRF接收数据缓冲区*/
 static uint8_t NRF_RxBuff[32];
 
-///*NRF地址分配表*/
-//uint8_t NRF_AddressConfig[] =
-//{
-//    45, 23, 78, 19, 61, //ADDR:0
-//    75, 75, 75, 75, 75, //ADDR:1
-//    12, 34, 56, 78, 90, //ADDR:2
-//    12, 90, 17, 44, 55, //ADDR:3
-//    10, 93, 70, 72, 31, //ADDR:4
-//    0,  0,   0,  0,  0 //ADDR: Handshake
-//};
-
 /*通信使能*/
 static bool Com_Enable = false;
 

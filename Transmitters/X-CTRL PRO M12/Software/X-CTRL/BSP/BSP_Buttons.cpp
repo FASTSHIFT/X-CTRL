@@ -60,7 +60,7 @@ static void ButtonEvent_Handler(ButtonEvent* btn, int event)
 
 PageEvent:
     /*传递到页面事件*/
-    page.PageEventTransmit(event, btn);
+    page.PageEventTransmit(btn, event);
 }
 
 void Button_Init()
