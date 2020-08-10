@@ -1,5 +1,5 @@
 # X-CTRL PRO M12
-https://github.com/FASTSHIFT/X-CTRL/tree/master/Transmitters/X-CTRL%20PRO%20M12/Software
+https://github.com/FASTSHIFT/X-CTRL/tree/master/Transmitters/X-CTRL%20PRO%20M12
 
 # 更新日志
 
