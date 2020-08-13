@@ -1,5 +1,5 @@
 # X-CTRL PRO M12
-https://github.com/FASTSHIFT/X-CTRL/tree/master/Transmitters/X_CTRL_STM32F4xx/X-CTRL%20PRO%20M12
+https://github.com/FASTSHIFT/X-CTRL
 
 # 更新日志
 
@@ -79,3 +79,8 @@ https://github.com/FASTSHIFT/X-CTRL/tree/master/Transmitters/X_CTRL_STM32F4xx/X-
 * 1.修改btn控件的border颜色为灰色
 * 2.更新MillisTaskManager库，无需手动指定ID
 * 3.更新PageManager v1.4
+
+## [v1.6] - 2020-08-13
+* 1.优化摇杆状态管理的函数，提升复用性
+* 2.修复IMU数据异常的问题
+* 3.修复IMU关闭数据不会清零的问题

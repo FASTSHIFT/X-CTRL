@@ -82,8 +82,8 @@ static void IMU_NormUpdate(float ax, float ay, float az, float gx, float gy, flo
     q2 = q2 / norm;
     q3 = q3 / norm;
 
-    IMU_Axis.Pitch.AngleReal = asin(-2 * q1 * q3 + 2 * q0 * q2) * 57.3f;
-    IMU_Axis.Roll.AngleReal  = atan2(2 * q2 * q3 + 2 * q0 * q1, -2 * q1 * q1 - 2 * q2 * q2 + 1) * 57.3f;
+    IMU_Axis.Roll.AngleReal = asin(-2 * q1 * q3 + 2 * q0 * q2) * 57.3f;
+    IMU_Axis.Pitch.AngleReal  = -atan2(2 * q2 * q3 + 2 * q0 * q1, -2 * q1 * q1 - 2 * q2 * q2 + 1) * 57.3f;
     IMU_Axis.Yaw.AngleReal   = -atan2(2 * (q1 * q2 + q0 * q3), q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3) * 57.3f;
 }
 
@@ -147,9 +147,9 @@ static void IMU_ChannelUpdate()
 
 static void IMU_AxisChannelReset()
 {
-    IMU_Axis.Pitch.Angle = 0;
-    IMU_Axis.Roll.Angle = 0;
-    IMU_Axis.Yaw.Angle = 0;
+    IMU_Axis.Pitch.AngleReal = 0;
+    IMU_Axis.Roll.AngleReal = 0;
+    IMU_Axis.Yaw.AngleReal = 0;
     IMU_ChannelUpdate();
     IMU_ChannelUpdate();
     IsAxisChannelReset = true;
@@ -163,7 +163,7 @@ static void IMU_AxisChannelReset()
 void IMU_Init()
 {
     DEBUG_FUNC_LOG();
-    mpu.initialize();
+    __LoopExecute(mpu.initialize(), 50);
 }
 
 /**
