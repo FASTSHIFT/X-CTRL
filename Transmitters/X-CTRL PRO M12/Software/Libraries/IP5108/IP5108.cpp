@@ -2,23 +2,34 @@
 
 IP5108::IP5108(uint8_t addr)
 {
-    address = addr;
+    Address = addr;
 }
 
 void IP5108::begin()
 {
     writeRegBit(SYS_CTL0, SYS_CTL0_BIT_FlashLight, false);
+    writeRegBit(SYS_CTL0, SYS_CTL0_BIT_Light, false);
     writeRegBit(SYS_CTL1, SYS_CTL1_BIT_LowLoadOff, false);
-    writeRegBit(SYS_CTL5, SYS_CTL5_BIT_KeyShutdownSet, true);
+    writeRegBit(SYS_CTL1, SYS_CTL1_BIT_LoadInsertAutoStartUp, false);
+    writeRegBit(SYS_CTL4, SYS_CTL4_BIT_VIN_PullOutBoost, true);     //  VIN 拔出开启 BOOST
+    writeRegBit(SYS_CTL5, SYS_CTL5_BIT_KeyShutdownSet, true);      //  长按关机
+    writeRegBits(MFP_CTL0, MFP_CTL0_BIT_LIGHT_Sel, MFP_CTL0_BIT_LIGHT_Sel_WLED);
+    writeRegBits(MFP_CTL0, MFP_CTL0_BIT_L4_Sel, MFP_CTL0_BIT_L4_Sel_L4);
+    writeRegBits(MFP_CTL0, MFP_CTL0_BIT_L3_Sel, MFP_CTL0_BIT_L3_Sel_L3);
+    writeRegBit(MFP_CTL1, MFP_CTL1_BIT_VSET_Sel, false);
+    writeRegBit(MFP_CTL1, MFP_CTL1_BIT_RSET_Sel, false);
+    //writeRegBit(CHG_DIG_CTL4, CHG_DIG_CTL4_BIT_BatteryTypeInternalSet, true); //  外部 VSET PIN 设置电池类型
+    writeRegBit(CHG_DIG_CTL4, CHG_DIG_CTL4_BIT_BatteryTypeInternalSet, false);  //  内部寄存器设置 设置电池类型
+    writeRegBits(Charger_CTL2, Charger_CTL2_BIT_BatteryTypeSet, Charger_CTL2_BIT_BatteryTypeSet_4V2);   //  设置电池类型为4.2V
 }
 
 uint8_t IP5108::readReg(REG_t reg)
 {
-    Wire.beginTransmission(address);
+    Wire.beginTransmission(Address);
     Wire.write(reg);
     Wire.endTransmission();
 
-    Wire.requestFrom(address, 1);
+    Wire.requestFrom(Address, 1);
     uint8_t value = Wire.read();
     Wire.endTransmission();
 
@@ -33,7 +44,7 @@ bool IP5108::readRegBit(REG_t reg, REG_BIT_t bit)
 
 void IP5108::writeReg(REG_t reg, uint8_t val)
 {
-    Wire.beginTransmission(address);
+    Wire.beginTransmission(Address);
     Wire.write(reg);
     Wire.write(val);
     Wire.endTransmission();
@@ -43,6 +54,18 @@ void IP5108::writeRegBit(REG_t reg, REG_BIT_t bit, bool val)
 {
     uint8_t nval = readReg(reg);
     val ? nval |= bit : nval &= ~bit;
+    writeReg(reg, nval);
+}
+
+void IP5108::writeRegBits(REG_t reg, REG_BIT_t bit, REG_BIT_t val)
+{
+    uint8_t nval = readReg(reg);
+
+    for(int i = 0; i < 8; i++)
+    {
+        if( bit & (1 << i) )  (val & (1 << i)) ? nval |= (1 << i) : nval &= ~(1 << i);
+    }
+
     writeReg(reg, nval);
 }
 

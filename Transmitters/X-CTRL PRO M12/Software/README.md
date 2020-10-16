@@ -84,3 +84,10 @@ https://github.com/FASTSHIFT/X-CTRL
 * 1.优化摇杆状态管理的函数，提升复用性
 * 2.修复IMU数据异常的问题
 * 3.修复IMU关闭数据不会清零的问题
+
+## [v1.7] - 2020-10-16
+* 1.升级GOODUSB程序，添加IWDG，在USB卡死时自动复位
+* 2.修改默认动画曲线和时间，曲线:lv_anim_path_ease_in_out->lv_anim_path_ease_out；时间:200ms->400ms，更强的非线性效果
+* 3.去除lv_settings的sw初始化动画
+* 4.去除Menu的透明度渐变动画
+* 5.更新IP5108库，修复了一些寄存器位定义错误

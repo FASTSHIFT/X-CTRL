@@ -57,7 +57,7 @@ void Page_ReturnHome();
 /*Custom Widgets*/
 #include "GUI/Widgets/lv_joystick.h"
 
-#define LV_ANIM_TIME_DEFAULT    200
+#define LV_ANIM_TIME_DEFAULT    400
 #define LV_SYMBOL_DEGREE_SIGN   "\xC2\xB0"
 #define LV_COLOR_ARMY_GREEN     LV_COLOR_MAKE(2,94,33)
 
@@ -76,7 +76,7 @@ void lv_obj_add_anim(
     int32_t start, int32_t end,
     uint16_t time = LV_ANIM_TIME_DEFAULT,
     lv_anim_ready_cb_t ready_cb = NULL,
-    lv_anim_path_cb_t path_cb = lv_anim_path_ease_in_out
+    lv_anim_path_cb_t path_cb = lv_anim_path_ease_out
 );
 #define LV_OBJ_ADD_ANIM(obj,attr,target,time)\
 do{\

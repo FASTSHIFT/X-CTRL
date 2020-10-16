@@ -265,7 +265,7 @@ void lv_settings::add_sw(lv_obj_t * page, item_t * item)
         item->state = *(bool*)item->user_data.ptr;
     }
     
-    if(item->state) lv_sw_on(sw, LV_ANIM_ON);
+    if(item->state) lv_sw_on(sw, LV_ANIM_OFF);
     if(group) lv_group_add_obj(group, sw);
 
     lv_obj_align(name, NULL, LV_ALIGN_IN_TOP_LEFT, style_item_cont.body.padding.left, style_item_cont.body.padding.top);

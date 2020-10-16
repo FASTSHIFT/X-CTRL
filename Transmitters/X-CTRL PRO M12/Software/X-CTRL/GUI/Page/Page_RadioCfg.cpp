@@ -119,21 +119,15 @@ static void Menu_Init()
 void Menu_AnimOpen(lv_settings * menu, bool open)
 {
     lv_obj_t * cont = menu->act_cont;
-    lv_opa_t opa_target = LV_OPA_COVER;
     lv_coord_t y_target = lv_obj_get_y(cont);
     if(open)
     {
-        lv_obj_set_opa_scale_enable(cont, true);
-        
-        lv_obj_set_opa_scale(cont, LV_OPA_TRANSP);
         lv_obj_set_y(cont, y_target + lv_obj_get_height(cont));
     }
     else
     {
-        opa_target = LV_OPA_TRANSP;
         y_target = lv_obj_get_y(cont) + lv_obj_get_height(cont);
     }
-    LV_OBJ_ADD_ANIM(cont, opa_scale, opa_target, LV_ANIM_TIME_DEFAULT);
     LV_OBJ_ADD_ANIM(cont, y, y_target, LV_ANIM_TIME_DEFAULT);
     Page_Delay(LV_ANIM_TIME_DEFAULT);
 }

@@ -1,5 +1,6 @@
 #include "FileGroup.h"
 #include "ComPrivate.h"
+#include <libmaple/iwdg.h>
 
 MillisTaskManager mtm(TP_MAX, true);
 USBHID HID;
@@ -36,11 +37,14 @@ void setup()
   {
     __IntervalExecute(togglePin(LED_Pin), 2000);
   }
+
+  iwdg_init(IWDG_PRE_64, 625);
 }
 
 void loop()
 {
   UseMtm ? mtm.Running(millis()) : Sim_DeviceProcess();
+  iwdg_feed();
 }
 
 static void When_KeyPressEvent()
