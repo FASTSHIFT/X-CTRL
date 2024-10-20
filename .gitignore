@@ -30,3 +30,23 @@
 *.exe
 *.out
 *.app
+
+# Keil MDK-ARM
+## User-specific uVision files
+*.opt
+*.uvopt
+*.uvoptx
+*.uvgui
+*.uvgui.*
+*.uvguix.*
+*.scvd
+
+## Generated output files
+Listings
+Objects
+_build
+RTE
+
+## JLink
+JLinkLog.txt
+JLinkSettings.ini
