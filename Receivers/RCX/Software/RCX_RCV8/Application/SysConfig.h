@@ -18,7 +18,7 @@
 #define CH8_Pin      PA3 //TIM2 CH4
 
 #define LED_Pin      PC15
-#define BAT_DET_Pin  CH1_Pin
+#define BAT_DET_Pin  CH8_Pin
 
 #define Motor_Pin    CH5_Pin
 #define Servo_Pin    CH6_Pin

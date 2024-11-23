@@ -13,8 +13,9 @@ static void setup()
     Serial.begin(115200);
     pinMode(LED_Pin, OUTPUT);
     __LoopExecute((togglePin(LED_Pin), delay(80)), 6);
-    
-//    pinMode(BAT_DET_Pin, INPUT_ANALOG_DMA);
+
+    ADCx_Init(ADC1);
+    pinMode(BAT_DET_Pin, INPUT_ANALOG);
 //    ADC_DMA_Init();
 //    randomSeed(analogRead(BAT_DET_Pin));
 
@@ -24,7 +25,7 @@ static void setup()
     mtm.createTask(Task_ComHandler, 10);
     mtm.createTask(Task_Ctrl, 5);
     mtm.createTask(Task_InfoLED, 500);
-//    mtm.createTask(Task_ComPassback, 1000);
+    mtm.createTask(Task_ComPassback, 1000);
     mtm.createTask(Task_WatchDogFeed, 500);
 
     while (!RCX::Handshake::Process())
