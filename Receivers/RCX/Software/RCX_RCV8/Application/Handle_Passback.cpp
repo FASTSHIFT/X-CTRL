@@ -7,6 +7,9 @@ static int16_t BattLevel;
 #define DIV_RES_1 20000.0f
 #define DIV_RES_2 20000.0f
 
+#define BATT_MIN_VOLTAGE 3500 /* mV */
+#define BATT_MAX_VOLTAGE 4200
+
 void Com_PassbackInit()
 {
     RCX::ChannelSetAttachEnable(true);
@@ -25,7 +28,8 @@ void Task_ComPassback(MTM::Task* task)
         //BattVoltage = 1.2f * (float(analogRead_DMA(BAT_DET_Pin)*(3.3f/4096))/float(ADC_DMA_GetValue(ADC_Channel_Vrefint)*(3.3f/4096)));
 
         BattVoltage = analogRead(BAT_DET_Pin) / 4.095f * 3.3f * ((DIV_RES_1 + DIV_RES_2) / DIV_RES_2);
-        BattLevel = map(BattVoltage, 3000, 4200, 0, RCX_CHANNEL_DATA_MAX);
+        BattLevel = map(BattVoltage, BATT_MIN_VOLTAGE, BATT_MAX_VOLTAGE, 0, RCX_CHANNEL_DATA_MAX);
+        BattLevel = constrain(BattLevel, 0, RCX_CHANNEL_DATA_MAX);
 //        Serial.printf("ADC: %d, BattVoltage: %d, BattLevel: %d\r\n", analogRead(BAT_DET_Pin), BattVoltage, BattLevel);
     }
 }
